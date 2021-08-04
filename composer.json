@@ -1,0 +1,22 @@
+{
+  "name": "ct/php_kendo",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "sk",
+      "email": "sumeeet.khanna@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CT\\TestModules\\": "TestModules/",
+      "CT\\Interfaces\\": "Interfaces/",
+      "CT\\Controls\\": "Controls/"
+    }
+  }
+}
