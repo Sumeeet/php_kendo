@@ -1,7 +1,7 @@
 'use strict';
 
 const ViewModel = (url, mainView, footerView) => {
-    const dataProxy = DataProxy('CT_cache');
+    const dataProxy = DataProxy('ct_cache');
     let observableObject = {};
     let changedObservableObject = {};
     let validationsObservableObject = {};

@@ -1,6 +1,6 @@
 'use strict'
 
-const DataProxy = (cacheName = 'CT_cache') => {
+const DataProxy = (cacheName = 'ct_cache') => {
 
     const CACHE_NAME = cacheName;
 

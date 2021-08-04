@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\TestModules\UreaBuffer;
+namespace CT\Samples\Sample1;
 
 use CT\Interfaces\IView;
 
@@ -29,7 +29,7 @@ class MainView implements IView
     HTML;
 
         echo <<< HTML
-        <body id="ureaBufferId">
+        <body id="mainViewId">
         HTML;
         echo <<< HTML
             {$this->myAdjView->render()}
@@ -39,7 +39,7 @@ class MainView implements IView
         HTML;
 
         echo <<< HTML
-            <script src="./TestModules/UreaBuffer/Controller.js"></script>
+            <script src="./Samples/Sample1/Controller.js"></script>
 
             <script src="./JsLib/Decorators.js"></script>
             <script src="./JsLib/Utils.js"></script>

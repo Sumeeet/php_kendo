@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "CT\\TestModules\\": "TestModules/",
+      "CT\\Samples\\": "Samples/",
       "CT\\Interfaces\\": "Interfaces/",
       "CT\\Controls\\": "Controls/"
     }
