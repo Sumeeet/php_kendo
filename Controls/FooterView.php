@@ -18,6 +18,8 @@ class FooterView implements IView
         echo <<<HTML
         <div id={$this->myBindAttributes['id']}>
             <button id="apply" data-bind = "enabled: {$this->myBindAttributes['changed']}">Apply</button>
+            <button id="load">Load</button>
+            <button id="cache">Clear Cache</button>
         </div>
         HTML;
     }

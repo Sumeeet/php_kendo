@@ -52,7 +52,10 @@ const DataProxy = (cacheName = 'ct_cache') => {
                     console.log("fetched from cache");
                     resolve(cacheData);
                 }
-                else resolve(updateCache(cache, url, options));
+                else {
+                    console.log("fetched from server");
+                    resolve(updateCache(cache, url, options));
+                }
             })
         });
     }

@@ -2,14 +2,17 @@
 
 namespace CT\Samples\Sample1;
 
+use CT\Controls\FooterView;
 use CT\Interfaces\IView;
 
 class MainView implements IView
 {
-    private IView $myAdjView;
+    private IView $myMainView;
+    private IView $myFooterView;
 
-    public function __construct(IView $adjView) {
-        $this->myAdjView = $adjView;
+    public function __construct(IView $view) {
+        $this->myMainView = $view;
+        $this->myFooterView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
     }
 
     public function render() {
@@ -32,7 +35,8 @@ class MainView implements IView
         <body id="mainViewId">
         HTML;
         echo <<< HTML
-            {$this->myAdjView->render()}
+            {$this->myMainView->render()}
+            {$this->myFooterView->render()}
         HTML;
         echo <<< HTML
         </body>

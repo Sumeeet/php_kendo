@@ -4,7 +4,9 @@ const getElement = id => document.getElementById(id)
 
 const mainView = getElement('mainViewId')
 const footerView = getElement('footer')
+const loadButton = getElement('load')
 const applyButton = getElement('apply')
+const cacheButton = getElement('cache')
 const num1Id = getElement('Num1Id')
 const num2Id = getElement('Num2Id')
 
@@ -25,6 +27,11 @@ function addListeners() {
         registerValidate.registerValidator('Num2Id', positive2);
     })
 
+    loadButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        DataProxy().getData(url).then(response => console.log(response));
+    }, false);
+
     applyButton.addEventListener('click', (event) => {
         event.stopPropagation();
         DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel)})
@@ -32,6 +39,11 @@ function addListeners() {
             viewModel.reset();
             viewModel.setModelState(false);
         });
+    })
+
+    cacheButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        caches.delete('ct_cache')
     })
 
     const validate = (value) => CT.Validations.isPositive(value) && minMax(value);

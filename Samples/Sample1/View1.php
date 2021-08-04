@@ -20,12 +20,9 @@ class View1 implements IView
             'name' => 'Number2', 'style' => 'margin-bottom: 5px',
             'error' => 'errors[1]']);
 
-        $footerView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
-
         echo <<<HTML
         <div>{$num1->render()}</div>
         <div>{$num2->render()}</div>
-        <div>{$footerView->render()}</div>
         HTML;
     }
 }
