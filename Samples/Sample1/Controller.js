@@ -17,7 +17,6 @@ let registerValidate;
 
 function addListeners() {
     //caches.delete('CT_cache');
-    const minMax = CT.Validations.isInRange(0, 40);
     // Initialize ViewModel with data requested at given url
     viewModel = ViewModel(url, mainView, footerView);
     viewModel.init()
@@ -25,6 +24,10 @@ function addListeners() {
         registerValidate = RegisterValidate(viewModel);
         registerValidate.registerValidator('Num1Id', positive1);
         registerValidate.registerValidator('Num2Id', positive2);
+        //registerValidate.runValidations();
+        // CT.Utils.sleep(0)
+        // .then((resolve) => registerValidate.runValidations())
+        // .then(result => viewModel.setValidations(result))
     })
 
     loadButton.addEventListener('click', (event) => {
@@ -46,15 +49,22 @@ function addListeners() {
         caches.delete('ct_cache')
     })
 
-    const validate = (value) => CT.Validations.isPositive(value) && minMax(value);
-    const asyncValidate = CT.Decorators.makeAsync(validate);
+
+    const v = CT.Validations;
+    const u = CT.Utils;
+    const minMax = v.isInRange(0, 40);
+    const validations = u.compose(
+        u.either(u.identity, u.identity),
+        u.chain(minMax),
+        u.chain(v.isPositive),
+        v.isNumber);
 
     function positive1() {
         return CT.Utils.sleep(100)
-        .then(result => validate(num1Id.value))
-        .then(result => result);
+        .then(result => validations(num1Id.value));
     }
 
+    const asyncValidate = CT.Decorators.makeAsync(validations);
     function positive2() {
         return asyncValidate(num2Id.value)
         .then(result => result);

@@ -16,11 +16,11 @@ const RegisterValidate = (vm) => {
             awaitFunc.push(validate.validateFn());
         }
 
-        Promise.all(awaitFunc)
+        return Promise.all(awaitFunc)
         .then((response) => {
-            const error = response.some(res => !res.isPass())
+            const error = response.some(res => !res.pass)
             vm.setModelState(error);
-            //vm.setValidations(response.map(res => res.getMessages()));
+            //return response.map(res => res.getMessages());
             setTimeout(runValidations, TIME_MS);
         })
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
@@ -36,5 +36,5 @@ const RegisterValidate = (vm) => {
         }
     }
 
-    return {registerValidator}
+    return {registerValidator, runValidations}
 }

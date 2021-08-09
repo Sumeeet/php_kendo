@@ -14,15 +14,3 @@ const Result = (pass = true, message) => {
 
     return { isPass, setPass, getMessages, pushMessage };
 }
-
-// const PropResult = (prop, res) => {
-//     const result = {};
-//
-//     (() => {
-//         result[prop] = res
-//     })()
-//
-//     const getResult = () => result;
-//
-//     return {getResult}
-// }

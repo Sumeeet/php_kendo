@@ -14,8 +14,28 @@ CT.Utils.curry = (fn) => {
     };
 }
 
+CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
+
+CT.Utils.chain = CT.Utils.curry((func, m) => m.chain(func));
+
 CT.Utils.match = CT.Utils.curry((regx, str) => str.test(regx));
 
-CT.Utils.sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+CT.Utils.sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+CT.Utils.left = (x) => new Left(x);
+
+CT.Utils.identity = x => x;
+
+CT.Utils.either = CT.Utils.curry((f, g, e) => {
+    let result;
+    switch (e.constructor) {
+        case Left:
+            result = { pass: false, message: f(e.$val) };
+            break;
+
+        case Right:
+            result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
+            break;
+    }
+    return result;
+});

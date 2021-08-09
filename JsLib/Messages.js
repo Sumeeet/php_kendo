@@ -14,10 +14,10 @@ CT.Messages.unEqualArrayLength = CT.Utils.compose((orgValue, value) =>
     `Array length has changed from ${orgValue.length} -> ${value.length}`);
 
 CT.Messages.positive = CT.Utils.compose((value) =>
-    `${value} should be greater than equal to 0`);
+    'value should be greater than equal to 0');
 
 CT.Messages.negative = CT.Utils.compose((value) =>
-    `${value} should be less than 0`);
+    'value should be less than 0');
 
 CT.Messages.range = CT.Utils.compose((value, min, max) =>
-    `${value} should be greater than equal to ${min} and less than equal to ${max}`);
+    `value should be within ${min} and ${max}`);

@@ -22,6 +22,7 @@ const ViewModel = (url, mainView, footerView) => {
 
     const recordPropertyChange = (event) => {
         const path = event[0].sender.path;
+        if (path.startsWith('error')) return;
         //if (path.startsWith('errors[')) return;
         const length = path.length;
         const rIndex = path.lastIndexOf('.');
@@ -90,7 +91,7 @@ const ViewModel = (url, mainView, footerView) => {
     }
 
     const hasChanged = (event) => {
-        //if (event.field === 'errors') return;
+        if (event.field === 'errors') return;
         dataProxy.getData(url, {'method': 'GET'})
         .then(cachedModel => {
             const model = observableObject.toJSON();

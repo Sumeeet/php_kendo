@@ -3,22 +3,21 @@ CT.Validations = CT.Validations || {};
 
 CT.Validations.isAlphaNumeric = CT.Utils.match('/^[A-Za-z0-9]+/ig');
 
-CT.Validations.isPositive = (val) => {
-    return Result(Number(val) >= 0,
-        CT.Messages.makeMessage(CT.Messages.positive)(val));
-}
+CT.Validations.isNumber = (val) => isNaN(val) ?
+    CT.Utils.left('Please enter a valid number') :
+    Either.of(Number(val));
 
-CT.Validations.isNegative = (val) => {
-    return Result(Number(val) < 0,
-        CT.Messages.makeMessage(CT.Messages.positive)(val));
-}
+CT.Validations.isPositive = (val) => (Number(val) >= 0) ? Either.of(Number(val)) :
+    CT.Utils.left('Please enter a positive number');
+
+CT.Validations.isNegative = (val) => (Number(val) < 0) ? Either.of(Number(val)) :
+    CT.Utils.left('Please enter a negative number');
 
 CT.Validations.isLessThanOrEqualTo = CT.Utils.curry((val, limit) => Number(val) <= limit);
 
-CT.Validations.isInRange = CT.Utils.curry((min, max, val) => {
-    return Result((Number(val) >= min && Number(val) <= max),
-        CT.Messages.makeMessage(CT.Messages.range)(val, min, max));
-});
+CT.Validations.isInRange = CT.Utils.curry((min, max, val) => (val >= min && val <= max) ?
+    Either.of(val) :
+    CT.Utils.left(`Please enter a number in the range ${min} to ${max}`));
 
 CT.Validations.isStringEqual = CT.Utils.compose((orgVal, val, prop) => {
     return Result(orgVal === val,

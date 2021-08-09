@@ -50,6 +50,7 @@ class MainView implements IView
             <script src="./JsLib/Validations.js"></script>
             <script src="./JsLib/Messages.js"></script>
             <script src="./JsLib/Result.js"></script>
+            <script src="./JsLib/Either.js"></script>
 
             <script src="./WebCore/DataProxy.js"></script>
             <script src="./WebCore/ViewModel.js"></script>
