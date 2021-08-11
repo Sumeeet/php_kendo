@@ -27,7 +27,7 @@ const RegisterValidate = (vm) => {
     }
 
     (() => {
-        setTimeout(runValidations, TIME_MS);
+        setTimeout(runValidations, 0);
     })()
 
     const registerValidator = (id, fn) => {

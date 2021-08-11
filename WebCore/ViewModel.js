@@ -4,7 +4,6 @@ const ViewModel = (url, mainView, footerView) => {
     const dataProxy = DataProxy('ct_cache');
     let observableObject = {};
     let changedObservableObject = {};
-    let validationsObservableObject = {};
     const propertyMap = new Map();
     const propertyType = new Map();
     const modelStates = Object.freeze({
@@ -23,7 +22,6 @@ const ViewModel = (url, mainView, footerView) => {
     const recordPropertyChange = (event) => {
         const path = event[0].sender.path;
         if (path.startsWith('error')) return;
-        //if (path.startsWith('errors[')) return;
         const length = path.length;
         const rIndex = path.lastIndexOf('.');
 
@@ -105,10 +103,14 @@ const ViewModel = (url, mainView, footerView) => {
                 const value = getChangedValue(keys);
                 const compareFunc = getCompareFunc(property);
                 try {
-                    const result = compareFunc(cachedValue, value, property);
-                    if (!result.isPass()) {
-                        const messages = result.getMessages();
-                        for (const msg of messages) console.log(msg);
+                    const compareValue = compareFunc(property, cachedValue);
+                    const validations = CT.Utils.compose(
+                        CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
+                        compareValue);
+
+                    const result = validations(value);
+                    if (!result.pass) {
+                        console.log(result.message);
                     }
 
                     switch (modelState) {

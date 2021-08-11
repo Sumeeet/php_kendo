@@ -24,10 +24,6 @@ function addListeners() {
         registerValidate = RegisterValidate(viewModel);
         registerValidate.registerValidator('Num1Id', positive1);
         registerValidate.registerValidator('Num2Id', positive2);
-        //registerValidate.runValidations();
-        // CT.Utils.sleep(0)
-        // .then((resolve) => registerValidate.runValidations())
-        // .then(result => viewModel.setValidations(result))
     })
 
     loadButton.addEventListener('click', (event) => {

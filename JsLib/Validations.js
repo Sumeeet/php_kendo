@@ -1,52 +1,45 @@
 var CT = CT || {};
 CT.Validations = CT.Validations || {};
 
-CT.Validations.isAlphaNumeric = CT.Utils.match('/^[A-Za-z0-9]+/ig');
+CT.Validations.isMatch = CT.Utils.curry((regx, str) =>
+    str.test(regx) ? Either.of(str) :
+        CT.Utils.left(`${str} did not match the regular expression  ${regx}`));
 
-CT.Validations.isNumber = (val) => isNaN(val) ?
-    CT.Utils.left('Please enter a valid number') :
-    Either.of(Number(val));
+CT.Validations.isAlphaNumeric = CT.Validations.isMatch('/^[A-Za-z0-9]+/ig');
 
-CT.Validations.isPositive = (val) => (Number(val) >= 0) ? Either.of(Number(val)) :
-    CT.Utils.left('Please enter a positive number');
+CT.Validations.isNumber = (val) =>
+    isNaN(val) ? CT.Utils.left('Please enter a valid number') :
+        Either.of(Number(val));
 
-CT.Validations.isNegative = (val) => (Number(val) < 0) ? Either.of(Number(val)) :
-    CT.Utils.left('Please enter a negative number');
+CT.Validations.isPositive = (val) =>
+    (Number(val) >= 0) ? Either.of(Number(val)) :
+        CT.Utils.left('Please enter a positive number');
 
-CT.Validations.isLessThanOrEqualTo = CT.Utils.curry((val, limit) => Number(val) <= limit);
+CT.Validations.isInRange = CT.Utils.curry((min, max, val) =>
+    (val >= min && val <= max) ? Either.of(val) :
+        CT.Utils.left(`Please enter a number in the range ${min} to ${max}`));
 
-CT.Validations.isInRange = CT.Utils.curry((min, max, val) => (val >= min && val <= max) ?
-    Either.of(val) :
-    CT.Utils.left(`Please enter a number in the range ${min} to ${max}`));
+CT.Validations.isStringEqual = CT.Utils.curry((prop, orgVal, val) =>
+    (orgVal === val) ? Either.of(val) :
+        CT.Utils.left(`${prop} changed: ${orgVal} -> ${val}`));
 
-CT.Validations.isStringEqual = CT.Utils.compose((orgVal, val, prop) => {
-    return Result(orgVal === val,
-        CT.Messages.makeMessage(CT.Messages.unEqual)(orgVal, val, prop));
-});
+CT.Validations.isNumberEqual = CT.Utils.curry((prop, orgVal, val) =>
+    (Number(orgVal) === Number(val)) ? Either.of(Number(val)) :
+        CT.Utils.left(`${prop} changed: ${orgVal} -> ${val}`));
 
-CT.Validations.isNumberEqual = CT.Utils.compose((orgVal, val, prop) => {
-    return Result((Number(orgVal) - Number(val)) === 0,
-        CT.Messages.makeMessage(CT.Messages.unEqual)(orgVal, val, prop));
-});
+CT.Validations.isArray = (val) =>
+    Array.isArray(val) ? Either.of(val) :
+        CT.Utils.left(`${val} is not an array`)
 
-CT.Validations.isArrayEqual = CT.Utils.compose((orgVal, val, prop) => {
-    if (!Array.isArray(orgVal) || !Array.isArray(orgVal)) {
-        return Result(true, 'Values compared are not an array');
-    }
-
-    if (orgVal.length !== val.length) {
-        return Result(true,
-            CT.Messages.makeMessage(CT.Messages.unEqualArrayLength)());
-    }
-
-    const result = Result(false);
-    const unequalFunc = CT.Messages.makeMessage(CT.Messages.unEqual);
+CT.Validations.isArrayEqualAux = CT.Utils.curry((prop, orgVal, val) => {
+    const errMsg = [];
     orgVal.forEach((v, i) => {
         if (v !== val[i]) {
-            result.pushMessage(unequalFunc(v, val[i], prop));
+            errMsg.pushMessage(CT.Utils.left(`${prop} changed: ${v} -> ${v[i]}`));
         }
-    })
-
-    result.setPass(result.getMessages().length > 0);
-    return result
+    });
+    return errMsg.length > 0 ? CT.Utils.left(errMsg) : CT.Utils.left(val);
 });
+
+CT.Validations.isArrayEqual = CT.Utils.compose(CT.Utils.chain(CT.Validations.isArrayEqualAux),
+    CT.Validations.isArray);
