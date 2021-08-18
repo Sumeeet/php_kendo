@@ -33,7 +33,8 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
             result = { pass: false, message: f(e.$val) };
             break;
         case Right:
-            result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
+            //result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
+            result = { pass: true, message: `` };
             break;
     }
     return result;

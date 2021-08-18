@@ -13,12 +13,12 @@ class View1 implements IView
         $num1 = new LabelledNumericTextView(['attribute' => 'number1',
             'inpId' => 'Num1Id', 'labelId' => 'Num1LabelId:',
             'name' => 'Number1:', 'style' => 'margin-bottom: 10px',
-            'error' => 'errors[0]']);
+            'errorId' => 'errorId1']);
 
         $num2 = new LabelledNumericTextView(['attribute' => 'number2',
             'inpId' => 'Num2Id', 'labelId' => 'Num2LabelId',
             'name' => 'Number2', 'style' => 'margin-bottom: 10px',
-            'error' => 'errors[1]']);
+            'errorId' => 'errorId2']);
 
         echo <<<HTML
         <div>{$num1->render()}</div>

@@ -49,11 +49,11 @@ const DataProxy = (cacheName = 'ct_cache') => {
             cache.match(url)
             .then(cacheData => {
                 if (cacheData) {
-                    console.log("fetched from cache");
+                    //console.log("fetched from cache");
                     resolve(cacheData);
                 }
                 else {
-                    console.log("fetched from server");
+                    //console.log("fetched from server");
                     resolve(updateCache(cache, url, options));
                 }
             })

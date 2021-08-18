@@ -21,7 +21,6 @@ const ViewModel = (url, mainView, footerView) => {
 
     const recordPropertyChange = (event) => {
         const path = event[0].sender.path;
-        if (path.startsWith('error')) return;
         const length = path.length;
         const rIndex = path.lastIndexOf('.');
 
@@ -43,7 +42,6 @@ const ViewModel = (url, mainView, footerView) => {
         return dataProxy.getData(url, {'method': 'GET'})
         .then(model => {
             observableObject = kendo.observable(model);
-            observableObject['errors'] = [];
             kendo.bind(mainView, observableObject)
 
             // change events are not handled, this is only used for binding
@@ -89,7 +87,6 @@ const ViewModel = (url, mainView, footerView) => {
     }
 
     const hasChanged = (event) => {
-        if (event.field === 'errors') return;
         dataProxy.getData(url, {'method': 'GET'})
         .then(cachedModel => {
             const model = observableObject.toJSON();
@@ -148,7 +145,7 @@ const ViewModel = (url, mainView, footerView) => {
             case modelStates.Validated:
                 if (error) {
                     modelState = modelStates.Error;
-                    changedObservableObject.set('changed', true);
+                    changedObservableObject.set('changed', false);
                 }
                 break;
             case modelStates.Error:
@@ -164,7 +161,5 @@ const ViewModel = (url, mainView, footerView) => {
         }
     }
 
-    const setValidations = (valErrors) => observableObject.set('errors', valErrors);
-
-    return { init, reset, setPropertyType, setModelState, setValidations }
+    return { init, reset, setPropertyType, setModelState }
 }

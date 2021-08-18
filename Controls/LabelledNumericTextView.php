@@ -26,8 +26,7 @@ HTML;
         echo <<<HTML
 {$this->myLabelView->render()}
 {$this->myNumericTextView->render()}
-<span data-bind = "text: {$this->myBindAttributes['error']}" 
-style = "color: grey; font-style: italic"></span>
+<span id = {$this->myBindAttributes['errorId']} style = "color: orangered; font-style: italic"></span>
 HTML;
 
         echo <<<HTML
