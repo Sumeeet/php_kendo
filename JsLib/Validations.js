@@ -26,20 +26,3 @@ CT.Validations.isStringEqual = CT.Utils.curry((prop, orgVal, val) =>
 CT.Validations.isNumberEqual = CT.Utils.curry((prop, orgVal, val) =>
     (Number(orgVal) === Number(val)) ? Either.of(Number(val)) :
         CT.Utils.left(`${prop} changed: ${orgVal} -> ${val}`));
-
-CT.Validations.isArray = (val) =>
-    Array.isArray(val) ? Either.of(val) :
-        CT.Utils.left(`${val} is not an array`)
-
-CT.Validations.isArrayEqualAux = CT.Utils.curry((prop, orgVal, val) => {
-    const errMsg = [];
-    orgVal.forEach((v, i) => {
-        if (v !== val[i]) {
-            errMsg.pushMessage(CT.Utils.left(`${prop} changed: ${v} -> ${v[i]}`));
-        }
-    });
-    return errMsg.length > 0 ? CT.Utils.left(errMsg) : CT.Utils.left(val);
-});
-
-CT.Validations.isArrayEqual = CT.Utils.compose(CT.Utils.chain(CT.Validations.isArrayEqualAux),
-    CT.Validations.isArray);
