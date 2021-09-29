@@ -28,6 +28,7 @@ HTML;
         echo <<<HTML
 {$this->myLabelView->render()}
 {$this->myTextView->render()}
+<span id = {$this->myBindAttributes['errorId']} style = "color: orangered; font-style: italic"></span>
 HTML;
 
         echo <<<HTML

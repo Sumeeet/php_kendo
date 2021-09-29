@@ -9,8 +9,7 @@ const applyButton = getElement('apply')
 const cacheButton = getElement('cache')
 const num1Edit = getElement('Num1Id')
 const num2Edit = getElement('Num2Id')
-const error1Span = getElement('errorId1')
-const error2Span = getElement('errorId2')
+const strEdit = getElement('StrId')
 
 const url = "./Samples/Sample1/test.json";
 
@@ -27,13 +26,11 @@ function addListeners() {
     viewModel.init()
     .then(result => {
         registerValidate = RegisterValidate(viewModel);
-        registerValidate.registerValidator('Num1Id', positive1);
-        registerValidate.registerValidator('Num2Id', positive2);
-        registerValidate.runValidations()
-        .then(result => {
-            errorId1.innerText = result[0];
-            errorId2.innerText = result[1];
-        });
+        registerValidate.registerValidator('Num1Id', 'errorId1', isPositive);
+        registerValidate.registerValidator('Num2Id', 'errorId2', isPositive);
+        registerValidate.registerValidator('StrId', 'errorId3', isString);
+        // run validations first time
+        registerValidate.runValidations();
     })
 
     loadButton.addEventListener('click', (event) => {
@@ -65,13 +62,13 @@ function addListeners() {
         debounce(event);
     })
 
+    strEdit.addEventListener('keyup', (event) => {
+        debounce(event);
+    })
+
     function runValidations(event) {
         event.stopPropagation();
-        registerValidate.runValidations()
-        .then(result => {
-            errorId1.innerText = result[0];
-            errorId2.innerText = result[1];
-        });
+        registerValidate.runValidations();
     }
 
     const minMax = v.isInRange(0, 40);
@@ -81,16 +78,37 @@ function addListeners() {
         u.chain(v.isPositive),
         v.isNumber);
 
-    function positive1() {
+    function isPositive() {
         return CT.Utils.sleep(100)
-        .then(result => validations(num1Edit.value));
+        .then(result => {
+            const element = getElement(this.id);
+            const res = validations(element.value);
+            const errElement = getElement(this.erId);
+            errElement.innerText = res.message;
+            return res;
+        });
     }
 
-    const asyncValidate = CT.Decorators.makeAsync(validations);
-    function positive2() {
-        return asyncValidate(num2Edit.value)
-        .then(result => result);
+    const strValidations = u.compose(
+        u.either(u.identity, u.identity),
+        v.isString);
+
+    function isString() {
+        const element = getElement(this.id);
+        const res = strValidations(element.value);
+        const errElement = getElement(this.erId);
+        errElement.innerText = res.message;
+        return res;
     }
+
+    // const asyncValidate = CT.Decorators.makeAsync(validations);
+    // function positive2() {
+    //     return asyncValidate(num2Edit.value)
+    //     .then(result => {
+    //         const errElement = getElement(this.erId);
+    //         errElement.innerText = validations(result)
+    //     });
+    // }
 }
 
 document.onreadystatechange = () => {

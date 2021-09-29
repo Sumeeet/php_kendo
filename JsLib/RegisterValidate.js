@@ -12,14 +12,13 @@ const RegisterValidate = (vm) => {
         .then((response) => {
             const pass = response.some(res => !res.pass)
             vm.setModelState(pass);
-            return response.map(res => res.message);
         })
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 
-    const registerValidator = (id, fn) => {
+    const registerValidator = (id, erId, fn) => {
         if (!controlIdValidatorMap.has(id)) {
-            controlIdValidatorMap.set(id, { validateFn: fn, error: false });
+            controlIdValidatorMap.set(id, { validateFn: fn, error: false, id: id, erId : erId });
         }
     }
 

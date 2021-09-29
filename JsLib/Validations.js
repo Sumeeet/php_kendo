@@ -11,6 +11,10 @@ CT.Validations.isNumber = (val) =>
     isNaN(val) ? CT.Utils.left('Please enter a valid number') :
         Either.of(Number(val));
 
+CT.Validations.isString = (val) =>
+    typeof val !== 'string' ? CT.Utils.left('Please enter a valid string') :
+        Either.of(val);
+
 CT.Validations.isPositive = (val) =>
     (Number(val) >= 0) ? Either.of(Number(val)) :
         CT.Utils.left('Please enter a positive number');
