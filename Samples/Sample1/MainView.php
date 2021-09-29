@@ -49,10 +49,9 @@ class MainView implements IView
             <script src="./JsLib/Utils.js"></script>
             <script src="./JsLib/Validations.js"></script>
             <script src="./JsLib/Either.js"></script>
-
-            <script src="./WebCore/DataProxy.js"></script>
-            <script src="./WebCore/ViewModel.js"></script>
-            <script src="./WebCore/RegisterValidate.js"></script>
+            <script src="./JsLib/DataProxy.js"></script>
+            <script src="./JsLib/ViewModel.js"></script>
+            <script src="./JsLib/RegisterValidate.js"></script>
         HTML;
         echo <<< HTML
     </html>

@@ -16,7 +16,8 @@
     "psr-4": {
       "CT\\Samples\\": "Samples/",
       "CT\\Interfaces\\": "Interfaces/",
-      "CT\\Controls\\": "Controls/"
+      "CT\\Controls\\": "Controls/",
+      "CT\\WebCore\\": "WebCore/"
     }
   }
 }
