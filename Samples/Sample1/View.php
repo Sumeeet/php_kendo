@@ -4,9 +4,8 @@ namespace CT\Samples\Sample1;
 
 use CT\Controls\LabelledNumericTextView;
 use CT\Interfaces\IView;
-use CT\Controls\FooterView;
 
-class View1 implements IView
+class View implements IView
 {
     public function render()
     {

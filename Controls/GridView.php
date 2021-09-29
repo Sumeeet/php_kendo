@@ -8,10 +8,20 @@ use Kendo\UI\Grid;
 
 class GridView implements IView
 {
-    public function render()
-    {
+    private array $myBindAttributes;
+    public function __construct(array $bindAttributes) {
+        $this->myBindAttributes = $bindAttributes;
+    }
+
+    public function render() {
         echo <<<HTML
-        <label</label>
+            <div data-role = "grid" id = {$this->myBindAttributes['gridId']}
+                class = "c-input c-grid" title="Grid"
+                data-editable = "true"
+                data-columns = {$this->myBindAttributes["columnInfo"]}
+                data-bind='source: {$this->myBindAttributes["attribute"]}'
+                style="height: 200px; width: 400px;">
+            </div>
         HTML;
     }
 }

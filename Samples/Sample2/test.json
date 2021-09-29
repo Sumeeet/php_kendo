@@ -1,0 +1,19 @@
+{
+  "GridModel": [
+    {
+      "Name": "S",
+      "Surname": "K",
+      "Address": "abc"
+    },
+    {
+      "Name": "S",
+      "Surname": "V",
+      "Address": "abc"
+    },
+    {
+      "Name": "M",
+      "Surname": "K",
+      "Address": "def"
+    }
+  ]
+}
