@@ -14,8 +14,8 @@ let viewModel;
 //let registerValidate;
 
 function addListeners() {
-    const v = CT.Validations;
-    const u = CT.Utils;
+    // const v = CT.Validations;
+    // const u = CT.Utils;
 
     //caches.delete('CT_cache');
     // Initialize ViewModel with data requested at given url
@@ -35,7 +35,6 @@ function addListeners() {
         DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel)})
         .then(result => {
             viewModel.reset();
-            viewModel.setModelState(false);
         });
     })
 

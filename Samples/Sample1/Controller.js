@@ -43,7 +43,6 @@ function addListeners() {
         DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel)})
         .then(result => {
             viewModel.reset();
-            viewModel.setModelState(false);
         });
     })
 
@@ -68,7 +67,7 @@ function addListeners() {
 
     function runValidations(event) {
         event.stopPropagation();
-        registerValidate.runValidations();
+        registerValidate.runValidations(event.target);
     }
 
     const minMax = v.isInRange(0, 40);
@@ -85,6 +84,7 @@ function addListeners() {
             const res = validations(element.value);
             const errElement = getElement(this.erId);
             errElement.innerText = res.message;
+            res['srcId'] = this.id;
             return res;
         });
     }
@@ -98,6 +98,7 @@ function addListeners() {
         const res = strValidations(element.value);
         const errElement = getElement(this.erId);
         errElement.innerText = res.message;
+        res['srcId'] = this.id;
         return res;
     }
 

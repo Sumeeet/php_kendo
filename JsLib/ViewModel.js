@@ -6,13 +6,7 @@ const ViewModel = (url, mainView, footerView) => {
     let changedObservableObject = {};
     const propertyMap = new Map();
     const propertyType = new Map();
-    const modelStates = Object.freeze({
-        Error: 'Error',
-        UnChanged: 'UnChanged',
-        Validated: 'Validated',
-    });
-
-    let modelState = modelStates.UnChanged;
+    const errorMap = new Map();
 
     // how frequent a change in model properties is checked
     // any intermediate change within ms time is thrown away
@@ -36,27 +30,6 @@ const ViewModel = (url, mainView, footerView) => {
         if (!propertyMap.has(key)) {
             propertyMap.set(key, value);
         }
-    }
-
-    const init = () => {
-        return dataProxy.getData(url, {'method': 'GET'})
-        .then(model => {
-            observableObject = kendo.observable(model);
-            kendo.bind(mainView, observableObject)
-
-            // change events are not handled, this is only used for binding
-            changedObservableObject = kendo.observable({
-                changed: false
-            });
-            kendo.bind(footerView, changedObservableObject);
-
-            // register for property change event
-            const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);
-            observableObject.bind("change", (event) => {
-                debounce(event);
-            });
-            return 'success';
-        })
     }
 
     const getCompareFunc = (property) => {
@@ -107,17 +80,8 @@ const ViewModel = (url, mainView, footerView) => {
 
                     const result = validations(value);
                     if (!result.pass) {
+                        changedObservableObject.set('changed', !(errorMap.size > 0))
                         console.log(result.message);
-                    }
-
-                    switch (modelState) {
-                        case modelStates.UnChanged:
-                            changedObservableObject.set('changed', true);
-                            modelState = modelStates.Validated;
-                            break;
-                        case modelStates.Validated:
-                            changedObservableObject.set('changed', true);
-                            break;
                     }
                 }
                 catch (e) {
@@ -127,39 +91,59 @@ const ViewModel = (url, mainView, footerView) => {
         });
     }
 
+    /**
+     *
+     * @returns {PromiseLike<string> | Promise<string>}
+     */
+    const init = () => {
+        return dataProxy.getData(url, {'method': 'GET'})
+        .then(model => {
+            observableObject = kendo.observable(model);
+            kendo.bind(mainView, observableObject)
+
+            // change events are not handled, this is only used for binding
+            changedObservableObject = kendo.observable({
+                changed: false
+            });
+            kendo.bind(footerView, changedObservableObject);
+
+            // register for property change event
+            const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);
+            observableObject.bind("change", (event) => {
+                debounce(event);
+            });
+            return 'success';
+        })
+    }
+
+    /**
+     *
+     */
     const reset = () => {
         propertyMap.clear();
+        errorMap.clear();
         changedObservableObject.set('changed', false);
     }
 
+    /**
+     *
+     * @param property
+     * @param predicate
+     * @returns {Map<any, any>}
+     */
     const setPropertyType = (property, predicate) => propertyType.set(property, predicate);
 
-    const setModelState = (error) => {
-        switch (modelState) {
-            case modelStates.UnChanged:
-                changedObservableObject.set('changed', false);
-                if (error) {
-                    modelState = modelStates.Error;
-                }
-                break;
-            case modelStates.Validated:
-                if (error) {
-                    modelState = modelStates.Error;
-                    changedObservableObject.set('changed', false);
-                }
-                break;
-            case modelStates.Error:
-                if (!error) {
-                    changedObservableObject.set('changed', true);
-                    modelState = modelStates.Validated;
-                } else {
-                    changedObservableObject.set('changed', false);
-                }
-                break;
-            default:
-                break;
+    const recordError = (id, error) => {
+        errorMap.set(id, error);
+        changedObservableObject.set('changed', false);
+    }
+
+    const removeError = (id) => {
+        if (errorMap.has(id)) {
+            errorMap.delete(id);
+            changedObservableObject.set('changed', errorMap.size === 0);
         }
     }
 
-    return { init, reset, setPropertyType, setModelState }
+    return { init, reset, setPropertyType, recordError, removeError}
 }
