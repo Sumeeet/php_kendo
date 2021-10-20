@@ -1,5 +1,14 @@
 const RegisterValidate = (vm) => {
     const controlIdValidatorMap = new Map();
+    const u = CT.Utils;
+    const v = CT.Validations;
+
+    function doValidate(validate) {
+        return function(...value) {
+            this.error = validate.call(this, ...value)
+            return this;
+        }
+    }
 
     /**
      * run all validations or specific related to changed control id
@@ -19,9 +28,16 @@ const RegisterValidate = (vm) => {
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 
-    const registerValidator = (id, erId, fn) => {
+    const registerValidator = (id, erId, ...fns) => {
+        // TODO: better way to transform and take care of boundary cases
+        const first = fns[0].pop();
+        let composedFns = fns[0].map(fn => u.chain(fn));
+        composedFns.push(first);
+        composedFns.splice(0, 0, u.either(u.identity, u.identity))
+
+        const validateFunc = doValidate(u.compose(...composedFns));
         if (!controlIdValidatorMap.has(id)) {
-            controlIdValidatorMap.set(id, { validateFunc: fn, error: { }, id: id, erId : erId });
+            controlIdValidatorMap.set(id, { validateFunc: validateFunc, error: { }, id: id, erId : erId });
         }
     }
 

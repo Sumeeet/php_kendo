@@ -78,6 +78,7 @@ const ViewModel = (url, mainView, footerView) => {
                         CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
                         compareValue);
 
+                    // TODO: need to have some state to remember value change when no errors
                     const result = validations(value);
                     if (!result.pass) {
                         changedObservableObject.set('changed', !(errorMap.size > 0))

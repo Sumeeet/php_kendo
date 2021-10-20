@@ -19,16 +19,19 @@ let registerValidate;
 function addListeners() {
     const v = CT.Validations;
     const u = CT.Utils;
+    const minMax = v.isInRange(0, 40);
+    const debounce = CT.Decorators.debounce(runValidations, 400);
 
     //caches.delete('CT_cache');
     // Initialize ViewModel with data requested at given url
     viewModel = ViewModel(url, mainView, footerView);
     viewModel.init()
     .then(result => {
+        // the controllers
         registerValidate = RegisterValidate(viewModel);
-        registerValidate.registerValidator('Num1Id', 'errorId1', isPositive);
-        registerValidate.registerValidator('Num2Id', 'errorId2', isPositive);
-        registerValidate.registerValidator('StrId', 'errorId3', isString);
+        registerValidate.registerValidator('Num1Id', 'errorId1', [minMax, v.isPositive, v.isNumber]);
+        registerValidate.registerValidator('Num2Id', 'errorId2', [minMax, v.isPositive, v.isNumber]);
+        registerValidate.registerValidator('StrId', 'errorId3', [v.isNull]);
         // run validations first time
         registerValidate.runValidations();
     })
@@ -51,8 +54,6 @@ function addListeners() {
         caches.delete('ct_cache')
     })
 
-    const debounce = CT.Decorators.debounce(runValidations, 400);
-
     num1Edit.addEventListener('keyup', (event) => {
         debounce(event);
     })
@@ -69,40 +70,6 @@ function addListeners() {
         event.stopPropagation();
         registerValidate.runValidations(event.target.id);
     }
-
-    const minMax = v.isInRange(0, 40);
-    const validations = u.compose(
-        u.either(u.identity, u.identity),
-        u.chain(minMax),
-        u.chain(v.isPositive),
-        v.isNumber);
-
-    function isPositive(value) {
-        return CT.Utils.sleep(100)
-        .then(result => {
-            this.error = validations(value);
-            return this;
-        });
-    }
-
-    const strValidations = u.compose(
-        u.either(u.identity, u.identity),
-        u.chain(v.isNull),
-        v.isString);
-
-    function isString(value) {
-        this.error = strValidations(value);
-        return this;
-    }
-
-    // const asyncValidate = CT.Decorators.makeAsync(validations);
-    // function positive2() {
-    //     return asyncValidate(num2Edit.value)
-    //     .then(result => {
-    //         const errElement = getElement(this.erId);
-    //         errElement.innerText = validations(result)
-    //     });
-    // }
 }
 
 document.onreadystatechange = () => {
