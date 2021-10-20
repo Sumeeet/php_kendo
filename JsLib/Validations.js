@@ -15,6 +15,10 @@ CT.Validations.isString = (val) =>
     typeof val !== 'string' ? CT.Utils.left('Please enter a valid string') :
         Either.of(val);
 
+CT.Validations.isNull = (val) =>
+    typeof val === 'undefined' || val === null || val === '' ? CT.Utils.left('Field cannot be blank.') :
+        Either.of(val);
+
 CT.Validations.isPositive = (val) =>
     (Number(val) >= 0) ? Either.of(Number(val)) :
         CT.Utils.left('Please enter a positive number');

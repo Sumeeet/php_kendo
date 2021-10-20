@@ -8,7 +8,10 @@ const RegisterValidate = (vm) => {
      */
     const runValidations = (id = null) => {
         const validateFunctions = id === null ? Array.from(controlIdValidatorMap.values()) : [controlIdValidatorMap.get(id)];
-        const awaitFunc = validateFunctions.map(val => val.validateFunc());
+        const awaitFunc = validateFunctions.map(val => {
+            const element = getElement(val.id);
+            return val.validateFunc(element.value)
+        });
         return Promise.all(awaitFunc)
         .then((response) => {
             recordErrors(response);
@@ -18,18 +21,19 @@ const RegisterValidate = (vm) => {
 
     const registerValidator = (id, erId, fn) => {
         if (!controlIdValidatorMap.has(id)) {
-            controlIdValidatorMap.set(id, { validateFunc: fn, error: false, id: id, erId : erId });
+            controlIdValidatorMap.set(id, { validateFunc: fn, error: { }, id: id, erId : erId });
         }
     }
 
-    const recordErrors = (errors) => {
-        if (!Array.isArray(errors)) return;
+    const recordErrors = (response) => {
+        if (!Array.isArray(response)) return;
 
-        errors.forEach(error => {
-            if (!error.pass) vm.recordError(error['srcId'], error);
-            else vm.removeError(error['srcId']);
+        response.forEach(res => {
+            vm.updateErrorStatus(res);
+            const errElement = getElement(res.erId);
+            errElement.innerText = res.error.message;
         })
     }
 
-    return {registerValidator, runValidations}
+    return { registerValidator, runValidations }
 }

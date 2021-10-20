@@ -67,7 +67,7 @@ function addListeners() {
 
     function runValidations(event) {
         event.stopPropagation();
-        registerValidate.runValidations(event.target);
+        registerValidate.runValidations(event.target.id);
     }
 
     const minMax = v.isInRange(0, 40);
@@ -77,29 +77,22 @@ function addListeners() {
         u.chain(v.isPositive),
         v.isNumber);
 
-    function isPositive() {
+    function isPositive(value) {
         return CT.Utils.sleep(100)
         .then(result => {
-            const element = getElement(this.id);
-            const res = validations(element.value);
-            const errElement = getElement(this.erId);
-            errElement.innerText = res.message;
-            res['srcId'] = this.id;
-            return res;
+            this.error = validations(value);
+            return this;
         });
     }
 
     const strValidations = u.compose(
         u.either(u.identity, u.identity),
+        u.chain(v.isNull),
         v.isString);
 
-    function isString() {
-        const element = getElement(this.id);
-        const res = strValidations(element.value);
-        const errElement = getElement(this.erId);
-        errElement.innerText = res.message;
-        res['srcId'] = this.id;
-        return res;
+    function isString(value) {
+        this.error = strValidations(value);
+        return this;
     }
 
     // const asyncValidate = CT.Decorators.makeAsync(validations);
