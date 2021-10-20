@@ -133,17 +133,17 @@ const ViewModel = (url, mainView, footerView) => {
      */
     const setPropertyType = (property, predicate) => propertyType.set(property, predicate);
 
-    const recordError = (id, error) => {
-        errorMap.set(id, error);
-        changedObservableObject.set('changed', false);
-    }
-
-    const removeError = (id) => {
-        if (errorMap.has(id)) {
-            errorMap.delete(id);
-            changedObservableObject.set('changed', errorMap.size === 0);
+    const updateErrorStatus = (err) => {
+        if (err.error.pass) {
+            errorMap.set(err.id, err);
+            changedObservableObject.set('changed', false);
+        } else {
+            if (errorMap.has(err.id)) {
+                errorMap.delete(err.id);
+                changedObservableObject.set('changed', errorMap.size === 0);
+            }
         }
     }
 
-    return { init, reset, setPropertyType, recordError, removeError}
+    return { init, reset, setPropertyType, updateErrorStatus }
 }
