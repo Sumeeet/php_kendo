@@ -28,10 +28,10 @@ const RegisterValidate = (vm) => {
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 
-    const registerValidator = (id, erId, ...fns) => {
+    const registerValidator = (id, erId, fns) => {
         // TODO: better way to transform and take care of boundary cases
-        const first = fns[0].pop();
-        let composedFns = fns[0].map(fn => u.chain(fn));
+        const first = fns.pop();
+        let composedFns = fns.map(fn => u.chain(fn));
         composedFns.push(first);
         composedFns.splice(0, 0, u.either(u.identity, u.identity))
 
