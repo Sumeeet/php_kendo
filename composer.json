@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "CT\\Samples\\": "Samples/",
+      "CT\\Modules\\": "Modules/",
       "CT\\Interfaces\\": "Interfaces/",
       "CT\\Controls\\": "Controls/",
       "CT\\WebCore\\": "WebCore/"

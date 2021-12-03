@@ -1,13 +1,23 @@
 const RegisterValidate = (vm) => {
     const controlIdValidatorMap = new Map();
     const u = CT.Utils;
-    const v = CT.Validations;
 
     function doValidate(validate) {
         return function(...value) {
             this.error = validate.call(this, ...value)
             return this;
         }
+    }
+
+    const recordErrors = (response) => {
+        if (!Array.isArray(response)) return;
+
+        response.forEach(res => {
+            vm.updateErrorStatus(res);
+            // TODO: may be not the best way to show errors in GUI here
+            const errElement = getElement(res.erId);
+            errElement.innerText = res.error.message;
+        })
     }
 
     /**
@@ -39,16 +49,6 @@ const RegisterValidate = (vm) => {
         if (!controlIdValidatorMap.has(id)) {
             controlIdValidatorMap.set(id, { validateFunc: validateFunc, error: { }, id: id, erId : erId });
         }
-    }
-
-    const recordErrors = (response) => {
-        if (!Array.isArray(response)) return;
-
-        response.forEach(res => {
-            vm.updateErrorStatus(res);
-            const errElement = getElement(res.erId);
-            errElement.innerText = res.error.message;
-        })
     }
 
     return { registerValidator, runValidations }

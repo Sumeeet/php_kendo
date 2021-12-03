@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Samples\Sample2;
+namespace CT\Modules\Module2;
 
 use CT\Controls\GridView;
 use CT\Interfaces\IView;

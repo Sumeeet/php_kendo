@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Samples\Sample2;
+namespace CT\Modules\Module1;
 
 use CT\Controls\FooterView;
 use CT\Interfaces\IView;
@@ -43,7 +43,7 @@ class MainView implements IView
         HTML;
 
         echo <<< HTML
-            <script src="./Samples/Sample2/Controller.js"></script>
+            <script src="./Modules/Module1/Controller.js"></script>
 
             <script src="./JsLib/Decorators.js"></script>
             <script src="./JsLib/Utils.js"></script>
