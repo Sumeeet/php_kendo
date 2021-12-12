@@ -36,7 +36,7 @@ CT.Decorators.localCache = (func) => {
  * calls or property change needs to be captured.
  * @returns {function(): void}
  */
-CT.Decorators.debounce = (func, ms, recordFunc) => {
+CT.Decorators.debounce = (func, ms, recordFunc = null) => {
         let timeout;
         return function() {
             clearTimeout(timeout);

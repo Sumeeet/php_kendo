@@ -7,9 +7,10 @@ const footerView = getElement('footer')
 const loadButton = getElement('load')
 const applyButton = getElement('apply')
 const cacheButton = getElement('cache')
-const num1Edit = getElement('Num1Id')
-const num2Edit = getElement('Num2Id')
-const strEdit = getElement('StrId')
+const ageEdit = getElement('ageId')
+const heightEdit = getElement('heightId')
+const weightEdit = getElement('weightId')
+const bmiEdit = getElement('bmiId')
 
 const url = "./Modules/Module1/test.json";
 const limits_url = "./Modules/Module1/valueProperties.json";
@@ -28,14 +29,22 @@ function addListeners() {
     .then(result => {
         viewModel.bind(mainView, footerView);
         registerValidate = RegisterValidate(viewModel);
-        registerValidate.registerValidator('Num1Id', 'errorId1',
-            [v.isInRange(result['number1'].min, result['number1'].max),
+        registerValidate.registerValidator('ageId', 'errorId1',
+            [v.isInRange(result['age'].min, result['age'].max),
                 v.isPositive, v.isNumber]);
 
-        registerValidate.registerValidator('Num2Id', 'errorId2',
-            [v.isInRange(result['number2'].min, result['number2'].max), v.isNumber]);
+        registerValidate.registerValidator('heightId', 'errorId2',
+            [v.isInRange(result['height'].min, result['height'].max),
+                v.isPositive, v.isNumber]);
 
-        registerValidate.registerValidator('StrId', 'errorId3', [v.isNull]);
+        registerValidate.registerValidator('weightId', 'errorId3',
+            [v.isInRange(result['weight'].min, result['weight'].max),
+                v.isPositive, v.isNumber]);
+
+        registerValidate.registerValidator('bmiId', 'errorId4',
+            [v.isInRange(result['bmi'].min, result['bmi'].max),
+                v.isPositive, v.isNumber]);
+
         // run validations first time
         registerValidate.runValidations();
     })
@@ -60,17 +69,22 @@ function addListeners() {
         caches.delete('ct_cache')
     })
 
-    num1Edit.addEventListener('keyup', (event) => {
+    ageEdit.addEventListener('keyup', (event) => {
         debounce(event);
     })
 
-    num2Edit.addEventListener('keyup', (event) => {
+    heightEdit.addEventListener('keyup', (event) => {
         debounce(event);
     })
 
-    strEdit.addEventListener('keyup', (event) => {
+    weightEdit.addEventListener('keyup', (event) => {
         debounce(event);
     })
+
+    bmiEdit.addEventListener('keyup', (event) => {
+        debounce(event);
+    })
+
 
     function runValidations(event) {
         event.stopPropagation();

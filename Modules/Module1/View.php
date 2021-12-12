@@ -10,25 +10,31 @@ class View implements IView
 {
     public function render()
     {
-        $numView1 = new LabelledNumericTextView(['attribute' => 'number1.value',
-            'inpId' => 'Num1Id', 'labelId' => 'Num1LabelId:',
-            'name' => 'Number1:', 'style' => 'margin-bottom: 10px',
+        $ageView = new LabelledNumericTextView(['attribute' => 'age.value',
+            'inpId' => 'ageId', 'labelId' => 'ageLabelId:',
+            'name' => 'Age:', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId1']);
 
-        $numView2 = new LabelledNumericTextView(['attribute' => 'number2.value',
-            'inpId' => 'Num2Id', 'labelId' => 'Num2LabelId',
-            'name' => 'Number2', 'style' => 'margin-bottom: 10px',
+        $heightView = new LabelledNumericTextView(['attribute' => 'height.value',
+            'inpId' => 'heightId', 'labelId' => 'heightLabelId',
+            'name' => 'Height', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId2']);
 
-        $strView = new LabelledTextView(['attribute' => 'string1.value',
-            'inpId' => 'StrId', 'labelId' => 'StrLabelId',
-            'name' => 'String', 'style' => 'margin-bottom: 10px',
+        $weightView = new LabelledNumericTextView(['attribute' => 'weight.value',
+            'inpId' => 'weightId', 'labelId' => 'weightLabelId',
+            'name' => 'Weight', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId3']);
 
+        $bmiView = new LabelledNumericTextView(['attribute' => 'bmi.value',
+            'inpId' => 'bmiId', 'labelId' => 'bmiLabelId',
+            'name' => 'BMI', 'style' => 'margin-bottom: 10px',
+            'errorId' => 'errorId4']);
+
         echo <<<HTML
-        <div>{$numView1->render()}</div>
-        <div>{$numView2->render()}</div>
-        <div>{$strView->render()}</div>
+        <div>{$ageView->render()}</div>
+        <div>{$heightView->render()}</div>
+        <div>{$weightView->render()}</div>
+        <div>{$bmiView->render()}</div>
         HTML;
     }
 }

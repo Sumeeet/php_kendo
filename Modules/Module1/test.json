@@ -1,5 +1,6 @@
 {
-  "number1": { "value": 30 },
-  "number2": { "value": 1 },
-  "string1": { "value": "Hello there!!!" }
+  "age": { "value": 45 },
+  "height": { "value": 5.8 },
+  "weight": { "value": 80 },
+  "bmi": { "value": 26 }
 }

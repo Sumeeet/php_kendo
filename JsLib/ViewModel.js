@@ -2,9 +2,8 @@
 
 const ViewModel = (url) => {
     const dataProxy = DataProxy('ct_cache');
-    let observableObject = {};
-    let changedObservableObject = {};
-    let initialized = false;
+    let observableObject = null;
+    let changedObservableObject = null;
 
     // Pick the last property changed
     let lastPropChanged;
@@ -129,7 +128,6 @@ const ViewModel = (url) => {
         .then(model => mergeDependencies(model, awaitFunc))
         .then(model => {
             observableObject = kendo.observable(model);
-            initialized = true;
             return model
         })
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
@@ -140,23 +138,19 @@ const ViewModel = (url) => {
      * @returns {PromiseLike<string> | Promise<string>}
      */
     const bind = (mainView, footerView) => {
-        if (!initialized) {
-            throw 'Data is not fetched yet. Initialize ViewMode first';
+        if (!observableObject) {
+            throw 'Data is not fetched yet. Initialize ViewModel first';
         }
 
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({
-            changed: false
-        });
+        changedObservableObject = kendo.observable({ changed: false });
         kendo.bind(footerView, changedObservableObject);
 
         // register for property change event
         const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);
-        observableObject.bind("change", (event) => {
-            debounce(event);
-        });
+        observableObject.bind("change", (event) => { debounce(event); });
     }
 
     /**

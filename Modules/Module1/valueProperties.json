@@ -1,11 +1,19 @@
 {
-    "number1":
+    "age":
     {
         "min": 0,
-        "max": 1000
+        "max": 100
     },
-    "number2": {
-        "min": -1000,
-        "max": 1000
+    "height": {
+        "min": 5.0,
+        "max": 6.4
+    },
+    "weight": {
+        "min": 45.5,
+        "max": 97.7
+    },
+    "bmi": {
+        "min": 12,
+        "max": 42
     }
 }
