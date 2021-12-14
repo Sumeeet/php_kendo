@@ -43,8 +43,8 @@ class MainView implements IView
         HTML;
 
         echo <<< HTML
+            <script src="./Modules/Module1/BmiMapper.js"></script>
             <script src="./Modules/Module1/Controller.js"></script>
-
             <script src="./JsLib/Decorators.js"></script>
             <script src="./JsLib/Utils.js"></script>
             <script src="./JsLib/Validations.js"></script>

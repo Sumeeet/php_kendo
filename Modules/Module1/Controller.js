@@ -85,7 +85,6 @@ function addListeners() {
         debounce(event);
     })
 
-
     function runValidations(event) {
         event.stopPropagation();
         registerValidate.runValidations(event.target.id);
@@ -94,4 +93,11 @@ function addListeners() {
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') addListeners()
+
+    // initialize bmi grid
+    const dataSource = { dataSource: { data: {}}, columns: {} }
+    let bmiMapper = BmiMapper()
+    dataSource.dataSource.data = bmiMapper.getBmiGridData()
+    // dataSource.columns = bmiMapper.getBmiColumnInfo()
+    $('#gridId').kendoGrid(dataSource)
 }

@@ -5,6 +5,8 @@ namespace CT\Modules\Module1;
 use CT\Controls\LabelledNumericTextView;
 use CT\Controls\LabelledTextView;
 use CT\Interfaces\IView;
+use CT\Controls\GridView;
+use CT\WebCore\JsonParser;
 
 class View implements IView
 {
@@ -30,11 +32,14 @@ class View implements IView
             'name' => 'BMI', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId4']);
 
+        $grid = new GridView(['gridId' => 'bmiGridId']);
+
         echo <<<HTML
         <div>{$ageView->render()}</div>
         <div>{$heightView->render()}</div>
         <div>{$weightView->render()}</div>
         <div>{$bmiView->render()}</div>
+        <div>{$grid->render()}</div>
         HTML;
     }
 }

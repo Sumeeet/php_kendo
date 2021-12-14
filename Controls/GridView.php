@@ -15,12 +15,7 @@ class GridView implements IView
 
     public function render() {
         echo <<<HTML
-            <div data-role = "grid" id = {$this->myBindAttributes['gridId']}
-                class = "c-input c-grid" title="Grid"
-                data-editable = "true"
-                data-columns = {$this->myBindAttributes["columnInfo"]}
-                data-bind='source: {$this->myBindAttributes["attribute"]}'
-                style="height: 200px; width: 400px;">
+            <div data-role = "grid" id = 'gridId' class = "k-grid k-widget k-grid-display-block" title="Grid" style="font-size: small">
             </div>
         HTML;
     }
