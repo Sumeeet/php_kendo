@@ -38,6 +38,19 @@ const RegisterValidate = (vm) => {
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 
+    const runValidation = (id, value) => {
+        const validateFunctions = [controlIdValidatorMap.get(id)];
+        const awaitFunc = validateFunctions.map(val => {
+            const element = getElement(val.id);
+            return val.validateFunc(value)
+        });
+        return Promise.all(awaitFunc)
+        .then((response) => {
+            recordErrors(response);
+        })
+        .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
+    }
+
     const registerValidator = (id, erId, fns) => {
         // TODO: better way to transform and take care of boundary cases
         const first = fns.pop();
@@ -51,5 +64,5 @@ const RegisterValidate = (vm) => {
         }
     }
 
-    return { registerValidator, runValidations }
+    return { registerValidator, runValidations, runValidation}
 }

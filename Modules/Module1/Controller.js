@@ -28,6 +28,7 @@ function addListeners() {
     viewModel.init([limits_url])
     .then(result => {
         viewModel.bind(mainView, footerView);
+
         registerValidate = RegisterValidate(viewModel);
         registerValidate.registerValidator('ageId', 'errorId1',
             [v.isInRange(result['age'].min, result['age'].max),
@@ -44,6 +45,8 @@ function addListeners() {
         registerValidate.registerValidator('bmiId', 'errorId4',
             [v.isInRange(result['bmi'].min, result['bmi'].max),
                 v.isPositive, v.isNumber]);
+
+        bindDependencies()
 
         // run validations first time
         registerValidate.runValidations();
@@ -84,20 +87,31 @@ function addListeners() {
     bmiEdit.addEventListener('keyup', (event) => {
         debounce(event);
     })
+}
 
-    function runValidations(event) {
-        event.stopPropagation();
-        registerValidate.runValidations(event.target.id);
-    }
+function runValidations(event) {
+    event.stopPropagation();
+    registerValidate.runValidations(event.target.id);
+}
+
+function bindDependencies () {
+    let bmiMapper = BmiMapper()
+
+    // update bmi value when height or weight is changed
+    viewModel.setValue('bmi',
+        function () {
+        const bimValue = bmiMapper.CalculateBmi(this.get('weight.value'), this.get('height.value'));
+        registerValidate.runValidation('bmiId', bimValue);
+        return bimValue;
+    })
+
+    // initialize bmi grid
+    const dataSource = { dataSource: { data: {}}, columns: {}, width: 760 }
+    dataSource.dataSource.data = bmiMapper.getBmiGridData()
+    // dataSource.columns = bmiMapper.getBmiColumnInfo()
+    $('#gridId').kendoGrid(dataSource)
 }
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') addListeners()
-
-    // initialize bmi grid
-    const dataSource = { dataSource: { data: {}}, columns: {} }
-    let bmiMapper = BmiMapper()
-    dataSource.dataSource.data = bmiMapper.getBmiGridData()
-    // dataSource.columns = bmiMapper.getBmiColumnInfo()
-    $('#gridId').kendoGrid(dataSource)
 }

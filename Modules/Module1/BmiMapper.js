@@ -30,5 +30,5 @@ const BmiMapper = () => {
             return row
         })
 
-    return { getBmiGridData }
+    return { getBmiGridData, CalculateBmi }
 }

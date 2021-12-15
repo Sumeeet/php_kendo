@@ -18,7 +18,8 @@ const ViewModel = (url) => {
     const TIME_MS = 200;
 
     const recordPropertyChange = (event) => {
-        const path = event[0].sender.path;
+        //const path = event[0].sender.path;
+        const path = event[0].field;
         const length = path.length;
         const rIndex = path.lastIndexOf('.');
 
@@ -73,29 +74,29 @@ const ViewModel = (url) => {
             const getCachedValue = getValue(cachedModel);
             const getChangedValue = getValue(model);
 
-            //for (const key of propertyMap.keys()) {
-            const property = propertyMap.get(lastPropChanged);
-            const keys = lastPropChanged.split('.');
-            const cachedValue = getCachedValue(keys);
-            const value = getChangedValue(keys);
-            const compareFunc = getCompareFunc(property);
-            try {
-                const compareValue = compareFunc(property, cachedValue);
-                const validations = CT.Utils.compose(
-                    CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
-                    compareValue);
+            for (const key of propertyMap.keys()) {
+                const property = propertyMap.get(key);
+                const keys = key.split('.');
+                const cachedValue = getCachedValue(keys);
+                const value = getChangedValue(keys);
+                const compareFunc = getCompareFunc(property);
+                try {
+                    const compareValue = compareFunc(property, cachedValue);
+                    const validations = CT.Utils.compose(
+                        CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
+                        compareValue);
 
-                // TODO: need to have some state to remember value change when no errors
-                const result = validations(value);
-                if (!result.pass) {
-                    changedObservableObject.set('changed', !(errorMap.size > 0))
-                    console.log(result.message);
+                    // TODO: need to have some state to remember value change when no errors
+                    const result = validations(value);
+                    if (!result.pass) {
+                        changedObservableObject.set('changed', !(errorMap.size > 0))
+                        console.log(result.message);
+                    }
+                }
+                catch (e) {
+                    console.log(`Undefined Value ${e}`)
                 }
             }
-            catch (e) {
-                console.log(`Undefined Value ${e}`)
-            }
-            // }
         });
     }
 
@@ -182,5 +183,9 @@ const ViewModel = (url) => {
         }
     }
 
-    return { init, bind, reset, setPropertyType, updateErrorStatus }
+    const setValue = (prop, value) => observableObject.set(prop, value)
+
+    const getValue1 = (prop) => observableObject.get(prop)
+
+    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getValue1 }
 }

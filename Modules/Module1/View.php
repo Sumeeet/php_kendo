@@ -27,7 +27,7 @@ class View implements IView
             'name' => 'Weight', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId3']);
 
-        $bmiView = new LabelledNumericTextView(['attribute' => 'bmi.value',
+        $bmiView = new LabelledNumericTextView(['attribute' => 'bmi',
             'inpId' => 'bmiId', 'labelId' => 'bmiLabelId',
             'name' => 'BMI', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId4']);
