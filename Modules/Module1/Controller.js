@@ -46,6 +46,7 @@ function addListeners() {
             [v.isInRange(result['bmi'].min, result['bmi'].max),
                 v.isPositive, v.isNumber]);
 
+        // it's important to bind any custom dependencies before running any validations
         bindDependencies()
 
         // run validations first time
@@ -106,7 +107,7 @@ function bindDependencies () {
     })
 
     // initialize bmi grid
-    const dataSource = { dataSource: { data: {}}, columns: {}, width: 760 }
+    const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500 }
     dataSource.dataSource.data = bmiMapper.getBmiGridData()
     // dataSource.columns = bmiMapper.getBmiColumnInfo()
     $('#gridId').kendoGrid(dataSource)
