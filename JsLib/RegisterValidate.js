@@ -18,6 +18,7 @@ const RegisterValidate = (vm) => {
             const errElement = getElement(res.erId);
             errElement.innerText = res.error.message;
         })
+        return vm.getErrorStatus()
     }
 
     /**
@@ -32,22 +33,17 @@ const RegisterValidate = (vm) => {
             return val.validateFunc(element.value)
         });
         return Promise.all(awaitFunc)
-        .then((response) => {
-            recordErrors(response);
-        })
+        .then((response) => recordErrors(response))
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 
     const runValidation = (id, value) => {
         const validateFunctions = [controlIdValidatorMap.get(id)];
         const awaitFunc = validateFunctions.map(val => {
-            const element = getElement(val.id);
             return val.validateFunc(value)
         });
         return Promise.all(awaitFunc)
-        .then((response) => {
-            recordErrors(response);
-        })
+        .then((response) => recordErrors(response))
         .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
     }
 

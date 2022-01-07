@@ -22,7 +22,7 @@ const BmiMapper = () => {
         const heightInches = height / 2.54
         const heightInFeet = Math.floor(heightInches / 12)
         const factorInc = heightInches - 12 * heightInFeet
-        return `${heightInFeet}'${Math.round((factorInc + Number.EPSILON) * 10) / 10}'`
+        return `${heightInFeet}' ${Math.round((factorInc + Number.EPSILON) * 10) / 10}''`
     }
 
     (() => {
@@ -37,10 +37,10 @@ const BmiMapper = () => {
         bmiTable.splice(1, 0, [' ', ' ', ...weightInKgs])
         bmiTable.splice(2, 0, Array(23).fill(' '))
 
-        bmiTable[0][1] = 'weight (lbs)'
-        bmiTable[1][1] = 'weight (kg)'
-        bmiTable[2][0] = 'height (cm)'
-        bmiTable[2][1] = 'height (ft/in)'
+        bmiTable[0][1] = 'lbs'
+        bmiTable[1][1] = 'kg'
+        bmiTable[2][0] = 'cm'
+        bmiTable[2][1] = 'ft/in'
     })()
 
     // const getBmiColumnInfo = () => weight.map((w, i) => {

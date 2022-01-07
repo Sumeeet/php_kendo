@@ -68,7 +68,7 @@ const ViewModel = (url) => {
         return auxModel;
     }
 
-    const hasChanged = (event) => {
+    const hasChanged = (/*event*/) => {
         dataProxy.getData(url, {'method': 'GET'})
         .then(cachedModel => {
             const model = observableObject.toJSON();
@@ -186,7 +186,7 @@ const ViewModel = (url) => {
 
     const setValue = (prop, value) => observableObject.set(prop, value)
 
-    const getValue1 = (prop) => observableObject.get(prop)
+    const getErrorStatus = () => errorMap.size > 0
 
-    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getValue1 }
+    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getErrorStatus }
 }

@@ -43,14 +43,17 @@ function addListeners() {
             [v.isInRange(result['weight'].min, result['weight'].max),
                 v.isPositive, v.isNumber]);
 
+        // This is calculated field, so limits are defined manually, but
+        // it can be pulled from other source too.
         registerValidate.registerValidator('bmiId', 'errorId4',
-            [v.isPositive, v.isNumber]);
+            [v.isInRange(12, 42), v.isPositive, v.isNumber]);
 
         // it's important to bind any custom dependencies before running any validations
         bindDependencies()
 
         // run validations first time
-        registerValidate.runValidations();
+        registerValidate.runValidations()
+        .then(response => console.log(`Errors found on loading page: ${response}`));
     })
     .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
 
@@ -107,7 +110,7 @@ function bindDependencies () {
     })
 
     // initialize bmi grid
-    const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500 }
+    const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500, height: 850 }
     dataSource.dataSource.data = bmiMapper.getBmiGridData()
     // dataSource.columns = bmiMapper.getBmiColumnInfo()
     $('#gridId').kendoGrid(dataSource)

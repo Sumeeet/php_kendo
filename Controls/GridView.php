@@ -15,7 +15,8 @@ class GridView implements IView
 
     public function render() {
         echo <<<HTML
-            <div data-role = "grid" id = 'gridId' class = "k-grid k-widget k-grid-display-block" title="Grid" style="font-size: small">
+            <div data-role = "grid" id = 'gridId' class = "k-grid k-widget k-grid-display-block"
+            title="Grid" style="font-size: small; margin: 5px">
             </div>
         HTML;
     }

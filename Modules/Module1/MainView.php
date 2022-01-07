@@ -26,6 +26,7 @@ class MainView implements IView
             <meta name='viewport' content='width=device-width, initial-scale=1'>
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" rel="stylesheet" />
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" rel="stylesheet" />
+            <link href="./Modules/Module1/main.css" rel="stylesheet"/>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
         </head>

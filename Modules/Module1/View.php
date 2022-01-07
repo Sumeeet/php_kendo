@@ -14,32 +14,40 @@ class View implements IView
     {
         $ageView = new LabelledNumericTextView(['attribute' => 'age.value',
             'inpId' => 'ageId', 'labelId' => 'ageLabelId:',
-            'name' => 'Age', 'style' => 'margin-bottom: 10px',
+            'name' => 'Age', 'style' => 'margin: 5px',
             'errorId' => 'errorId1']);
 
         $heightView = new LabelledNumericTextView(['attribute' => 'height.value',
             'inpId' => 'heightId', 'labelId' => 'heightLabelId',
-            'name' => 'Height', 'style' => 'margin-bottom: 10px',
+            'name' => 'Height', 'style' => 'margin: 5px',
             'errorId' => 'errorId2']);
 
         $weightView = new LabelledNumericTextView(['attribute' => 'weight.value',
             'inpId' => 'weightId', 'labelId' => 'weightLabelId',
-            'name' => 'Weight', 'style' => 'margin-bottom: 10px',
+            'name' => 'Weight', 'style' => 'margin: 5px',
             'errorId' => 'errorId3']);
 
         $bmiView = new LabelledNumericTextView(['attribute' => 'bmi',
             'inpId' => 'bmiId', 'labelId' => 'bmiLabelId',
-            'name' => 'BMI', 'style' => 'margin-bottom: 10px',
+            'name' => 'BMI', 'style' => 'margin: 5px',
             'errorId' => 'errorId4']);
 
         $grid = new GridView(['gridId' => 'bmiGridId']);
 
-        echo <<<HTML
+        echo <<< HTML
+<div class = 'horizontalLayout'>
+HTML;
+        echo <<< HTML
         {$ageView->render()}
         {$heightView->render()}
         {$weightView->render()}
         {$bmiView->render()}
-        {$grid->render()}
         HTML;
+        echo <<< HTML
+</div>
+HTML;
+        echo <<< HTML
+{$grid->render()}
+HTML;
     }
 }
