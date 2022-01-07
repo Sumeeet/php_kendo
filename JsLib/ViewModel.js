@@ -188,7 +188,26 @@ const ViewModel = (url) => {
 
     const getErrorStatus = () => errorMap.size
 
-    const getModel = () => observableObject
+    const getChangedModel = () => {
+        return dataProxy.getData(url, {'method': 'GET'})
+        .then(model => {
+            const changedModel = Object.assign({}, model)
+            const observableModel = observableObject.toJSON();
+            const getChangedValue = getValue(observableModel);
 
-    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getErrorStatus, getModel }
+            // pick only what is changed
+            for (const key of propertyMap.keys()) {
+                const keys = key.split('.');
+                const value = getChangedValue(keys);
+                if (changedModel.hasOwnProperty(keys[0])) {
+                    // TODO: fix setting manual value
+                    changedModel[keys[0]]['value'] = value
+                }
+            }
+            return changedModel
+        })
+        .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+    }
+
+    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getErrorStatus, getChangedModel }
 }

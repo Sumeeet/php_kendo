@@ -65,7 +65,8 @@ function addListeners() {
 
     applyButton.addEventListener('click', (event) => {
         event.stopPropagation();
-        DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel.getModel())})
+        viewModel.getChangedModel()
+        .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
         .then(result => {
             viewModel.reset();
         });
