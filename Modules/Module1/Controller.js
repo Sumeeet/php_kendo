@@ -53,7 +53,7 @@ function addListeners() {
 
         // run validations first time
         registerValidate.runValidations()
-        .then(response => console.log(`Errors found on loading page: ${response}`));
+        .then(response => console.log(`# Errors found on initial page load: ${response}`));
     })
     .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
 

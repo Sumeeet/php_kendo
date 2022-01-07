@@ -186,7 +186,7 @@ const ViewModel = (url) => {
 
     const setValue = (prop, value) => observableObject.set(prop, value)
 
-    const getErrorStatus = () => errorMap.size > 0
+    const getErrorStatus = () => errorMap.size
 
     return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getErrorStatus }
 }
