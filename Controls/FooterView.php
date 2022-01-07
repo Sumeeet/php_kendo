@@ -17,9 +17,9 @@ class FooterView implements IView
     {
         echo <<<HTML
         <div id={$this->myBindAttributes['id']} class = "horizontalLayout">
-            <button id="apply" data-bind = "enabled: {$this->myBindAttributes['changed']}" style = "margin: 5px">Apply</button>
-            <button id="load" style = "margin: 5px">Load</button>
-            <button id="cache" style = "margin: 5px">Clear Cache</button>
+            <button id="apply" data-bind = "enabled: {$this->myBindAttributes['changed']}" style = "margin: 5px; padding: 5px">Apply</button>
+            <button id="load" style = "margin: 5px; padding: 5px">Load</button>
+            <button id="cache" style = "margin: 5px; padding: 5px">Clear Cache</button>
         </div>
         HTML;
     }

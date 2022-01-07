@@ -20,7 +20,7 @@ let registerValidate;
 
 function addListeners() {
     const v = CT.Validations;
-    const debounce = CT.Decorators.debounce(runValidations, 400);
+    const debounce = CT.Decorators.debounce(runValidations, 200);
 
     //caches.delete('CT_cache');
     // Initialize ViewModel with data requested at given url
@@ -65,7 +65,7 @@ function addListeners() {
 
     applyButton.addEventListener('click', (event) => {
         event.stopPropagation();
-        DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel)})
+        DataProxy().postData(url, {method: 'POST', body: JSON.stringify(viewModel.getModel())})
         .then(result => {
             viewModel.reset();
         });
@@ -110,7 +110,7 @@ function bindDependencies () {
     })
 
     // initialize bmi grid
-    const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500, height: 850 }
+    const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500, height: 830 }
     dataSource.dataSource.data = bmiMapper.getBmiGridData()
     // dataSource.columns = bmiMapper.getBmiColumnInfo()
     $('#gridId').kendoGrid(dataSource)
