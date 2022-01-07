@@ -29,7 +29,7 @@ CT.Decorators.localCache = (func) => {
  * has elapsed and resets previous elapsed time to ms time again. Only when timeout
  * occurs then func is called. This helps in avoiding too many frequent checks or changes
  * @param func Function called after ms time
- * @param ms time in milli seconds. Changed function 'func' shall be called
+ * @param ms time in milliseconds. Changed function 'func' shall be called
  * after ms time is elapsed.
  * @param recordFunc records which property is changed or changed last time
  * without adding duplicate. This is called regardless of time reset, as intermediate
@@ -45,7 +45,11 @@ CT.Decorators.debounce = (func, ms, recordFunc = null) => {
         };
 }
 
-
+/**
+ * Convert simple function to an asynchronous function
+ * @param func
+ * @returns {function(): Promise<unknown>}
+ */
 CT.Decorators.makeAsync = (func) => {
     return function() {
         return new Promise((resolve, reject) => {

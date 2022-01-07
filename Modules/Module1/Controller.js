@@ -30,6 +30,7 @@ function addListeners() {
         viewModel.bind(mainView, footerView);
 
         registerValidate = RegisterValidate(viewModel);
+
         registerValidate.registerValidator('ageId', 'errorId1',
             [v.isInRange(result['age'].min, result['age'].max),
                 v.isPositive, v.isNumber]);
@@ -43,8 +44,7 @@ function addListeners() {
                 v.isPositive, v.isNumber]);
 
         registerValidate.registerValidator('bmiId', 'errorId4',
-            [v.isInRange(result['bmi'].min, result['bmi'].max),
-                v.isPositive, v.isNumber]);
+            [v.isPositive, v.isNumber]);
 
         // it's important to bind any custom dependencies before running any validations
         bindDependencies()

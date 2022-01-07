@@ -15,9 +15,10 @@ const ViewModel = (url) => {
     // how frequent a change in model properties is checked
     // any intermediate change within ms time is thrown away
     // and timer is reset again.
-    const TIME_MS = 200;
+    const TIME_MS = 100;
 
     const recordPropertyChange = (event) => {
+        // TODO: Dependent properties dont work well with path properties
         //const path = event[0].sender.path;
         const path = event[0].field;
         const length = path.length;

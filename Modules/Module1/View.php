@@ -14,7 +14,7 @@ class View implements IView
     {
         $ageView = new LabelledNumericTextView(['attribute' => 'age.value',
             'inpId' => 'ageId', 'labelId' => 'ageLabelId:',
-            'name' => 'Age:', 'style' => 'margin-bottom: 10px',
+            'name' => 'Age', 'style' => 'margin-bottom: 10px',
             'errorId' => 'errorId1']);
 
         $heightView = new LabelledNumericTextView(['attribute' => 'height.value',
@@ -35,11 +35,11 @@ class View implements IView
         $grid = new GridView(['gridId' => 'bmiGridId']);
 
         echo <<<HTML
-        <div>{$ageView->render()}</div>
-        <div>{$heightView->render()}</div>
-        <div>{$weightView->render()}</div>
-        <div>{$bmiView->render()}</div>
-        <div>{$grid->render()}</div>
+        {$ageView->render()}
+        {$heightView->render()}
+        {$weightView->render()}
+        {$bmiView->render()}
+        {$grid->render()}
         HTML;
     }
 }

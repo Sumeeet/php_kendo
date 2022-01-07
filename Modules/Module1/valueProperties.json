@@ -12,8 +12,14 @@
         "min": 45.5,
         "max": 97.7
     },
-    "bmi": {
-        "min": 12,
-        "max": 42
+    "bmiCategory" : {
+        "underweight": {
+            "min": 9,
+            "max": 18
+        },
+        "normal": {
+            "min": 9,
+            "max": 18
+        }
     }
 }
