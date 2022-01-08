@@ -8,8 +8,15 @@ const ViewModel = (url) => {
     // Pick the last property changed
     let lastPropChanged;
 
-    const propertyMap = new Map();
-    const propertyType = new Map();
+    // Absolute property path as key and comparison function as value
+    // to compare last value and current value in HasChanged
+    const propToCompareMap = new Map();
+
+    // record property changes, that way only changed property are sent to
+    // server
+    const propChangedList = [];
+
+    // record errors to keep apply button state in sync
     const errorMap = new Map();
 
     // how frequent a change in model properties is checked
@@ -20,41 +27,25 @@ const ViewModel = (url) => {
     const recordPropertyChange = (event) => {
         // TODO: Dependent properties dont work well with path properties
         //const path = event[0].sender.path;
-        const path = event[0].field;
-        const length = path.length;
-        const rIndex = path.lastIndexOf('.');
-
-        let key, value;
-        if (rIndex === -1) {
-            key = path.substring(0, length);
-            value = key;
-        } else {
-            key = path.substring(0, length);
-            value = path.substring(rIndex + 1, length);
-        }
-
-        if (!propertyMap.has(key)) {
-            propertyMap.set(key, value);
-        }
-
-        // last changed property
-        lastPropChanged = key;
+        const path = event[0].field
+        propChangedList.push(path)
+        lastPropChanged = path;
     }
 
     const getCompareFunc = (property) => {
-        if (propertyType.has(property)) return propertyType.get(property);
+        if (propToCompareMap.has(property)) return propToCompareMap.get(property);
         return CT.Validations.isStringEqual;
     }
 
     const getValueAtKey = (model, key) => {
         // check if key is an array, extract index and property
-        const index = key.indexOf('[');
-        const rIndex = key.lastIndexOf(']');
-        if (index > -1) {
-            const property = key.substring(0, index);
-            const aIndex = Number(key.substring(index + 1, rIndex));
-            return model[`${property}`][`${aIndex}`];
-        }
+        // const index = key.indexOf('[');
+        // const rIndex = key.lastIndexOf(']');
+        // if (index > -1) {
+        //     const property = key.substring(0, index);
+        //     const aIndex = Number(key.substring(index + 1, rIndex));
+        //     return model[`${property}`][`${aIndex}`];
+        // }
         return model[key];
     }
 
@@ -75,14 +66,13 @@ const ViewModel = (url) => {
             const getCachedValue = getValue(cachedModel);
             const getChangedValue = getValue(model);
 
-            for (const key of propertyMap.keys()) {
-                const property = propertyMap.get(key);
-                const keys = key.split('.');
-                const cachedValue = getCachedValue(keys);
-                const value = getChangedValue(keys);
-                const compareFunc = getCompareFunc(property);
+            for (const propPath of propChangedList) {
+                const properties = propPath.split('.');
+                const cachedValue = getCachedValue(properties);
+                const value = getChangedValue(properties);
+                const compareFunc = getCompareFunc(propPath);
                 try {
-                    const compareValue = compareFunc(property, cachedValue);
+                    const compareValue = compareFunc(propPath, cachedValue);
                     const validations = CT.Utils.compose(
                         CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
                         compareValue);
@@ -159,19 +149,23 @@ const ViewModel = (url) => {
      *
      */
     const reset = () => {
-        propertyMap.clear();
+        propToCompareMap.clear();
         errorMap.clear();
         changedObservableObject.set('changed', false);
     }
 
     /**
      *
-     * @param property
-     * @param predicate
+     * @param property absolute path of object property
+     * @param predicate comparison function to compare 2 values
      * @returns {Map<any, any>}
      */
-    const setPropertyType = (property, predicate) => propertyType.set(property, predicate);
+    const setPropertyType = (property, predicate) => propToCompareMap.set(property, predicate);
 
+    /**
+     *
+     * @param err
+     */
     const updateErrorStatus = (err) => {
         if (!err.error.pass) {
             errorMap.set(err.id, err);
@@ -184,10 +178,24 @@ const ViewModel = (url) => {
         }
     }
 
+    /**
+     *
+     * @param prop
+     * @param value
+     * @returns {*}
+     */
     const setValue = (prop, value) => observableObject.set(prop, value)
 
+    /**
+     *
+     * @returns {number}
+     */
     const getErrorStatus = () => errorMap.size
 
+    /**
+     *
+     * @returns {Promise<T | void>}
+     */
     const getChangedModel = () => {
         return dataProxy.getData(url, {'method': 'GET'})
         .then(model => {
@@ -196,12 +204,12 @@ const ViewModel = (url) => {
             const getChangedValue = getValue(observableModel);
 
             // pick only what is changed
-            for (const key of propertyMap.keys()) {
-                const keys = key.split('.');
-                const value = getChangedValue(keys);
-                if (changedModel.hasOwnProperty(keys[0])) {
-                    // TODO: fix setting manual value
-                    changedModel[keys[0]]['value'] = value
+            for (const propPath of propChangedList) {
+                const properties = propPath.split('.');
+                const value = getChangedValue(properties);
+                // TODO: get properties dynamically
+                if (changedModel.hasOwnProperty(properties[0])) {
+                    changedModel[properties[0]]['value'] = value
                 }
             }
             return changedModel
