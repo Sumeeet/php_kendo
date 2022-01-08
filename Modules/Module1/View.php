@@ -19,12 +19,12 @@ class View implements IView
 
         $heightView = new LabelledNumericTextView(['attribute' => 'height.value',
             'inpId' => 'heightId', 'labelId' => 'heightLabelId',
-            'name' => 'Height', 'style' => 'margin: 5px',
+            'name' => 'Height (cm)', 'style' => 'margin: 5px',
             'errorId' => 'errorId2']);
 
         $weightView = new LabelledNumericTextView(['attribute' => 'weight.value',
             'inpId' => 'weightId', 'labelId' => 'weightLabelId',
-            'name' => 'Weight', 'style' => 'margin: 5px',
+            'name' => 'Weight (kgs)', 'style' => 'margin: 5px',
             'errorId' => 'errorId3']);
 
         $bmiView = new LabelledNumericTextView(['attribute' => 'bmi',
