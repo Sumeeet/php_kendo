@@ -7,56 +7,48 @@ const footerView = getElement('footer')
 const loadButton = getElement('load')
 const applyButton = getElement('apply')
 const cacheButton = getElement('cache')
-const ageEdit = getElement('ageId')
-const heightEdit = getElement('heightId')
-const weightEdit = getElement('weightId')
-const bmiEdit = getElement('bmiId')
+
+const error1 = getElement('errorId1')
+const error2 = getElement('errorId2')
+const error3 = getElement('errorId3')
+const error4 = getElement('errorId4')
 
 const url = "./Modules/Module1/test.json";
 const limits_url = "./Modules/Module1/valueProperties.json";
 
-let viewModel;
-let registerValidate;
-
 function addListeners() {
     const v = CT.Validations;
-    const debounce = CT.Decorators.debounce(runValidations, 200);
 
     //caches.delete('CT_cache');
     // Initialize ViewModel with data requested at given url
-    viewModel = ViewModel(url);
+    const viewModel = ViewModel(url);
     viewModel.init([limits_url])
     .then(result => {
-        viewModel.bind(mainView, footerView);
+        viewModel.bind(result, mainView, footerView);
 
-        registerValidate = RegisterValidate(viewModel);
+        viewModel.registerValidations('age.value',
+            [v.isInRange(viewModel.get('age.min'), viewModel.get('age.max')),
+                v.isPositive, v.isNumber], updateError);
 
-        registerValidate.registerValidator('ageId', 'errorId1',
-            [v.isInRange(result['age'].min, result['age'].max),
-                v.isPositive, v.isNumber]);
+        viewModel.registerValidations('height.value',
+            [v.isInRange(viewModel.get('height.min'), viewModel.get('height.max')),
+                v.isPositive, v.isNumber], updateError);
 
-        registerValidate.registerValidator('heightId', 'errorId2',
-            [v.isInRange(result['height'].min, result['height'].max),
-                v.isPositive, v.isNumber]);
-
-        registerValidate.registerValidator('weightId', 'errorId3',
-            [v.isInRange(result['weight'].min, result['weight'].max),
-                v.isPositive, v.isNumber]);
+        viewModel.registerValidations('weight.value',
+            [v.isInRange(viewModel.get('weight.min'), viewModel.get('weight.max')),
+                v.isPositive, v.isNumber], updateError);
 
         // This is calculated field, so limits are defined manually, but
         // it can be pulled from other source too.
-        registerValidate.registerValidator('bmiId', 'errorId4',
-            [v.isInRange(12, 42), v.isPositive, v.isNumber]);
+        viewModel.registerValidations('bmi', [v.isInRange(12, 42),
+                v.isPositive, v.isNumber], updateError);
 
-        // it's important to bind any custom dependencies before running any validations
-        bindDependencies()
+        bindDependencies(viewModel)
 
         // run validations first time
-        registerValidate.runValidations()
-        .then(response => console.log(`# Errors found on initial page load: ${response}`));
+        //viewModel.runValidations()
     })
     .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
-
 
     loadButton.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -76,38 +68,14 @@ function addListeners() {
         event.stopPropagation();
         caches.delete('ct_cache')
     })
-
-    ageEdit.addEventListener('keyup', (event) => {
-        debounce(event);
-    })
-
-    heightEdit.addEventListener('keyup', (event) => {
-        debounce(event);
-    })
-
-    weightEdit.addEventListener('keyup', (event) => {
-        debounce(event);
-    })
-
-    bmiEdit.addEventListener('keyup', (event) => {
-        debounce(event);
-    })
 }
 
-function runValidations(event) {
-    event.stopPropagation();
-    registerValidate.runValidations(event.target.id);
-}
-
-function bindDependencies () {
+function bindDependencies (viewModel) {
     let bmiMapper = BmiMapper()
 
     // update bmi value when height or weight is changed
-    viewModel.setValue('bmi',
-        function () {
-        const bimValue = bmiMapper.CalculateBmi(this.get('weight.value'), this.get('height.value'));
-        registerValidate.runValidation('bmiId', bimValue);
-        return bimValue;
+    viewModel.set('bmi',function() {
+        return bmiMapper.CalculateBmi(this.get('weight.value'), this.get('height.value'))
     })
 
     // initialize bmi grid
@@ -115,6 +83,13 @@ function bindDependencies () {
     dataSource.dataSource.data = bmiMapper.getBmiGridData()
     // dataSource.columns = bmiMapper.getBmiColumnInfo()
     $('#gridId').kendoGrid(dataSource)
+}
+
+function updateError(prop, message) {
+    if (prop === 'age.value') error1.innerText = message
+    else if(prop === 'height.value') error2.innerText = message
+    else if(prop === 'weight.value') error3.innerText = message
+    else if(prop === 'bmi') error4.innerText = message
 }
 
 document.onreadystatechange = () => {

@@ -18,7 +18,7 @@ CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
 
 CT.Utils.chain = CT.Utils.curry((func, m) => m.chain(func));
 
-CT.Utils.match = CT.Utils.curry((regx, str) => str.test(regx));
+CT.Utils.match = CT.Utils.curry((regx, str) => str.match(regx) !== null);
 
 CT.Utils.sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

@@ -1,16 +1,15 @@
 'use strict';
 
-const ViewModel = (url) => {
+const ViewModel = function(url) {
     const dataProxy = DataProxy('ct_cache');
     let observableObject = null;
     let changedObservableObject = null;
 
+    const controlIdValidatorMap = new Map();
+    const u = CT.Utils;
+
     // Pick the last property changed
     let lastPropChanged;
-
-    // Absolute property path as key and comparison function as value
-    // to compare last value and current value in HasChanged
-    const propToCompareMap = new Map();
 
     // record property changes, that way only changed property are sent to
     // server
@@ -24,20 +23,18 @@ const ViewModel = (url) => {
     // and timer is reset again.
     const TIME_MS = 100;
 
-    const recordPropertyChange = (event) => {
+    const recordPropertyChange = function(event) {
         // TODO: Dependent properties dont work well with path properties
         //const path = event[0].sender.path;
         const path = event[0].field
-        propChangedList.push(path)
+
+        if (!propChangedList.find((prop) => prop === path)) {
+            propChangedList.push(path)
+        }
         lastPropChanged = path;
     }
 
-    const getCompareFunc = (property) => {
-        if (propToCompareMap.has(property)) return propToCompareMap.get(property);
-        return CT.Validations.isStringEqual;
-    }
-
-    const getValueAtKey = (model, key) => {
+    const getValueAtKey = function(model, key) {
         // check if key is an array, extract index and property
         // const index = key.indexOf('[');
         // const rIndex = key.lastIndexOf(']');
@@ -49,7 +46,7 @@ const ViewModel = (url) => {
         return model[key];
     }
 
-    const getValue = (model) => (keys) => {
+    const getPropValue = (model) => (keys) => {
         let auxModel = getValueAtKey(model, keys[0]);
         const length = keys.length;
         for (let index = 1; index < length; ++index) {
@@ -59,30 +56,24 @@ const ViewModel = (url) => {
         return auxModel;
     }
 
-    const hasChanged = (/*event*/) => {
+    const hasChanged = function(/*event*/) {
         dataProxy.getData(url, {'method': 'GET'})
-        .then(cachedModel => {
+        .then(function(cachedModel) {
             const model = observableObject.toJSON();
-            const getCachedValue = getValue(cachedModel);
-            const getChangedValue = getValue(model);
+            const getCachedValue = getPropValue(cachedModel);
+            const getChangedValue = getPropValue(model);
 
             for (const propPath of propChangedList) {
                 const properties = propPath.split('.');
                 const cachedValue = getCachedValue(properties);
                 const value = getChangedValue(properties);
-                const compareFunc = getCompareFunc(propPath);
                 try {
-                    const compareValue = compareFunc(propPath, cachedValue);
-                    const validations = CT.Utils.compose(
-                        CT.Utils.either(CT.Utils.identity, CT.Utils.identity),
-                        compareValue);
-
                     // TODO: need to have some state to remember value change when no errors
-                    const result = validations(value);
-                    if (!result.pass) {
+                    runValidations(propPath)
+                    .then(response => {
+                        console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
                         changedObservableObject.set('changed', !(errorMap.size > 0))
-                        console.log(result.message);
-                    }
+                    })
                 }
                 catch (e) {
                     console.log(`Undefined Value ${e}`)
@@ -91,7 +82,7 @@ const ViewModel = (url) => {
         });
     }
 
-    const mergeDependencies = (source, depends) => {
+    const mergeDependencies = function(source, depends) {
         return Promise.all(depends)
         .then(models => {
             // TODO: make merge generic
@@ -108,28 +99,42 @@ const ViewModel = (url) => {
         })
     }
 
+    const doValidate = function(validate) {
+        return function(...value) {
+            this.error = validate.call(this, ...value)
+            return this;
+        }
+    }
+
+    const recordErrors = function(response) {
+        if (!Array.isArray(response)) return;
+        response.forEach(res => updateErrorStatus(res))
+    }
+
     /**
      * Load data from other source and merge with main model
      * @param dependencies
      * @returns {Promise<T | void>}
      */
-    const init = (dependencies) => {
+    const init = function(dependencies) {
         const awaitFunc = dependencies.map(url => dataProxy.getData(url, {'method': 'GET'}))
 
         return dataProxy.getData(url, {'method': 'GET'})
         .then(model => mergeDependencies(model, awaitFunc))
         .then(model => {
             observableObject = kendo.observable(model);
-            return model
+            return observableObject
         })
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
     }
 
     /**
      *
-     * @returns {PromiseLike<string> | Promise<string>}
+     * @param observableObject
+     * @param mainView
+     * @param footerView
      */
-    const bind = (mainView, footerView) => {
+    const bind = function(observableObject, mainView, footerView) {
         if (!observableObject) {
             throw 'Data is not fetched yet. Initialize ViewModel first';
         }
@@ -148,34 +153,28 @@ const ViewModel = (url) => {
     /**
      *
      */
-    const reset = () => {
-        propToCompareMap.clear();
+    const reset = function() {
         errorMap.clear();
         changedObservableObject.set('changed', false);
     }
 
     /**
      *
-     * @param property absolute path of object property
-     * @param predicate comparison function to compare 2 values
-     * @returns {Map<any, any>}
-     */
-    const setPropertyType = (property, predicate) => propToCompareMap.set(property, predicate);
-
-    /**
-     *
      * @param err
      */
-    const updateErrorStatus = (err) => {
-        if (!err.error.pass) {
-            errorMap.set(err.id, err);
+    const updateErrorStatus = function(err) {
+        const pass = err.error.pass;
+        if (!pass) {
+            errorMap.set(err.prop, err);
             changedObservableObject.set('changed', false);
         } else {
-            if (errorMap.has(err.id)) {
-                errorMap.delete(err.id);
+            if (errorMap.has(err.prop)) {
+                errorMap.delete(err.prop);
                 changedObservableObject.set('changed', errorMap.size === 0);
             }
         }
+        err.errFn(err.prop, err.error.message)
+        return pass
     }
 
     /**
@@ -184,24 +183,30 @@ const ViewModel = (url) => {
      * @param value
      * @returns {*}
      */
-    const setValue = (prop, value) => observableObject.set(prop, value)
+    const set = function(prop, value) {
+        observableObject.set(prop, value)
+    }
 
     /**
      *
-     * @returns {number}
+     * @param prop
+     * @returns {*}
      */
-    const getErrorStatus = () => errorMap.size
+    const get = function(prop) {
+        const value = observableObject.get(prop)
+        return typeof value !== 'function' ? value : value.call(observableObject)
+    }
 
     /**
      *
      * @returns {Promise<T | void>}
      */
-    const getChangedModel = () => {
+    const getChangedModel= function() {
         return dataProxy.getData(url, {'method': 'GET'})
         .then(model => {
             const changedModel = Object.assign({}, model)
             const observableModel = observableObject.toJSON();
-            const getChangedValue = getValue(observableModel);
+            const getChangedValue = getPropValue(observableModel);
 
             // pick only what is changed
             for (const propPath of propChangedList) {
@@ -217,5 +222,36 @@ const ViewModel = (url) => {
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
     }
 
-    return { init, bind, reset, setPropertyType, updateErrorStatus, setValue, getErrorStatus, getChangedModel }
+    /**
+     * run all validations or specific related to changed control id
+     * @param prop
+     * @returns {Promise<void>}
+     */
+    const runValidations = function(prop = null) {
+        const propPaths = prop === null ? Array.from(controlIdValidatorMap.keys()) : [prop];
+        const awaitFunc = propPaths.map(propPath => controlIdValidatorMap.get(propPath).validateFunc(get(propPath)))
+        return Promise.all(awaitFunc)
+        .then((response) => recordErrors(response))
+        .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
+    }
+
+    /**
+     *
+     * @param prop
+     * @param fns
+     */
+    const registerValidations = function(prop, fns, errFn) {
+        // TODO: better way to transform and take care of boundary cases
+        const first = fns.pop();
+        let composedFns = fns.map(fn => u.chain(fn));
+        composedFns.push(first);
+        composedFns.splice(0, 0, u.either(u.identity, u.identity))
+
+        const validateFunc = doValidate(u.compose(...composedFns));
+        if (!controlIdValidatorMap.has(prop)) {
+            controlIdValidatorMap.set(prop, { validateFunc: validateFunc, error: { }, prop: prop, errFn: errFn });
+        }
+    }
+
+    return { init, bind, reset, set, get, getChangedModel, registerValidations: registerValidations, runValidations }
 }

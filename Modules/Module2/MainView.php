@@ -51,7 +51,6 @@ class MainView implements IView
             <script src="./JsLib/Either.js"></script>
             <script src="./JsLib/DataProxy.js"></script>
             <script src="./JsLib/ViewModel.js"></script>
-            <script src="./JsLib/RegisterValidate.js"></script>
         HTML;
         echo <<< HTML
     </html>

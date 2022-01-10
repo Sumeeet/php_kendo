@@ -6,7 +6,7 @@ CT.Decorators = CT.Decorators || {};
  * @param func
  * @returns {function(...[*]): (*)}
  */
-CT.Decorators.localCache = (func) => {
+CT.Decorators.localCache = function(func) {
     const cache = new Map();
 
     return function (...args) {
@@ -36,12 +36,14 @@ CT.Decorators.localCache = (func) => {
  * calls or property change needs to be captured.
  * @returns {function(): void}
  */
-CT.Decorators.debounce = (func, ms, recordFunc = null) => {
+CT.Decorators.debounce = function(func, ms, recordFunc = null) {
         let timeout;
         return function() {
             clearTimeout(timeout);
             if (recordFunc) recordFunc(arguments);
-            timeout = setTimeout(() => func.apply(this, arguments), ms);
+            timeout = setTimeout(function() {
+                func.apply(this, arguments)
+            }, ms);
         };
 }
 
@@ -50,7 +52,7 @@ CT.Decorators.debounce = (func, ms, recordFunc = null) => {
  * @param func
  * @returns {function(): Promise<unknown>}
  */
-CT.Decorators.makeAsync = (func) => {
+CT.Decorators.makeAsync = function(func) {
     return function() {
         return new Promise((resolve, reject) => {
             if (!func) reject('Undefined function');
