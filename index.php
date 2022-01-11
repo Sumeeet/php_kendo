@@ -5,9 +5,19 @@ require_once ("2020.1.114\wrappers\Autoload.php");
 
 
 use CT\Modules\Module1\MainView;
-use CT\Modules\Module1\View;
+use CT\Modules\Module1\BmiView;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
-$view = new MainView(
-    new View());
+// Specify our Twig Templates location
+$loader = new FilesystemLoader('./Templates');
+
+// Instantiate our Twig
+//$twig = new Environment($loader);//, ['cache' => './Templates/Cache']);
+//$template = $twig->load("index.twig");
+//echo $template->render(['title' => 'BMI Calculator']);
+//echo $template->renderBlock('content', ['header' => 'BMI Calculator']);
+
+$view = new MainView(new BmiView());
 
 $view->render();
