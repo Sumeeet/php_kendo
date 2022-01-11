@@ -8,7 +8,7 @@ use CT\Interfaces\IView;
 use CT\Controls\GridView;
 use CT\WebCore\JsonParser;
 
-class View implements IView
+class BmiView implements IView
 {
     public function render()
     {

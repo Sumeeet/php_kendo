@@ -7,12 +7,12 @@ use CT\Interfaces\IView;
 
 class MainView implements IView
 {
-    private IView $myMainView;
-    private IView $myFooterView;
+    private IView $bmiView;
+    private IView $footerView;
 
     public function __construct(IView $view) {
-        $this->myMainView = $view;
-        $this->myFooterView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
+        $this->bmiView = $view;
+        $this->footerView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
     }
 
     public function render() {
@@ -36,14 +36,15 @@ class MainView implements IView
         <body id="mainViewId">
         HTML;
         echo <<< HTML
-            {$this->myMainView->render()}
-            {$this->myFooterView->render()}
+            {$this->bmiView->render()}
+            {$this->footerView->render()}
         HTML;
         echo <<< HTML
         </body>
         HTML;
 
         echo <<< HTML
+            <script src="./Modules/Module1/ModuleInstance.js"></script>
             <script src="./Modules/Module1/BmiMapper.js"></script>
             <script src="./Modules/Module1/Controller.js"></script>
             <script src="./JsLib/Decorators.js"></script>

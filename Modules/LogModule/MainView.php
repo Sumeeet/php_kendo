@@ -8,11 +8,9 @@ use CT\Interfaces\IView;
 class MainView implements IView
 {
     private IView $myMainView;
-    private IView $myFooterView;
 
     public function __construct(IView $view) {
         $this->myMainView = $view;
-        $this->myFooterView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
     }
 
     public function render() {
@@ -36,14 +34,13 @@ class MainView implements IView
         HTML;
         echo <<< HTML
             {$this->myMainView->render()}
-            {$this->myFooterView->render()}
         HTML;
         echo <<< HTML
         </body>
         HTML;
 
         echo <<< HTML
-            <script src="./Modules/Module2/Controller.js"></script>
+            <script src="./Modules/LogModule/Controller.js"></script>
 
             <script src="./JsLib/Decorators.js"></script>
             <script src="./JsLib/Utils.js"></script>
