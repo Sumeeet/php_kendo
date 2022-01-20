@@ -71,8 +71,13 @@ const ViewModel = function(url) {
                     // TODO: need to have some state to remember value change when no errors
                     runValidations(propPath)
                     .then(response => {
-                        console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
-                        changedObservableObject.set('changed', !(errorMap.size > 0))
+                        // values of calculated fields not part of cached/original model
+                        if (cachedValue !== undefined) {
+                            console.log(
+                                `${propPath} changed: ${cachedValue} -> ${value}`)
+                            changedObservableObject.set('changed',
+                                !(errorMap.size > 0))
+                        }
                     })
                 }
                 catch (e) {

@@ -8,8 +8,12 @@ const Controller = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils
     const updateError = u.curry((id, message) => {
-        const element = getElement(id)
-        element.innerText = message
+        try {
+            const element = getElement(id)
+            element.innerText = message
+        } catch (e) {
+            console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
+        }
     })
 
     function bindDependencies (viewModel) {
@@ -29,27 +33,25 @@ const Controller = function (viewModel) {
 
     (function() {
         viewModel.registerValidations('age.value',
-            [
-                v.isInRange(viewModel.get('age.min'), viewModel.get('age.max')),
-                v.isPositive, v.isNumber], updateError("errorId1"));
+            [v.isInRange(viewModel.get('age.min'), viewModel.get('age.max')),
+                v.isPositive, v.isNumber],
+            updateError("errorId1"));
 
         viewModel.registerValidations('height.value',
-            [
-                v.isInRange(viewModel.get('height.min'),
-                    viewModel.get('height.max')),
-                v.isPositive, v.isNumber], updateError("errorId2"));
+            [v.isInRange(viewModel.get('height.min'), viewModel.get('height.max')),
+                v.isPositive, v.isNumber],
+            updateError("errorId2"));
 
         viewModel.registerValidations('weight.value',
-            [
-                v.isInRange(viewModel.get('weight.min'),
-                    viewModel.get('weight.max')),
-                v.isPositive, v.isNumber], updateError("errorId3"));
+            [v.isInRange(viewModel.get('weight.min'), viewModel.get('weight.max')),
+                v.isPositive, v.isNumber],
+            updateError("errorId3"));
 
         // This is calculated field, so limits are defined manually, but
         // it can be pulled from other source too.
-        viewModel.registerValidations('bmi', [
-            v.isInRange(12, 42),
-            v.isPositive, v.isNumber], updateError("errorId4"));
+        viewModel.registerValidations('bmi',
+            [v.isInRange(12, 42), v.isPositive, v.isNumber],
+            updateError("errorId4"));
 
         bindDependencies(viewModel)
     })()
