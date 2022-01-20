@@ -4,6 +4,7 @@ const ViewModel = function(url) {
     const dataProxy = DataProxy('ct_cache');
     let observableObject = null;
     let changedObservableObject = null;
+    const undoRedo = new UndoRedo()
 
     const controlIdValidatorMap = new Map();
     const u = CT.Utils;
@@ -30,6 +31,14 @@ const ViewModel = function(url) {
 
         if (!propChangedList.find((prop) => prop === path)) {
             propChangedList.push(path)
+        }
+
+        // store value in undo stack
+        const observableModel = observableObject.toJSON();
+        const getChangedValue = getPropValue(observableModel);
+        const value = getChangedValue(path.split('.'))
+        if (value !== undefined) {
+            undoRedo.push({ path: path, value: value })
         }
         lastPropChanged = path;
     }
@@ -159,8 +168,9 @@ const ViewModel = function(url) {
      *
      */
     const reset = function() {
-        errorMap.clear();
-        changedObservableObject.set('changed', false);
+        errorMap.clear()
+        changedObservableObject.set('changed', false)
+        undoRedo.clear()
     }
 
     /**
@@ -258,5 +268,5 @@ const ViewModel = function(url) {
         }
     }
 
-    return { init, bind, reset, set, get, getChangedModel, registerValidations: registerValidations, runValidations }
+    return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations }
 }

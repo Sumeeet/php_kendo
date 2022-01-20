@@ -62,6 +62,7 @@ HTML;
             <script src="./JsLib/DataProxy.js"></script>
             <script src="./JsLib/ViewModel.js"></script>
             <script src="./JsLib/GridUtils.js"></script>
+            <script src="./JsLib/UndoRedo.js"></script>
 </html>
 HTML;
     }
