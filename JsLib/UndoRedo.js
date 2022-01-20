@@ -2,7 +2,12 @@ const UndoRedo = function(steps = 50) {
     let undoStack = []
     let redoStack = []
 
-    const peek = function(arr, length) {
+    const isEmpty = function(arr) {
+        return (arr.length === 0)
+    }
+
+    const peek = (arr) => {
+        const length = arr.length
         if (length === 0) return null
         return arr[length - 1]
     }
@@ -21,14 +26,14 @@ const UndoRedo = function(steps = 50) {
     }
 
     const undo = function(obj) {
-        const length = undoStack.length
-        if (length === 0) return null
+        if (isEmpty(undoStack)) return null
         const elem = undoStack.pop()
         redoStack.push(elem)
-        return peek(undoStack, length)
+        return peek(undoStack)
     }
 
     const redo = function(obj) {
+        if (isEmpty(redoStack)) return null
         const elem = redoStack.pop()
         undoStack.push(elem)
         return elem
