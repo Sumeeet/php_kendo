@@ -35,19 +35,19 @@ class BmiView implements IView
         $grid = new GridView(['gridId' => 'bmiGridId']);
 
         echo <<< HTML
+<div>
 <div class = 'horizontalLayout'>
 HTML;
-        echo <<< HTML
-        {$ageView->render()}
-        {$heightView->render()}
-        {$weightView->render()}
-        {$bmiView->render()}
-        HTML;
+        $ageView->render();
+        $heightView->render();
+        $weightView->render();
+        $bmiView->render();
         echo <<< HTML
 </div>
 HTML;
+$grid->render();
         echo <<< HTML
-{$grid->render()}
+</div>
 HTML;
     }
 }

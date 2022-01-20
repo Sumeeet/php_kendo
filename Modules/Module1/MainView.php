@@ -30,20 +30,28 @@ class MainView implements IView
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
         </head>
-    HTML;
+HTML;
+        echo <<< HTML
+<body id="mainViewId">
+<div>
+    <div id = 'tabstrip'>
+        <ul>
+            <li class="k-state-active">View1</li>
+            <li>View2</li>
+        </ul>
+HTML;
+        $this->bmiView->render();
+        $this->bmiView->render();
 
         echo <<< HTML
-        <body id="mainViewId">
-        HTML;
-        echo <<< HTML
-            {$this->bmiView->render()}
-            {$this->footerView->render()}
-        HTML;
-        echo <<< HTML
-        </body>
-        HTML;
+    </div>
+HTML;
+
+        $this->footerView->render();
 
         echo <<< HTML
+</div>
+</body>
             <script src="./Modules/Module1/ModuleInstance.js"></script>
             <script src="./Modules/Module1/BmiMapper.js"></script>
             <script src="./Modules/Module1/Controller.js"></script>
@@ -53,9 +61,8 @@ class MainView implements IView
             <script src="./JsLib/Either.js"></script>
             <script src="./JsLib/DataProxy.js"></script>
             <script src="./JsLib/ViewModel.js"></script>
-        HTML;
-        echo <<< HTML
-    </html>
+            <script src="./JsLib/GridUtils.js"></script>
+</html>
 HTML;
     }
 }

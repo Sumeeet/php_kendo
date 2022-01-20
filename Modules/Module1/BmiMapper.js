@@ -16,7 +16,7 @@ const BmiMapper = () => {
 
     let bmiTable = []
 
-    const CalculateBmi = (weight, height) => Math.round((weight * 10000) / (height * height));
+    const calculateBmi = (weight, height) => Math.round((weight * 10000) / (height * height));
 
     const cmsToInches = (height) => {
         const heightInches = height / 2.54
@@ -29,7 +29,7 @@ const BmiMapper = () => {
         heightInFtInch = heightInCms.map(h => cmsToInches(h))
         weightInLbs = weightInKgs.map(w => Math.round(w * 2.20462))
 
-        bmiTable = heightInCms.map(h => weightInKgs.map(w => CalculateBmi(w, h)))
+        bmiTable = heightInCms.map(h => weightInKgs.map(w => calculateBmi(w, h)))
         bmiTable.forEach((bmiRow, idx) => bmiRow.splice(0, 0, heightInCms[idx]))
         bmiTable.forEach((bmiRow, idx) => bmiRow.splice(1, 0, heightInFtInch[idx]))
 
@@ -49,12 +49,8 @@ const BmiMapper = () => {
     // })
 
     const getBmiGridData = () => {
-        return bmiTable.map(r => {
-            const row = {}
-            r.forEach((bmi, i) => row[`c${i}`] = bmi)
-            return row
-        })
+        return CT.GridUtils.Create(bmiTable)
     }
 
-    return { getBmiGridData, CalculateBmi }
+    return { getBmiGridData, calculateBmi }
 }

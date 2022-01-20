@@ -35,6 +35,14 @@ const ModuleInstance = function() {
 
             // run validations first time
             //viewModel.runValidations()
+
+            $("#tabstrip").kendoTabStrip({
+                animation:  {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
         })
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
     }
@@ -44,7 +52,7 @@ const ModuleInstance = function() {
 
 document.onreadystatechange = () => {
     // TODO: Module should or can be initialized from external trigger too
-    const url = "./Modules/Module1/test.json";
+    const url = "./Modules/Module1/test-data.json";
     const instance = new ModuleInstance()
     if (document.readyState === 'complete') instance.init(url)
 }

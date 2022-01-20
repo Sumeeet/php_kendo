@@ -173,7 +173,7 @@ const ViewModel = function(url) {
                 changedObservableObject.set('changed', errorMap.size === 0);
             }
         }
-        err.errFn(err.prop, err.error.message)
+        err.errFn(err.error.message)
         return pass
     }
 
