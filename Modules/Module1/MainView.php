@@ -12,7 +12,8 @@ class MainView implements IView
 
     public function __construct(IView $view) {
         $this->bmiView = $view;
-        $this->footerView = new FooterView(['id' => 'footer', 'changed' => 'changed']);
+        $this->footerView = new FooterView(['id' => 'footer',
+            'changed' => 'changed', 'undo' => 'undo', 'redo' => 'redo']);
     }
 
     public function render() {

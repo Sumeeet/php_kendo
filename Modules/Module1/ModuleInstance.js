@@ -1,7 +1,9 @@
 const ModuleInstance = function() {
+    const undoButton = getElement('undo')
+    const redoButton = getElement('redo')
     const loadButton = getElement('load')
-    const applyButton = getElement('apply')
     const cacheButton = getElement('cache')
+    const applyButton = getElement('apply')
 
     function init(url) {
         //caches.delete('CT_cache');
@@ -14,10 +16,26 @@ const ModuleInstance = function() {
             // initialize all the controllers here
             new Controller(viewModel)
 
+            undoButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                viewModel.undo()
+            }, false);
+
+            redoButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                viewModel.redo()
+            }, false);
+
+
             loadButton.addEventListener('click', (event) => {
                 event.stopPropagation();
                 DataProxy().getData(url).then(response => console.log(response));
             }, false);
+
+            cacheButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                caches.delete('ct_cache')
+            })
 
             applyButton.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -26,11 +44,6 @@ const ModuleInstance = function() {
                 .then(result => {
                     viewModel.reset();
                 });
-            })
-
-            cacheButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                caches.delete('ct_cache')
             })
 
             // run validations first time

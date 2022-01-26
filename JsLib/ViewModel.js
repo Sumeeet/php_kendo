@@ -24,6 +24,9 @@ const ViewModel = function(url) {
     // and timer is reset again.
     const TIME_MS = 100;
 
+    // Ignore pushing values to undo stack when undo/redo operation is performed
+    let skipUndoRedo = false
+
     const recordPropertyChange = function(event) {
         // TODO: Dependent properties dont work well with path properties
         //const path = event[0].sender.path;
@@ -33,14 +36,18 @@ const ViewModel = function(url) {
             propChangedList.push(path)
         }
 
+        lastPropChanged = path
+
+        if (skipUndoRedo) return
+
         // store value in undo stack
         const observableModel = observableObject.toJSON();
         const getChangedValue = getPropValue(observableModel);
         const value = getChangedValue(path.split('.'))
         if (value !== undefined) {
             undoRedo.push({ path: path, value: value })
+            console.log(`Pushed to Undo stack ${path}: ${value}`)
         }
-        lastPropChanged = path;
     }
 
     const getValueAtKey = function(model, key) {
@@ -82,10 +89,10 @@ const ViewModel = function(url) {
                     .then(response => {
                         // values of calculated fields not part of cached/original model
                         if (cachedValue !== undefined) {
-                            console.log(
-                                `${propPath} changed: ${cachedValue} -> ${value}`)
-                            changedObservableObject.set('changed',
-                                !(errorMap.size > 0))
+                            console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
+                            changedObservableObject.set('changed', !(errorMap.size > 0))
+                            changedObservableObject.set('undo', undoRedo.undoSize() > 0)
+                            changedObservableObject.set('redo', undoRedo.redoSize() > 0)
                         }
                     })
                 }
@@ -156,7 +163,7 @@ const ViewModel = function(url) {
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({ changed: false });
+        changedObservableObject = kendo.observable({ changed: false, undo: false, redo: false });
         kendo.bind(footerView, changedObservableObject);
 
         // register for property change event
@@ -169,8 +176,10 @@ const ViewModel = function(url) {
      */
     const reset = function() {
         errorMap.clear()
-        changedObservableObject.set('changed', false)
         undoRedo.clear()
+        changedObservableObject.set('changed', false)
+        changedObservableObject.set('undo', false)
+        changedObservableObject.set('redo', false)
     }
 
     /**
@@ -268,5 +277,19 @@ const ViewModel = function(url) {
         }
     }
 
-    return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations }
+    const undo = function() {
+        skipUndoRedo = true
+        const elem = undoRedo.undo(null)
+        set(elem.path, elem.value)
+        skipUndoRedo = false
+    }
+
+    const redo = function() {
+        skipUndoRedo = true
+        const elem = undoRedo.redo()
+        set(elem.path, elem.value)
+        skipUndoRedo = false
+    }
+
+    return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations, undo, redo }
 }
