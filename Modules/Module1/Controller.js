@@ -3,8 +3,11 @@
 const getElement = id => document.getElementById(id)
 const mainView = getElement('mainViewId')
 const footerView = getElement('footer')
+const ageEdit = getElement('ageId')
+const heightEdit = getElement('heightId')
+const weightEdit = getElement('weightId')
 
-const Controller = function (viewModel) {
+const Controller = function (viewModel, undoRedo) {
     const v = CT.Validations
     const u = CT.Utils
     const updateError = u.curry((id, message) => {
@@ -15,6 +18,7 @@ const Controller = function (viewModel) {
             console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
         }
     })
+    const debounce = CT.Decorators.debounce(addCommands, 400);
 
     function bindDependencies (viewModel) {
         let bmiMapper = BmiMapper()
@@ -53,6 +57,26 @@ const Controller = function (viewModel) {
             [v.isInRange(12, 42), v.isPositive, v.isNumber],
             updateError("errorId4"));
 
+        ageEdit.addEventListener('keyup', (event) => {
+            debounce(event, 'age.value', ageEdit.value);
+        })
+
+        heightEdit.addEventListener('keyup', (event) => {
+            debounce(event, 'height.value', heightEdit.value);
+        })
+
+        weightEdit.addEventListener('keyup', (event) => {
+            debounce(event, 'weight.value', weightEdit.value);
+        })
+
         bindDependencies(viewModel)
     })()
+
+    function addCommands(event, prop, value) {
+        if (event.key === 'Enter') {
+            undoRedo.push(prop, new EditCommand(viewModel, function (readCache) {
+                this.set(prop, readCache ? null : value)
+            }))
+        }
+    }
 }

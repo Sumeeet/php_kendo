@@ -1,31 +1,30 @@
 'use strict';
 
 const ViewModel = function(url) {
-    const dataProxy = DataProxy('ct_cache');
-    let observableObject = null;
-    let changedObservableObject = null;
-    const undoRedo = new UndoRedo()
+    const dataProxy = DataProxy('ct_cache')
+    let observableObject = null
+    let changedObservableObject = null
 
-    const controlIdValidatorMap = new Map();
-    const u = CT.Utils;
+    const controlIdValidatorMap = new Map()
+    const u = CT.Utils
 
     // Pick the last property changed
     let lastPropChanged;
 
     // record property changes, that way only changed property are sent to
     // server
-    const propChangedList = [];
+    const propChangedList = []
 
     // record errors to keep apply button state in sync
-    const errorMap = new Map();
+    const errorMap = new Map()
 
     // how frequent a change in model properties is checked
     // any intermediate change within ms time is thrown away
     // and timer is reset again.
-    const TIME_MS = 100;
+    const TIME_MS = 100
 
     // Ignore pushing values to undo stack when undo/redo operation is performed
-    let skipUndoRedo = false
+    // let skipUndoRedo = false
 
     const recordPropertyChange = function(event) {
         // TODO: Dependent properties dont work well with path properties
@@ -38,16 +37,21 @@ const ViewModel = function(url) {
 
         lastPropChanged = path
 
-        if (skipUndoRedo) return
+        // if (skipUndoRedo) return
 
-        // store value in undo stack
-        const observableModel = observableObject.toJSON();
-        const getChangedValue = getPropValue(observableModel);
-        const value = getChangedValue(path.split('.'))
-        if (value !== undefined) {
-            undoRedo.push({ path: path, value: value })
-            console.log(`Pushed to Undo stack ${path}: ${value}`)
-        }
+        // // store value in undo stack
+        // const observableModel = observableObject.toJSON();
+        // const getChangedValue = getPropValue(observableModel);
+        // const value = getChangedValue(path.split('.'))
+        // const self = this;
+        // if (value !== undefined) {
+        //     // make a new command object and set execute and un-execute method
+        //
+        //     const cmd = new Command(self, path, value)
+        //     undoRedo.push(cmd)
+        //     // undoRedo.push({ path: path, value: value })
+        //     // console.log(`Pushed to Undo stack ${path}: ${value}`)
+        // }
     }
 
     const getValueAtKey = function(model, key) {
@@ -91,8 +95,8 @@ const ViewModel = function(url) {
                         if (cachedValue !== undefined) {
                             console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
                             changedObservableObject.set('changed', !(errorMap.size > 0))
-                            changedObservableObject.set('undo', undoRedo.undoSize() > 0)
-                            changedObservableObject.set('redo', undoRedo.redoSize() > 0)
+                            // changedObservableObject.set('undo', undoRedo.undoSize() > 0)
+                            // changedObservableObject.set('redo', undoRedo.redoSize() > 0)
                         }
                     })
                 }
@@ -163,7 +167,7 @@ const ViewModel = function(url) {
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({ changed: false, undo: false, redo: false });
+        changedObservableObject = kendo.observable({ changed: false, undo: true, redo: true });
         kendo.bind(footerView, changedObservableObject);
 
         // register for property change event
@@ -178,8 +182,8 @@ const ViewModel = function(url) {
         errorMap.clear()
         undoRedo.clear()
         changedObservableObject.set('changed', false)
-        changedObservableObject.set('undo', false)
-        changedObservableObject.set('redo', false)
+        // changedObservableObject.set('undo', false)
+        // changedObservableObject.set('redo', false)
     }
 
     /**
@@ -208,7 +212,21 @@ const ViewModel = function(url) {
      * @returns {*}
      */
     const set = function(prop, value) {
-        observableObject.set(prop, value)
+        try {
+            if (!value) {
+                // get it from the cache
+                dataProxy.getData(url, {'method': 'GET'})
+                .then(function(cachedModel) {
+                    const property = prop.split('.');
+                    const cachedValue = cachedModel[property[0]]['value']
+                    observableObject.set(prop, cachedValue)
+                });
+            } else {
+                observableObject.set(prop, value)
+            }
+        } catch (e) {
+            console.log(`Unable to set value ${value} for property ${prop} : ${e.message}`)
+        }
     }
 
     /**
@@ -277,19 +295,17 @@ const ViewModel = function(url) {
         }
     }
 
-    const undo = function() {
-        skipUndoRedo = true
-        const elem = undoRedo.undo(null)
-        set(elem.path, elem.value)
-        skipUndoRedo = false
-    }
+    // const undo = function() {
+    //     skipUndoRedo = true
+    //     undoRedo.undo()
+    //     skipUndoRedo = false
+    // }
+    //
+    // const redo = function() {
+    //     skipUndoRedo = true
+    //     undoRedo.redo()
+    //     skipUndoRedo = false
+    // }
 
-    const redo = function() {
-        skipUndoRedo = true
-        const elem = undoRedo.redo()
-        set(elem.path, elem.value)
-        skipUndoRedo = false
-    }
-
-    return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations, undo, redo }
+    return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations }
 }

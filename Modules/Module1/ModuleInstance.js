@@ -4,6 +4,7 @@ const ModuleInstance = function() {
     const loadButton = getElement('load')
     const cacheButton = getElement('cache')
     const applyButton = getElement('apply')
+    const undoRedo = new UndoRedo()
 
     function init(url) {
         //caches.delete('CT_cache');
@@ -14,16 +15,16 @@ const ModuleInstance = function() {
             viewModel.bind(result, mainView, footerView);
 
             // initialize all the controllers here
-            new Controller(viewModel)
+            new Controller(viewModel, undoRedo)
 
             undoButton.addEventListener('click', (event) => {
                 event.stopPropagation();
-                viewModel.undo()
+                undoRedo.undo()
             }, false);
 
             redoButton.addEventListener('click', (event) => {
                 event.stopPropagation();
-                viewModel.redo()
+                undoRedo.redo()
             }, false);
 
 

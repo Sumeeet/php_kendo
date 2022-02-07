@@ -38,11 +38,11 @@ CT.Decorators.localCache = function(func) {
  */
 CT.Decorators.debounce = function(func, ms, recordFunc = null) {
         let timeout;
-        return function() {
+        return function(...args) {
             clearTimeout(timeout);
-            if (recordFunc) recordFunc(arguments);
+            if (recordFunc) recordFunc(args);
             timeout = setTimeout(function() {
-                func.apply(this, arguments)
+                func.apply(this, args)
             }, ms);
         };
 }

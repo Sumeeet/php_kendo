@@ -64,6 +64,7 @@ HTML;
             <script src="./JsLib/ViewModel.js"></script>
             <script src="./JsLib/GridUtils.js"></script>
             <script src="./JsLib/UndoRedo.js"></script>
+            <script src="./JsLib/Command.js"></script>
 </html>
 HTML;
     }
