@@ -7,7 +7,7 @@ const ageEdit = getElement('ageId')
 const heightEdit = getElement('heightId')
 const weightEdit = getElement('weightId')
 
-const Controller = function (viewModel, undoRedo) {
+const Controller = function (viewModel, history) {
     const v = CT.Validations
     const u = CT.Utils
     const updateError = u.curry((id, message) => {
@@ -74,7 +74,7 @@ const Controller = function (viewModel, undoRedo) {
 
     function addCommands(event, prop, value) {
         if (event.key === 'Enter') {
-            undoRedo.push(prop, new EditCommand(viewModel, function (readCache) {
+            history.record(prop, new EditCommand(viewModel, function (readCache) {
                 this.set(prop, readCache ? null : value)
             }))
         }

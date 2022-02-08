@@ -1,109 +1,83 @@
-const UndoRedo = function() {
-    const undoMap = new Map()
-    let historyKey = ''
-
-    const isEmpty = function() {
-        return undoMap.size === 0
-    }
-
-    const push = function(key, cmd) {
-        if (undoMap.has(key)) {
-            const history = undoMap.get(key)
-            history.record(cmd)
-            return
-        }
-
-        historyKey = key
-        const history = new History()
-        history.record(cmd)
-        undoMap.set(key, history)
-    }
-
-    const clear = function() {
-        undoMap.forEach(history => history.erase())
-        undoMap.clear()
-    }
-
-    const undo = function() {
-        if (isEmpty()) return null
-        const history = undoMap.get(historyKey)
-        history.playBack()
-    }
-
-    const redo = function() {
-        if (isEmpty()) return null
-        const history = undoMap.get(historyKey)
-        history.playForward()
-    }
-
-    return { push, clear, undo, redo }
-}
-
 const History = function () {
-    const HISTORY_SIZE = 100
+    const HISTORY_SIZE = 10
+    const historyMap = new Map()
     let history = []
     let marker = -1
-    let overwrite = false
 
     const doesExist = function () {
         return history.length > 0
     }
 
-    const record = function(command) {
+    const readCache = function () {
+        const length = cacheIndexes.length
+        if (length === 0 || marker > length - 1) return false
+
+        return (cacheIndexes[marker])
+    }
+
+    const record = function(key, command) {
         if (history.length > HISTORY_SIZE) {
-            if (!overwrite) {
-                console.log(`History size exceeded the size of ${HISTORY_SIZE},
-                doing Undo one more time will overwrite history, starting from oldest to newest`)
-                overwrite = true
-                return
-            }
+            console.log(`History size exceeded the size of ${HISTORY_SIZE}`)
+            return
         }
 
-        if (overwrite) {
-            // user agrees to overwrite, set marker to beginning of history
-            marker = 1
-            overwrite = false
-        }
-
-        const recordCmd  = (cmd) => {
+        const addCommand = (cmd) => {
             marker = marker + 1
             history.splice(marker, 0, cmd)
         }
 
-        if (!doesExist()) {
-            recordCmd(Object.create(command))
+        if (!historyMap.has(key)) {
+            historyMap.set(key, marker)
+            addCommand(null)
         }
-        recordCmd(command)
+        addCommand(command)
+    }
+
+    const canLookBack = function (index) {
+        return doesExist() && index >= 0
+    }
+
+    const canLookForward = function (index) {
+        const size = history.length
+        return doesExist() && index < size
+    }
+
+    const peekInHistory = function (index) {
+        return history[index]
     }
 
     const playBack = function () {
-        if (!doesExist() || marker < 0) return
-        marker = marker - 1
+        let index = marker - 1
+        if (!canLookBack(index)) return
 
-        if (marker < 0) {
-            marker = 0
-            return
+        let readCache = false
+        let cmd = peekInHistory(index)
+        if (cmd === null) {
+            cmd = peekInHistory(marker)
+            readCache = true
+            index = index - 1
         }
-        const readCache = (marker === 0)
-        const cmd = history[marker]
         cmd.execute(readCache)
+        marker = index
     }
 
     const playForward = function () {
-        const size = history.length - 1
-        if (!doesExist() || marker > size) return
-        marker = marker + 1
+        let index = marker + 1
+        if (!canLookForward(index)) return
 
-        if (marker > size) {
-            marker = size
-            return
+        let cmd = peekInHistory(index)
+        if (cmd === null) {
+            // skip null values
+            index = index + 1
+            cmd = peekInHistory(index)
         }
-        const cmd = history[marker]
         cmd.execute(false)
+        marker = index
     }
 
     const erase = function () {
         history = []
+        historyMap.clear()
         marker = -1
     }
 

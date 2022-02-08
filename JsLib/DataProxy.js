@@ -49,7 +49,7 @@ const DataProxy = function(cacheName = 'ct_cache') {
             cache.match(url)
             .then(cacheData => {
                 if (cacheData) {
-                    console.log("fetched from cache");
+                    //console.log("fetched from cache");
                     resolve(cacheData);
                 }
                 else {
