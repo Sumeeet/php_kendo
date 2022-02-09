@@ -18,7 +18,7 @@ const Controller = function (viewModel, history) {
             console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
         }
     })
-    const debounce = CT.Decorators.debounce(addCommands, 400);
+    // const debounce = CT.Decorators.debounce(addCommands, 400);
 
     function bindDependencies (viewModel) {
         let bmiMapper = BmiMapper()
@@ -58,15 +58,15 @@ const Controller = function (viewModel, history) {
             updateError("errorId4"));
 
         ageEdit.addEventListener('keyup', (event) => {
-            debounce(event, 'age.value', ageEdit.value);
+            addCommands(event, 'age.value', ageEdit.value);
         })
 
         heightEdit.addEventListener('keyup', (event) => {
-            debounce(event, 'height.value', heightEdit.value);
+            addCommands(event, 'height.value', heightEdit.value);
         })
 
         weightEdit.addEventListener('keyup', (event) => {
-            debounce(event, 'weight.value', weightEdit.value);
+            addCommands(event, 'weight.value', weightEdit.value);
         })
 
         bindDependencies(viewModel)
