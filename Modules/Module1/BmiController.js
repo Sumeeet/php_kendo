@@ -1,13 +1,10 @@
 'use strict'
 
-const getElement = id => document.getElementById(id)
-const mainView = getElement('mainViewId')
-const footerView = getElement('footer')
 const ageEdit = getElement('ageId')
 const heightEdit = getElement('heightId')
 const weightEdit = getElement('weightId')
 
-const Controller = function (viewModel, history) {
+const BmiController = function (viewModel, history) {
     const v = CT.Validations
     const u = CT.Utils
     const updateError = u.curry((id, message) => {

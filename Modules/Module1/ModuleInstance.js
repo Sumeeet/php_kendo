@@ -1,9 +1,12 @@
+const getElement = id => document.getElementById(id)
 const ModuleInstance = function() {
-    const undoButton = getElement('undo')
-    const redoButton = getElement('redo')
-    const loadButton = getElement('load')
-    const cacheButton = getElement('cache')
-    const applyButton = getElement('apply')
+    const applyButton = getElement('applyId')
+    const cacheButton = getElement('cacheId')
+    const loadButton = getElement('loadId')
+    const mainView = getElement('mainViewId')
+    const footerView = getElement('footerViewId')
+    const toolbarView = getElement('toolBarViewId')
+
     const history = new History()
 
     function init(url) {
@@ -12,21 +15,20 @@ const ModuleInstance = function() {
         const viewModel = new ViewModel(url)
         viewModel.init([limits_url])
         .then(result => {
-            viewModel.bind(result, mainView, footerView);
+            viewModel.bind(result, mainView, footerView, toolbarView);
 
             // initialize all the controllers here
-            new Controller(viewModel, history)
+            new BmiController(viewModel, history)
+            new ToolBarController(viewModel, history)
 
-            undoButton.addEventListener('click', (event) => {
+            applyButton.addEventListener('click', (event) => {
                 event.stopPropagation();
-                history.playBack()
-            }, false);
-
-            redoButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                history.playForward()
-            }, false);
-
+                viewModel.getChangedModel()
+                .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
+                .then(result => {
+                    viewModel.reset();
+                });
+            })
 
             loadButton.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -38,29 +40,11 @@ const ModuleInstance = function() {
                 caches.delete('ct_cache')
             })
 
-            applyButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                viewModel.getChangedModel()
-                .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
-                .then(result => {
-                    viewModel.reset();
-                });
-            })
-
             // run validations first time
             //viewModel.runValidations()
-
-            $("#tabstrip").kendoTabStrip({
-                animation:  {
-                    open: {
-                        effects: "fadeIn"
-                    }
-                }
-            });
         })
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
     }
-
     return { init }
 }
 

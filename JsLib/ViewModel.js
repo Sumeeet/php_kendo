@@ -23,9 +23,6 @@ const ViewModel = function(url) {
     // and timer is reset again.
     const TIME_MS = 100
 
-    // Ignore pushing values to undo stack when undo/redo operation is performed
-    // let skipUndoRedo = false
-
     const recordPropertyChange = function(event) {
         // TODO: Dependent properties dont work well with path properties
         //const path = event[0].sender.path;
@@ -36,22 +33,6 @@ const ViewModel = function(url) {
         }
 
         lastPropChanged = path
-
-        // if (skipUndoRedo) return
-
-        // // store value in undo stack
-        // const observableModel = observableObject.toJSON();
-        // const getChangedValue = getPropValue(observableModel);
-        // const value = getChangedValue(path.split('.'))
-        // const self = this;
-        // if (value !== undefined) {
-        //     // make a new command object and set execute and un-execute method
-        //
-        //     const cmd = new Command(self, path, value)
-        //     undoRedo.push(cmd)
-        //     // undoRedo.push({ path: path, value: value })
-        //     // console.log(`Pushed to Undo stack ${path}: ${value}`)
-        // }
     }
 
     const getValueAtKey = function(model, key) {
@@ -95,8 +76,6 @@ const ViewModel = function(url) {
                         if (cachedValue !== undefined) {
                             console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
                             changedObservableObject.set('changed', !(errorMap.size > 0))
-                            // changedObservableObject.set('undo', undoRedo.undoSize() > 0)
-                            // changedObservableObject.set('redo', undoRedo.redoSize() > 0)
                         }
                     })
                 }
@@ -159,7 +138,7 @@ const ViewModel = function(url) {
      * @param mainView
      * @param footerView
      */
-    const bind = function(observableObject, mainView, footerView) {
+    const bind = function(observableObject, mainView, footerView, toolbarView) {
         if (!observableObject) {
             throw 'Data is not fetched yet. Initialize ViewModel first';
         }
@@ -167,8 +146,9 @@ const ViewModel = function(url) {
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({ changed: false, undo: true, redo: true });
+        changedObservableObject = kendo.observable({ cache: true, load: true, changed: false, undo: true, redo: true });
         kendo.bind(footerView, changedObservableObject);
+        kendo.bind(toolbarView, changedObservableObject);
 
         // register for property change event
         const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);
@@ -180,10 +160,7 @@ const ViewModel = function(url) {
      */
     const reset = function() {
         errorMap.clear()
-        undoRedo.clear()
         changedObservableObject.set('changed', false)
-        // changedObservableObject.set('undo', false)
-        // changedObservableObject.set('redo', false)
     }
 
     /**
@@ -294,18 +271,6 @@ const ViewModel = function(url) {
             controlIdValidatorMap.set(prop, { validateFunc: validateFunc, error: { }, prop: prop, errFn: errFn });
         }
     }
-
-    // const undo = function() {
-    //     skipUndoRedo = true
-    //     undoRedo.undo()
-    //     skipUndoRedo = false
-    // }
-    //
-    // const redo = function() {
-    //     skipUndoRedo = true
-    //     undoRedo.redo()
-    //     skipUndoRedo = false
-    // }
 
     return { init, bind, reset, set, get, getChangedModel, registerValidations, runValidations }
 }

@@ -3,21 +3,35 @@
 namespace CT\Modules\Module1;
 
 use CT\Controls\FooterView;
+use CT\Controls\ToolBarView;
 use CT\Interfaces\IView;
 
 class MainView implements IView
 {
     private IView $bmiView;
+    private IView $tooBarView;
     private IView $footerView;
 
     public function __construct(IView $view) {
         $this->bmiView = $view;
-        $this->footerView = new FooterView(['id' => 'footer',
-            'changed' => 'changed', 'undo' => 'undo', 'redo' => 'redo']);
+
+        $this->tooBarView = new ToolBarView("toolBarViewId",
+            [
+                'undo' => ['id' => 'undoId', 'name' => 'undo', 'bind' => 'undo'],
+                'redo' => ['id' => 'redoId', 'name' => 'redo', 'bind' => 'redo']
+            ]);
+
+        $this->footerView = new ToolBarView("footerViewId",
+            [
+                'cache' => ['id' => 'cacheId', 'name' => 'Clear Cache', 'bind' => 'cache'],
+                'load' => ['id' => 'loadId', 'name' => 'Reload', 'bind' => 'load'],
+                'apply' => ['id' => 'applyId', 'name' => 'Apply', 'bind' => 'changed']
+            ]);
     }
 
     public function render() {
-        echo <<< HTML
+        ?>
+
     <!DOCTYPE html>
     <html lang="en">
         <head>
@@ -30,43 +44,32 @@ class MainView implements IView
             <link href="./Modules/Module1/main.css" rel="stylesheet"/>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
         </head>
-HTML;
-        echo <<< HTML
-<body id="mainViewId">
-<div>
-    <div id = 'tabstrip'>
-        <ul>
-            <li class="k-state-active">View1</li>
-            <li>View2</li>
-        </ul>
-HTML;
-        $this->bmiView->render();
-        $this->bmiView->render();
+        <body id="mainViewId">
+        <div>
+            <?php $this->tooBarView->render(); ?>
+            <?php $this->bmiView->render(); ?>
+            <?php $this->footerView->render(); ?>
+        </div>
+        </body>
 
-        echo <<< HTML
-    </div>
-HTML;
+        <script src="./Modules/Module1/ModuleInstance.js"></script>
+        <script src="./Modules/Module1/BmiMapper.js"></script>
+        <script src="./Modules/Module1/BmiController.js"></script>
+        <script src="./Modules/Module1/ToolBarController.js"></script>
 
-        $this->footerView->render();
-
-        echo <<< HTML
-</div>
-</body>
-            <script src="./Modules/Module1/ModuleInstance.js"></script>
-            <script src="./Modules/Module1/BmiMapper.js"></script>
-            <script src="./Modules/Module1/Controller.js"></script>
-            <script src="./JsLib/Decorators.js"></script>
-            <script src="./JsLib/Utils.js"></script>
-            <script src="./JsLib/Validations.js"></script>
-            <script src="./JsLib/Either.js"></script>
-            <script src="./JsLib/DataProxy.js"></script>
-            <script src="./JsLib/ViewModel.js"></script>
-            <script src="./JsLib/GridUtils.js"></script>
-            <script src="./JsLib/History.js"></script>
-            <script src="./JsLib/Command.js"></script>
-</html>
-HTML;
+        <script src="./JsLib/Decorators.js"></script>
+        <script src="./JsLib/Utils.js"></script>
+        <script src="./JsLib/Validations.js"></script>
+        <script src="./JsLib/Either.js"></script>
+        <script src="./JsLib/DataProxy.js"></script>
+        <script src="./JsLib/ViewModel.js"></script>
+        <script src="./JsLib/GridUtils.js"></script>
+        <script src="./JsLib/History.js"></script>
+        <script src="./JsLib/Command.js"></script>
+    </html>
+<?php
     }
 }
 
