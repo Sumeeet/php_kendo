@@ -1,18 +1,15 @@
 const History = function () {
     const HISTORY_SIZE = 10
+    // this is kept in order to insert null values for properties
+    // null value is only inserted once against each property, this
+    // null value is used to check if value should be fetched from the
+    // cache.
     const historyMap = new Map()
     let history = []
     let marker = -1
 
     const doesExist = function () {
         return history.length > 0
-    }
-
-    const readCache = function () {
-        const length = cacheIndexes.length
-        if (length === 0 || marker > length - 1) return false
-
-        return (cacheIndexes[marker])
     }
 
     const record = function(key, command) {
