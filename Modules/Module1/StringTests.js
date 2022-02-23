@@ -1,8 +1,10 @@
 const chain = CT.Utils.curry((func, functor) => func(functor));
+splitTrim = CT.Utils.compose(CT.Utils.map(CT.StringUtils.trim), CT.StringUtils.split)
+
 const splitTrimStrings = CT.Utils.curry((func, delimiter, value) => func(delimiter, value))
-const splitTrimBlocks = splitTrimStrings(CT.StringUtils.splitTrimItems, '+')
-const splitTrimVectors = splitTrimStrings(CT.StringUtils.splitTrimItems, '/')
-const splitTrimSetValue = CT.Utils.compose(CT.Utils.mapFirstN(splitTrimStrings(CT.StringUtils.splitTrimItems, ':'), 1))
+const splitTrimBlocks = splitTrimStrings(splitTrim, '+')
+const splitTrimVectors = splitTrimStrings(splitTrim, '/')
+const splitTrimSetValue = CT.Utils.compose(CT.Utils.mapFirstN(splitTrimStrings(splitTrim, ':'), 1))
 
 const CalcNofDec = (value) => {
     const fValue = Math.abs(Number(value))
@@ -16,15 +18,12 @@ const CalcNofDec = (value) => {
 }
 
 const formatSetValue = (index, values) => {
-    let value = values[index]
-    values[index] = CT.Utils.toFixed(2, value)
+    values[index] = CT.Utils.toFixed(2, values[index])
     return values
 }
 
 const formatCycleTime = (index, values) => {
-    let value = values[index]
-    value = CT.Utils.toFixed(1, value)
-    values[index] = value
+    values[index] = CT.Utils.toFixed(1, values[index])
     return values
 }
 
@@ -40,16 +39,13 @@ const formatSetValues = CT.Utils.curry((index, values) => {
 })
 
 const formatStartTime = (index, values) => {
-    let value = values[index]
-    value = CT.Utils.toFixed(1, value)
-    values[index] = value
+    values[index] = CT.Utils.toFixed(1, values[index])
     return values
 }
 
 const formatRampRate = (index, values) => {
     let value = values[index]
-    value = CT.Utils.toFixed(CalcNofDec(value), value)
-    values[index] = value
+    values[index] = CT.Utils.toFixed(CalcNofDec(value), value)
     return values
 }
 
