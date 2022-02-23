@@ -54,11 +54,6 @@ class MainView implements IView
         </div>
         </body>
 
-        <script src="./Modules/Module1/ModuleInstance.js"></script>
-        <script src="./Modules/Module1/BmiMapper.js"></script>
-        <script src="./Modules/Module1/BmiController.js"></script>
-        <script src="./Modules/Module1/ToolBarController.js"></script>
-
         <script src="./JsLib/Decorators.js"></script>
         <script src="./JsLib/Utils.js"></script>
         <script src="./JsLib/Validations.js"></script>
@@ -68,6 +63,13 @@ class MainView implements IView
         <script src="./JsLib/GridUtils.js"></script>
         <script src="./JsLib/History.js"></script>
         <script src="./JsLib/Command.js"></script>
+        <script src="./JsLib/StringUtils.js"></script>
+
+        <script src="./Modules/Module1/ModuleInstance.js"></script>
+        <script src="./Modules/Module1/BmiMapper.js"></script>
+        <script src="./Modules/Module1/BmiController.js"></script>
+        <script src="./Modules/Module1/ToolBarController.js"></script>
+        <script src="./Modules/Module1/StringTests.js"></script>
     </html>
 <?php
     }
