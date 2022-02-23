@@ -39,3 +39,13 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
     }
     return result;
 });
+
+CT.Utils.toFixed = CT.Utils.curry((decimals, value) => Number(value).toFixed(decimals))
+
+CT.Utils.ifNotEmpty = CT.Utils.curry((func, index, values) => values[index] !== '' ? func(index, values) : values)
+
+CT.Utils.ifNotNull = CT.Utils.curry((func, index, values) => values[index] !== undefined ? CT.Utils.ifNotEmpty(func, index, values) : values)
+
+CT.Utils.mapFirstN = CT.Utils.curry((func, n, functor) => functor.map((v, i) => i < n ? func(v) : v))
+
+CT.Utils.join = CT.Utils.curry((delimiter, functor) => functor.join(delimiter))
