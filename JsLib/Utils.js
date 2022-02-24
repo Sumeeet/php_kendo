@@ -42,10 +42,12 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
 
 CT.Utils.toFixed = CT.Utils.curry((decimals, value) => Number(value).toFixed(decimals))
 
-CT.Utils.ifNotEmpty = CT.Utils.curry((func, index, values) => values[index] !== '' ? func(index, values) : values)
-
-CT.Utils.ifNotNull = CT.Utils.curry((func, index, values) => values[index] !== undefined ? CT.Utils.ifNotEmpty(func, index, values) : values)
-
-CT.Utils.mapFirstN = CT.Utils.curry((func, n, functor) => functor.map((v, i) => i < n ? func(v) : v))
+// mutate values in array v
+CT.Utils.mapAt = CT.Utils.curry((f, n, v) => {
+    const something = CT.Utils.compose(CT.Utils.map(f), Maybe.of)
+    const maybe = something(v[n])
+    if (!maybe.isNothing) v[n] = maybe.join()
+    return v
+})
 
 CT.Utils.join = CT.Utils.curry((delimiter, functor) => functor.join(delimiter))

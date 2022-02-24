@@ -1,4 +1,4 @@
-const chain = CT.Utils.curry((func, functor) => func(functor));
+const chain = CT.Utils.curry((func, f) => func(f));
 splitTrim = CT.Utils.compose(CT.Utils.map(CT.StringUtils.trim), CT.StringUtils.split)
 
 const splitTrimStrings = CT.Utils.curry((func, delimiter, value) => func(delimiter, value))
@@ -17,47 +17,33 @@ const CalcNofDec = (value) => {
     return 6
 }
 
-const formatSetValue = (index, values) => {
-    values[index] = CT.Utils.toFixed(2, values[index])
-    return values
-}
+const formatSetValue = (value) => CT.Utils.toFixed(2, value)
 
-const formatCycleTime = (index, values) => {
-    values[index] = CT.Utils.toFixed(1, values[index])
-    return values
-}
+const formatCycleTime = (value) => CT.Utils.toFixed(1, value)
 
 const formatSetValues = CT.Utils.curry((index, values) => {
-    const evaluate = CT.Utils.compose(CT.Utils.join(' : '),
-        CT.Utils.ifNotNull(formatCycleTime, 3),
-        CT.Utils.ifNotNull(formatCycleTime, 2),
-        CT.Utils.ifNotNull(formatSetValue, 1),
-        CT.Utils.ifNotNull(formatSetValue, 0))
+    const evaluate = CT.Utils.compose(
+        CT.Utils.join(' : '),
+        CT.Utils.mapAt(formatCycleTime, 3),
+        CT.Utils.mapAt(formatCycleTime, 2),
+        CT.Utils.mapAt(formatSetValue, 1),
+        CT.Utils.mapAt(formatSetValue, 0))
     const execute = chain(evaluate)
     values[index] = execute(values[index])
     return values
 })
 
-const formatStartTime = (index, values) => {
-    values[index] = CT.Utils.toFixed(1, values[index])
-    return values
-}
+const formatStartTime = (value) => CT.Utils.toFixed(1, value)
 
-const formatRampRate = (index, values) => {
-    let value = values[index]
-    values[index] = CT.Utils.toFixed(CalcNofDec(value), value)
-    return values
-}
+const formatRampRate = (value) => CT.Utils.toFixed(CalcNofDec(value), value)
 
-const formatCycleInterval = (index, values) => {
-    let value = values[index]
+const formatCycleInterval = (value) => {
     const first = value.substr(0, 1)
     if (first === '#') {
         // Remove #
         value = value.substr(1)
     }
-    values[index] = '#' + CT.Utils.toFixed(0, value)
-    return values
+    return '#' + CT.Utils.toFixed(0, value)
 }
 
 function formatValue (str) {
@@ -70,9 +56,9 @@ function formatValue (str) {
 
     const evaluate = chain(CT.Utils.compose(
         CT.Utils.join(' / '),
-        CT.Utils.ifNotNull(formatCycleInterval, 3),
-        CT.Utils.ifNotNull(formatRampRate, 2),
-        CT.Utils.ifNotNull(formatStartTime, 1),
+        CT.Utils.mapAt(formatCycleInterval, 3),
+        CT.Utils.mapAt(formatRampRate, 2),
+        CT.Utils.mapAt(formatStartTime, 1),
         formatSetValues(0)))
 
     const execute = chain(CT.Utils.compose(
