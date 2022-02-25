@@ -38,12 +38,13 @@ const formatStartTime = (value) => CT.Utils.toFixed(1, value)
 const formatRampRate = (value) => CT.Utils.toFixed(CalcNofDec(value), value)
 
 const formatCycleInterval = (value) => {
-    const first = value.substr(0, 1)
-    if (first === '#') {
-        // Remove #
-        value = value.substr(1)
-    }
-    return '#' + CT.Utils.toFixed(0, value)
+    const evaluate = CT.Utils.compose(
+        CT.StringUtils.prepend('#'),
+        CT.Utils.toFixed(0),
+        CT.StringUtils.findSlice('#'))
+
+    const execute = chain(evaluate)
+    return execute(value)
 }
 
 function formatValue (str) {
@@ -68,37 +69,3 @@ function formatValue (str) {
 
     console.log(`formatted string: ${execute(str)}`)
 }
-
-// const validateSetValues = CT.Utils.curry((index, values) => {
-//     const evaluate = CT.Utils.compose(
-//         CT.Utils.ifSomething(formatCycleTime, 3),
-//         CT.Utils.ifSomething(formatCycleTime, 2),
-//         CT.Utils.ifSomething(formatSetValue, 1),
-//         CT.Utils.ifSomething(formatSetValue, 0))
-//     const execute = chain(evaluate)
-//     values[index] = execute(values[index])
-//     return values
-// })
-//
-// function validateValue (str) {
-//     console.log(`Non formatted string: ${str}`)
-//
-//     const splitTrim = CT.Utils.compose(
-//         CT.Utils.map(splitTrimSetValue),
-//         CT.Utils.map(splitTrimVectors),
-//         splitTrimBlocks)
-//
-//     const evaluate = chain(CT.Utils.compose(
-//         CT.Utils.join(' / '),
-//         CT.Utils.ifSomething(formatCycleInterval, 3),
-//         CT.Utils.ifSomething(formatRampRate, 2),
-//         CT.Utils.ifSomething(formatStartTime, 1),
-//         formatSetValues(false, 0)))
-//
-//     const execute = chain(CT.Utils.compose(
-//         CT.Utils.join(' + '),
-//         CT.Utils.map(evaluate),
-//         splitTrim))
-//
-//     console.log(`formatted string: ${execute(str)}`)
-//}
