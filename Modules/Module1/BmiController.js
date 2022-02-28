@@ -35,23 +35,28 @@ const BmiController = function (viewModel, history) {
     (function() {
         viewModel.registerValidations('age.value',
             [v.isInRange(viewModel.get('age.min'), viewModel.get('age.max')),
-                v.isPositive, v.isNumber],
+                v.isPositive('Age must be a positive number'),
+                v.isNumber('Please enter a valid number')],
             updateError("errorId1"));
 
         viewModel.registerValidations('height.value',
             [v.isInRange(viewModel.get('height.min'), viewModel.get('height.max')),
-                v.isPositive, v.isNumber],
+                v.isPositive('Height must be a positive number'),
+                v.isNumber('Please enter a valid number')],
             updateError("errorId2"));
 
         viewModel.registerValidations('weight.value',
             [v.isInRange(viewModel.get('weight.min'), viewModel.get('weight.max')),
-                v.isPositive, v.isNumber],
+                v.isPositive('Weight must be a positive number'),
+                v.isNumber('Please enter a valid number')],
             updateError("errorId3"));
 
         // This is calculated field, so limits are defined manually, but
         // it can be pulled from other source too.
         viewModel.registerValidations('bmi',
-            [v.isInRange(12, 42), v.isPositive, v.isNumber],
+            [v.isInRange(12, 42),
+                v.isPositive('bmi must be a positive number'),
+                v.isNumber('Please enter a valid number')],
             updateError("errorId4"));
 
         ageEdit.addEventListener('keyup', (event) => {
