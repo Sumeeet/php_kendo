@@ -17,9 +17,8 @@ class NumericTextView implements IView
         echo <<< HTML
         <div>
             <input id = {$this->myBindAttributes['inpId']}
-            style = "width: max-content"
+            style = "text-align:left; width: max-content; margin-right: 10px"
             class = "c-input c-numeric"
-            type = "number"
             data-step = 0
             data-bind = "value: {$this->myBindAttributes['attribute']}"
             data-role = "numerictextbox"/>

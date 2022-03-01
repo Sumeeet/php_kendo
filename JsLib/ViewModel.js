@@ -28,7 +28,8 @@ const ViewModel = function(url) {
         //const path = event[0].sender.path;
         const path = event[0].field
 
-        if (!propChangedList.find((prop) => prop === path)) {
+        const value = observableObject.get(path)
+        if (!propChangedList.find((prop) => prop === path) && typeof value !== 'function') {
             propChangedList.push(path)
         }
 
@@ -138,7 +139,7 @@ const ViewModel = function(url) {
      * @param mainView
      * @param footerView
      */
-    const bind = function(observableObject, mainView, footerView, toolbarView) {
+    const bind = function(observableObject, mainView, footerView) {
         if (!observableObject) {
             throw 'Data is not fetched yet. Initialize ViewModel first';
         }
@@ -146,9 +147,8 @@ const ViewModel = function(url) {
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({ cache: true, load: true, changed: false, undo: true, redo: true });
+        changedObservableObject = kendo.observable({ cache: true, load: true, changed: false });
         kendo.bind(footerView, changedObservableObject);
-        kendo.bind(toolbarView, changedObservableObject);
 
         // register for property change event
         const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);

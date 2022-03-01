@@ -17,16 +17,17 @@ class MainView implements IView
 
         $this->tooBarView = new ToolBarView("toolBarViewId",
             [
-                'undo' => ['id' => 'undoId', 'name' => 'undo', 'bind' => 'undo'],
-                'redo' => ['id' => 'redoId', 'name' => 'redo', 'bind' => 'redo']
+                'undo' => ['id' => 'undoId', 'name' => 'undo', 'bind' => 'undo', 'action' => 'age.undo'],
+                'redo' => ['id' => 'redoId', 'name' => 'redo', 'bind' => 'redo', 'action' => 'age.redo']
             ]);
 
-        $this->footerView = new ToolBarView("footerViewId",
-            [
-                'cache' => ['id' => 'cacheId', 'name' => 'Clear Cache', 'bind' => 'cache'],
-                'load' => ['id' => 'loadId', 'name' => 'Reload', 'bind' => 'load'],
-                'apply' => ['id' => 'applyId', 'name' => 'Apply', 'bind' => 'changed']
-            ]);
+//        $this->footerView = new ToolBarView("footerViewId",
+//            [
+//                'cache' => ['id' => 'cacheId', 'name' => 'Clear Cache', 'bind' => 'cache'],
+//                'load' => ['id' => 'loadId', 'name' => 'Reload', 'bind' => 'load'],
+//                'apply' => ['id' => 'applyId', 'name' => 'Apply', 'bind' => 'changed']
+//            ]);
+        $this->footerView = new FooterView(['id' => 'footerViewId', 'changed' => 'changed']);
     }
 
     public function render() {
@@ -64,6 +65,7 @@ class MainView implements IView
         <script src="./JsLib/History.js"></script>
         <script src="./JsLib/Command.js"></script>
         <script src="./JsLib/StringUtils.js"></script>
+        <script src="./JsLib/Maybe.js"></script>
 
         <script src="./Modules/Module1/ModuleInstance.js"></script>
         <script src="./Modules/Module1/BmiMapper.js"></script>

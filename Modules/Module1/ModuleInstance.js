@@ -5,9 +5,6 @@ const ModuleInstance = function() {
     const loadButton = getElement('loadId')
     const mainView = getElement('mainViewId')
     const footerView = getElement('footerViewId')
-    const toolbarView = getElement('toolBarViewId')
-
-    const history = new History()
 
     function init(url) {
         //caches.delete('CT_cache');
@@ -15,11 +12,11 @@ const ModuleInstance = function() {
         const viewModel = new ViewModel(url)
         viewModel.init([limits_url])
         .then(result => {
-            viewModel.bind(result, mainView, footerView, toolbarView);
+            viewModel.bind(result, mainView, footerView);
 
             // initialize all the controllers here
-            new BmiController(viewModel, history)
-            new ToolBarController(viewModel, history)
+            new BmiController(viewModel)
+            //new UndoRedoController(viewModel, history)
 
             applyButton.addEventListener('click', (event) => {
                 event.stopPropagation();

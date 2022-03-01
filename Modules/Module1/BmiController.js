@@ -1,12 +1,14 @@
 'use strict'
-
-const ageEdit = getElement('ageId')
-const heightEdit = getElement('heightId')
-const weightEdit = getElement('weightId')
-
-const BmiController = function (viewModel, history) {
+const undoRedo = new UndoRedo()
+const BmiController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils
+
+    const ageEdit = getElement('ageId')
+    const heightEdit = getElement('heightId')
+    const weightEdit = getElement('weightId')
+
+
     const updateError = u.curry((id, message) => {
         try {
             const element = getElement(id)
@@ -30,6 +32,19 @@ const BmiController = function (viewModel, history) {
         dataSource.dataSource.data = bmiMapper.getBmiGridData()
         // dataSource.columns = bmiMapper.getBmiColumnInfo()
         $('#gridId').kendoGrid(dataSource)
+    }
+
+    function bindCommands (viewModel) {
+        viewModel.set('age.undo', function () {
+            undoRedo.undo('age.value')
+        })
+
+        viewModel.set('age.redo', function () {
+            undoRedo.redo('age.value')
+        })
+
+        // TODO_SK get rid of this, needs this strangely to call undo/redo commands
+        viewModel.set('apply', function () {})
     }
 
     (function() {
@@ -72,11 +87,13 @@ const BmiController = function (viewModel, history) {
         })
 
         bindDependencies(viewModel)
+
+        bindCommands(viewModel)
     })()
 
     function addCommands(event, prop, value) {
         if (event.key === 'Enter') {
-            history.record(prop, new EditCommand(viewModel, function (readCache) {
+            undoRedo.push(prop, new EditCommand(viewModel, function (readCache) {
                 this.set(prop, readCache ? null : value)
             }))
         }

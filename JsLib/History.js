@@ -1,21 +1,67 @@
+const UndoRedo = function() {
+    const undoMap = new Map()
+
+    const isEmpty = function() {
+        return undoMap.size === 0
+    }
+
+    const push = function(key, cmd) {
+        if (undoMap.has(key)) {
+            const history = undoMap.get(key)
+            history.record(cmd)
+            return
+        }
+
+        const history = new History()
+        history.record(cmd)
+        undoMap.set(key, history)
+    }
+
+    const clear = function() {
+        undoMap.forEach(history => history.erase())
+        undoMap.clear()
+    }
+
+    const undo = function(prop) {
+        if (isEmpty()) return null
+        const history = undoMap.get(prop)
+        history.playBack()
+    }
+
+    const redo = function(prop) {
+        if (isEmpty()) return null
+        const history = undoMap.get(prop)
+        history.playForward()
+    }
+
+    return { push, clear, undo, redo }
+}
+
 const History = function () {
     const HISTORY_SIZE = 10
-    // this is kept in order to insert null values for properties
-    // null value is only inserted once against each property, this
-    // null value is used to check if value should be fetched from the
-    // cache.
-    const historyMap = new Map()
     let history = []
     let marker = -1
+    let overwrite = false
 
     const doesExist = function () {
         return history.length > 0
     }
 
-    const record = function(key, command) {
+    const record = function(command) {
         if (history.length > HISTORY_SIZE) {
-            console.log(`History size exceeded the size of ${HISTORY_SIZE}`)
-            return
+            if (!overwrite) {
+                console.log(`History size exceeded the size of ${HISTORY_SIZE},
+                doing Undo one more time will overwrite the last recorded value`)
+                overwrite = true
+                return
+            }
+        }
+
+        if (overwrite) {
+            // user agrees to overwrite, set the marker to the beginning
+            // of the history.
+            marker = HISTORY_SIZE - 1
+            overwrite = false
         }
 
         const addCommand = (cmd) => {
@@ -23,8 +69,7 @@ const History = function () {
             history.splice(marker, 0, cmd)
         }
 
-        if (!historyMap.has(key)) {
-            historyMap.set(key, marker)
+        if (!doesExist()) {
             addCommand(null)
         }
         addCommand(command)

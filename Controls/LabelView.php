@@ -13,10 +13,11 @@ class LabelView implements IView
 
     public function render() {
         echo <<<HTML
+        <div class = "c-container c-numeric-container c-simple" style = "margin-bottom: 2px">
         <span id = {$this->myBindAttributes['labelId']}
         title = ""
-        class = "c-label"
-        style = "">{$this->myBindAttributes['name']}</span>
+        class = "c-label">{$this->myBindAttributes['name']}</span>
+        </div>
         HTML;
     }
 }

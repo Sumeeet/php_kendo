@@ -3,8 +3,9 @@
 const undoButton = getElement('undoId')
 const redoButton = getElement('redoId')
 
-const ToolBarController = function (viewModel, history) {
+const UndoRedoController = function (viewModel, history) {
     (function() {
+
         undoButton.addEventListener('click', (event) => {
             event.stopPropagation();
             history.playBack()

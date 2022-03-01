@@ -24,8 +24,8 @@ class LabelledNumericTextView implements IView
 HTML;
         echo <<<HTML
         {$this->myLabelView->render()}
-{$this->myNumericTextView->render()}
-<span id = {$this->myBindAttributes['errorId']} style = "color: orangered; font-style: italic"></span>
+        {$this->myNumericTextView->render()}
+        <span id = {$this->myBindAttributes['errorId']} style = "color: orangered; font-style: italic"></span>
 HTML;
 
         echo <<<HTML
