@@ -18,6 +18,8 @@ CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
 
 CT.Utils.chain = CT.Utils.curry((func, m) => m.chain(func));
 
+CT.Utils.join = CT.Utils.curry((func, m) => m.chain(func).join());
+
 CT.Utils.match = CT.Utils.curry((regx, str) => str.match(regx) !== null);
 
 CT.Utils.sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -34,7 +36,7 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
             break;
         case Right:
             //result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
-            result = { pass: true, message: `` };
+            result = { pass: true, message: `Success` };
             break;
     }
     return result;
@@ -43,11 +45,23 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
 CT.Utils.toFixed = CT.Utils.curry((decimals, value) => Number(value).toFixed(decimals))
 
 // mutate values in array v
-CT.Utils.mapAt = CT.Utils.curry((f, n, v) => {
+CT.Utils.mapAt = CT.Utils.curry((f, i, v) => {
     const something = CT.Utils.compose(CT.Utils.map(f), Maybe.of)
-    const maybe = something(v[n])
-    if (!maybe.isNothing) v[n] = maybe.join()
+    const maybe = something(v[i])
+    if (!maybe.isNothing) v[i] = maybe.join()
     return v
 })
 
-CT.Utils.join = CT.Utils.curry((delimiter, functor) => functor.join(delimiter))
+CT.Utils.validateAt = CT.Utils.curry((f, i, v) => {
+    const something = CT.Utils.compose(
+        CT.Utils.chain(f),
+        Either.of)
+    const result = something(v[i])
+    return { result: result, orgValue: v }
+})
+
+CT.Utils.concat = CT.Utils.curry((f, r) => {
+    const result = f(r.orgValue)
+    const results = [r.result, result.result]
+    return { result: results, orgValue: r.orgValue }
+})

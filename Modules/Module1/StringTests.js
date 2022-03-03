@@ -1,10 +1,14 @@
-const chain = CT.Utils.curry((func, f) => func(f));
-splitTrim = CT.Utils.compose(CT.Utils.map(CT.StringUtils.trim), CT.StringUtils.split)
+const u = CT.Utils
+const v = CT.Validations
+const su = CT.StringUtils
 
-const splitTrimStrings = CT.Utils.curry((func, delimiter, value) => func(delimiter, value))
+const chain = u.curry((func, f) => func(f));
+splitTrim = u.compose(u.map(su.trim), su.split)
+
+const splitTrimStrings = u.curry((func, delimiter, value) => func(delimiter, value))
 const splitTrimBlocks = splitTrimStrings(splitTrim, '+')
 const splitTrimVectors = splitTrimStrings(splitTrim, '/')
-const splitTrimSetValue = CT.Utils.mapAt(splitTrimStrings(splitTrim, ':'), 0)
+const splitTrimSetValue = u.mapAt(splitTrimStrings(splitTrim, ':'), 0)
 
 const CalcNofDec = (value) => {
     const fValue = Math.abs(Number(value))
@@ -17,31 +21,31 @@ const CalcNofDec = (value) => {
     return 6
 }
 
-const formatSetValue = (value) => CT.Utils.toFixed(2, value)
+const formatSetValue = (value) => u.toFixed(2, value)
 
-const formatCycleTime = (value) => CT.Utils.toFixed(1, value)
+const formatCycleTime = (value) => u.toFixed(1, value)
 
-const formatSetValues = CT.Utils.curry((index, values) => {
-    const evaluate = CT.Utils.compose(
-        CT.Utils.join(' : '),
-        CT.Utils.mapAt(formatCycleTime, 3),
-        CT.Utils.mapAt(formatCycleTime, 2),
-        CT.Utils.mapAt(formatSetValue, 1),
-        CT.Utils.mapAt(formatSetValue, 0))
+const formatSetValues = u.curry((index, values) => {
+    const evaluate = u.compose(
+        u.join(' : '),
+        u.mapAt(formatCycleTime, 3),
+        u.mapAt(formatCycleTime, 2),
+        u.mapAt(formatSetValue, 1),
+        u.mapAt(formatSetValue, 0))
     const execute = chain(evaluate)
     values[index] = execute(values[index])
     return values
 })
 
-const formatStartTime = (value) => CT.Utils.toFixed(1, value)
+const formatStartTime = (value) => u.toFixed(1, value)
 
-const formatRampRate = (value) => CT.Utils.toFixed(CalcNofDec(value), value)
+const formatRampRate = (value) => u.toFixed(CalcNofDec(value), value)
 
 const formatCycleInterval = (value) => {
-    const evaluate = CT.Utils.compose(
-        CT.StringUtils.prepend('#'),
-        CT.Utils.toFixed(0),
-        CT.StringUtils.findSlice('#'))
+    const evaluate = u.compose(
+        su.prepend('#'),
+        u.toFixed(0),
+        su.findSlice('#'))
 
     const execute = chain(evaluate)
     return execute(value)
@@ -50,22 +54,79 @@ const formatCycleInterval = (value) => {
 function formatValue (str) {
     console.log(`Non formatted string: ${str}`)
 
-    const splitTrim = CT.Utils.compose(
-        CT.Utils.map(splitTrimSetValue),
-        CT.Utils.map(splitTrimVectors),
+    const splitTrim = u.compose(
+        u.map(splitTrimSetValue),
+        u.map(splitTrimVectors),
         splitTrimBlocks)
 
-    const evaluate = chain(CT.Utils.compose(
-        CT.Utils.join(' / '),
-        CT.Utils.mapAt(formatCycleInterval, 3),
-        CT.Utils.mapAt(formatRampRate, 2),
-        CT.Utils.mapAt(formatStartTime, 1),
+    const evaluate = chain(u.compose(
+        u.join(' / '),
+        u.mapAt(formatCycleInterval, 3),
+        u.mapAt(formatRampRate, 2),
+        u.mapAt(formatStartTime, 1),
         formatSetValues(0)))
 
-    const execute = chain(CT.Utils.compose(
-        CT.Utils.join(' + '),
-        CT.Utils.map(evaluate),
+    const execute = chain(u.compose(
+        u.join(' + '),
+        u.map(evaluate),
         splitTrim))
 
     console.log(`formatted string: ${execute(str)}`)
+}
+
+const validateCycleTime = u.compose(
+    u.chain(v.isPositive('Cycle time must be a positive number')),
+    u.chain(v.isNumber('Cycle time must be a number')),
+    v.isNull('Cycle time is either empty or not defined'))
+
+const validateSetValue = u.compose(
+    u.chain(v.isPositive('Set value must be a positive number')),
+    u.chain(v.isNumber('Set value must be a number')),
+    v.isNull('Set value is either empty or not defined'))
+
+const validateSetValues =  u.curry((index, values) => {
+    const evaluate = u.compose(
+        (r) => r.result.flat(Infinity),
+        u.concat(u.validateAt(validateCycleTime, 3)),
+        u.concat(u.validateAt(validateCycleTime, 2)),
+        u.concat(u.validateAt(validateSetValue, 1)),
+        u.validateAt(validateSetValue, 0))
+    const execute = chain(evaluate)
+    return { result: execute(values[index]), orgValue: values }
+})
+
+const validateStartTime = u.compose(
+    u.chain(v.isPositive('Start time must be a positive number')),
+    v.isNumber('Start time must be a number'))
+
+
+const validateRampRate = u.compose(
+    u.chain(v.isPositive('Ramp rate time must be a positive number')),
+    v.isNumber('Ramp rate must be a number'))
+
+
+const validateCycleInterval = u.compose(
+    v.ifExist('Invalid Cycle interval, missing # before value', '#'))
+
+
+function validateValue (str) {
+    console.log(`Non formatted string: ${str}`)
+
+    const splitTrim = u.compose(
+        u.map(splitTrimSetValue),
+        u.map(splitTrimVectors),
+        splitTrimBlocks)
+
+    const validate = chain(u.compose(
+        (r) => r.result.flat(Infinity),
+        u.concat(u.validateAt(validateCycleInterval, 3)),
+        u.concat(u.validateAt(validateRampRate, 2)),
+        u.concat(u.validateAt(validateStartTime, 1)),
+        validateSetValues(0)))
+
+    const execute = chain(u.compose(
+        u.map(validate),
+        splitTrim))
+
+    console.log(execute(str))
 }
