@@ -18,7 +18,7 @@ CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
 
 CT.Utils.chain = CT.Utils.curry((func, m) => m.chain(func));
 
-CT.Utils.join = CT.Utils.curry((func, m) => m.chain(func).join());
+CT.Utils.join = CT.Utils.curry((delimiter, functor) => functor.join(delimiter));
 
 CT.Utils.match = CT.Utils.curry((regx, str) => str.match(regx) !== null);
 
