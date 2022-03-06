@@ -19,24 +19,32 @@ CT.GridUtils.getGrid = (gridId) => {
     return $(gridId).data("kendoGrid");
 };
 
-CT.GridUtils.hasData = (gridId) => {
-    const grid = CT.GridUtils.getGrid(gridId);
-    return grid.dataSource.data().length > 0;
-};
+CT.GridUtils.hasData = (grid) => grid.dataSource.data().length > 0
+
+CT.GridUtils.getData = (gridId) => {
+    const readItems = (grid) => CT.GridUtils.hasData(grid) ? grid.items() : null
+    const read = CT.Utils.compose(
+        CT.Utils.chain(readItems),
+        Maybe.of,
+        CT.GridUtils.getGrid)
+    return read(gridId)
+}
 
 CT.GridUtils.checkRange = (start, end) => {
     if (start > end) return [end, start]
     return [start, end]
 }
 
-CT.GridUtils.read = CT.Utils.curry((selector, data) => $(data).filter(selector))
+CT.GridUtils.filter = CT.Utils.curry((selector, data) => $(data).filter(selector))
 
 CT.GridUtils.map = CT.Utils.curry((func, data) => $.map(data, item => func(item.cells)))
+
+CT.GridUtils.each = CT.Utils.curry((func, data) => $.each(data, func))
 
 CT.GridUtils.readRows = CT.Utils.curry((start, end, data) => {
     const [rs, re] = CT.GridUtils.checkRange(start, end)
     const selector = `tr:nth-child(n+${rs}):nth-child(-n+${re})`;
-    const execute = CT.Utils.compose(CT.Utils.chain(CT.GridUtils.read(selector)), Maybe.of)
+    const execute = CT.Utils.compose(CT.Utils.chain(CT.GridUtils.filter(selector)), Maybe.of)
     return execute(data)
 })
 
@@ -46,7 +54,7 @@ CT.GridUtils.readCells = CT.Utils.curry((rs, re, cs, ce, data) => {
 
     const read = CT.Utils.compose(
         CT.Utils.map((row) => [...row]),
-        CT.GridUtils.map(CT.GridUtils.read(selector)),
+        CT.GridUtils.map(CT.GridUtils.filter(selector)),
         CT.GridUtils.readRows(rs, re))
 
     const execute = CT.Utils.compose(
