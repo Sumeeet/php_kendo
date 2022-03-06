@@ -58,8 +58,6 @@ const History = function () {
         }
 
         if (overwrite) {
-            // user agrees to overwrite, set the marker to the beginning
-            // of the history.
             marker = HISTORY_SIZE - 1
             overwrite = false
         }
@@ -119,7 +117,6 @@ const History = function () {
 
     const erase = function () {
         history = []
-        historyMap.clear()
         marker = -1
     }
 
