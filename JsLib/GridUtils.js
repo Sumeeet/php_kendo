@@ -41,19 +41,26 @@ CT.GridUtils.map = CT.Utils.curry((func, data) => $.map(data, item => func(item.
 
 CT.GridUtils.each = CT.Utils.curry((func, data) => $.each(data, func))
 
-CT.GridUtils.readRows = CT.Utils.curry((start, end, data) => {
-    const [rs, re] = CT.GridUtils.checkRange(start, end)
-    const selector = `tr:nth-child(n+${rs}):nth-child(-n+${re})`;
+CT.GridUtils.readRows = CT.Utils.curry((rs, re, data) => {
+    const [s, e] = CT.GridUtils.checkRange(rs, re)
+    const selector = `tr:nth-child(n+${s}):nth-child(-n+${e})`;
     const execute = CT.Utils.compose(CT.Utils.chain(CT.GridUtils.filter(selector)), Maybe.of)
     return execute(data)
 })
 
-CT.GridUtils.readCells = CT.Utils.curry((rs, re, cs, ce, data) => {
+CT.GridUtils.readColumns = CT.Utils.curry((rs, re, cs, ce, data) => {
     [cs, ce] = CT.GridUtils.checkRange(cs, ce)
     const selector = `td:nth-child(n+${cs}):nth-child(-n+${ce})`
 
+    const rowsToCols = (rows) => {
+        const cols = []
+        $.each(rows[0], () => cols.push([]))
+        rows.forEach((row) => $(row).each((i, c) => cols[i].push(c)))
+        return cols
+    }
+
     const read = CT.Utils.compose(
-        CT.Utils.map((row) => [...row]),
+        rowsToCols,
         CT.GridUtils.map(CT.GridUtils.filter(selector)),
         CT.GridUtils.readRows(rs, re))
 
