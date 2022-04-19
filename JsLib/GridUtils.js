@@ -48,7 +48,7 @@ CT.GridUtils.readRows = CT.Utils.curry((rs, re, data) => {
     return execute(data)
 })
 
-CT.GridUtils.readColumns = CT.Utils.curry((rs, re, cs, ce, data) => {
+CT.GridUtils.readColumnWise = CT.Utils.curry((rs, re, cs, ce, data) => {
     [cs, ce] = CT.GridUtils.checkRange(cs, ce)
     const selector = `td:nth-child(n+${cs}):nth-child(-n+${ce})`
 
@@ -71,3 +71,35 @@ CT.GridUtils.readColumns = CT.Utils.curry((rs, re, cs, ce, data) => {
     return execute(data)
 })
 
+CT.GridUtils.readRowWise = CT.Utils.curry((rs, re, cs, ce, data) => {
+    [cs, ce] = CT.GridUtils.checkRange(cs, ce)
+    const selector = `td:nth-child(n+${cs}):nth-child(-n+${ce})`
+
+    const read = CT.Utils.compose(
+        CT.Utils.map(row => [...row]),
+        CT.GridUtils.map(CT.GridUtils.filter(selector)),
+        CT.GridUtils.readRows(rs, re)
+    )
+
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(read),
+        Maybe.of
+    )
+
+    return execute(data)
+})
+
+// CT.GridUtils.contains = CT.Utils.curry((master, data) => {
+//     const innerText = CT.Utils.map(e => e.innerText)
+//
+//     const subSet = CT.Utils.compose(
+//         CT.Utils.contains(master),
+//         CT.Utils.map(subData => innerText(subData))
+//     )
+//
+//     const execute = CT.Utils.compose(
+//         CT.Utils.map(subSet),
+//         Maybe.of
+//     )
+//     return execute(data)
+// })
