@@ -1,32 +1,18 @@
 <?php
 
-namespace CT\Modules\Module1;
+namespace CT\Modules\Module2;
 
 use CT\Controls\FooterView;
-use CT\Controls\ToolBarView;
 use CT\Interfaces\IView;
 
 class MainView implements IView
 {
-    private IView $bmiView;
-    private IView $tooBarView;
+    private IView $view;
     private IView $footerView;
 
     public function __construct(IView $view) {
-        $this->bmiView = $view;
+        $this->view = $view;
 
-        $this->tooBarView = new ToolBarView("toolBarViewId",
-            [
-                'undo' => ['id' => 'undoId', 'name' => 'undo', 'bind' => 'undo', 'action' => 'age.undo'],
-                'redo' => ['id' => 'redoId', 'name' => 'redo', 'bind' => 'redo', 'action' => 'age.redo']
-            ]);
-
-//        $this->footerView = new ToolBarView("footerViewId",
-//            [
-//                'cache' => ['id' => 'cacheId', 'name' => 'Clear Cache', 'bind' => 'cache'],
-//                'load' => ['id' => 'loadId', 'name' => 'Reload', 'bind' => 'load'],
-//                'apply' => ['id' => 'applyId', 'name' => 'Apply', 'bind' => 'changed']
-//            ]);
         $this->footerView = new FooterView(['id' => 'footerViewId', 'changed' => 'changed']);
     }
 
@@ -49,8 +35,7 @@ class MainView implements IView
         </head>
         <body id="mainViewId">
         <div>
-            <?php $this->tooBarView->render(); ?>
-            <?php $this->bmiView->render(); ?>
+            <?php $this->view->render(); ?>
             <?php $this->footerView->render(); ?>
         </div>
         </body>
@@ -62,15 +47,9 @@ class MainView implements IView
         <script src="./JsLib/DataProxy.js"></script>
         <script src="./JsLib/ViewModel.js"></script>
         <script src="./JsLib/GridUtils.js"></script>
-        <script src="./JsLib/History.js"></script>
-        <script src="./JsLib/Command.js"></script>
-        <script src="./JsLib/StringUtils.js"></script>
         <script src="./JsLib/Maybe.js"></script>
-
-        <script src="./Modules/Module1/ModuleInstance.js"></script>
-        <script src="./Modules/Module1/BmiMapper.js"></script>
-        <script src="./Modules/Module1/BmiController.js"></script>
-        <script src="./Modules/Module1/StringTests.js"></script>
+        <script src="./Modules/Module2/ModuleInstance.js"></script>
+        <script src="./Modules/Module2/ViewController.js"></script>
     </html>
 <?php
     }
