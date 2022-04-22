@@ -8,7 +8,6 @@ const BmiController = function (viewModel) {
     const heightEdit = getElement('heightId')
     const weightEdit = getElement('weightId')
 
-
     const updateError = u.curry((id, message) => {
         try {
             const element = getElement(id)
