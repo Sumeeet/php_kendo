@@ -1,16 +1,7 @@
 'use strict'
 const ViewController = function (viewModel) {
     const v = CT.Validations
-    const u = CT.Utils
-
-    const updateError = u.curry((id, message) => {
-        try {
-            const element = getElement(id)
-            element.innerText = message
-        } catch (e) {
-            console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
-        }
-    });
+    const u = CT.Utils;
 
     (function() {
         viewModel.registerValidations('fage.value', [v.comparision
@@ -19,7 +10,7 @@ const ViewController = function (viewModel) {
                 (sage, fage) => fage < sage,
                 viewModel.get('sage.value')
             ), v.isPositive('Age must be a positive number')],
-            updateError("errorId1")
+            u.updateError("errorId1")
         );
 
         viewModel.registerValidations('sage.value',[v.comparision
@@ -28,7 +19,7 @@ const ViewController = function (viewModel) {
                 (fage, sage) => sage > fage,
                 viewModel.get('fage.value')
             ), v.isPositive('Age must be a positive number')],
-            updateError("errorId2")
+            u.updateError("errorId2")
         );
     })();
 }

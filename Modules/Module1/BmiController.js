@@ -8,14 +8,6 @@ const BmiController = function (viewModel) {
     const heightEdit = getElement('heightId')
     const weightEdit = getElement('weightId')
 
-    const updateError = u.curry((id, message) => {
-        try {
-            const element = getElement(id)
-            element.innerText = message
-        } catch (e) {
-            console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
-        }
-    })
     // const debounce = CT.Decorators.debounce(addCommands, 400);
 
     function bindDependencies (viewModel) {
@@ -51,19 +43,19 @@ const BmiController = function (viewModel) {
             [v.isInRange(viewModel.get('age.min'), viewModel.get('age.max')),
                 v.isPositive('Age must be a positive number'),
                 v.isNumber('Please enter a valid number')],
-            updateError("errorId1"));
+            u.updateError("errorId1"));
 
         viewModel.registerValidations('height.value',
             [v.isInRange(viewModel.get('height.min'), viewModel.get('height.max')),
                 v.isPositive('Height must be a positive number'),
                 v.isNumber('Please enter a valid number')],
-            updateError("errorId2"));
+            u.updateError("errorId2"));
 
         viewModel.registerValidations('weight.value',
             [v.isInRange(viewModel.get('weight.min'), viewModel.get('weight.max')),
                 v.isPositive('Weight must be a positive number'),
                 v.isNumber('Please enter a valid number')],
-            updateError("errorId3"));
+            u.updateError("errorId3"));
 
         // This is calculated field, so limits are defined manually, but
         // it can be pulled from other source too.
@@ -71,7 +63,7 @@ const BmiController = function (viewModel) {
             [v.isInRange(12, 42),
                 v.isPositive('bmi must be a positive number'),
                 v.isNumber('Please enter a valid number')],
-            updateError("errorId4"));
+            u.updateError("errorId4"));
 
         ageEdit.addEventListener('keyup', (event) => {
             addCommands(event, 'age.value', ageEdit.value);

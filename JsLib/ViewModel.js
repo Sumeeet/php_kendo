@@ -11,8 +11,7 @@ const ViewModel = function(url) {
     // Pick the last property changed
     let lastPropChanged;
 
-    // record property changes, that way only changed property are sent to
-    // server
+    // record property changes, that way only changed property are sent to the server
     const propChangedList = []
 
     // record errors to keep apply button state in sync
@@ -178,7 +177,7 @@ const ViewModel = function(url) {
                 changedObservableObject.set('changed', errorMap.size === 0);
             }
         }
-        err.errFn(err.error.message)
+        err.errFn(err.error)
         return pass
     }
 

@@ -65,3 +65,12 @@ CT.Utils.concat = CT.Utils.curry((f, r) => {
     const results = [r.result, result.result]
     return { result: results, orgValue: r.orgValue }
 })
+
+CT.Utils.updateError = CT.Utils.curry((id, result) => {
+    try {
+        const element = document.getElementById(id)
+        element.innerText = result.pass ? '' : result.message
+    } catch (e) {
+        console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
+    }
+})
