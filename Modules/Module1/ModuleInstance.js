@@ -15,7 +15,7 @@ const ModuleInstance = function() {
             viewModel.bind(result, mainView, footerView);
 
             // initialize all the controllers here
-            new BmiController(viewModel)
+            const bmiController = new BmiController(viewModel)
             //new UndoRedoController(viewModel, history)
 
             applyButton.addEventListener('click', (event) => {
@@ -24,6 +24,7 @@ const ModuleInstance = function() {
                 .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
                 .then(result => {
                     viewModel.reset();
+                    bmiController.reset();
                 });
             })
 

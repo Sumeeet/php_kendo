@@ -38,10 +38,9 @@ const UndoRedo = function() {
 }
 
 const History = function () {
-    const HISTORY_SIZE = 10
+    const HISTORY_SIZE = 100
     let history = []
     let marker = -1
-    let overwrite = false
 
     const doesExist = function () {
         return history.length > 0
@@ -49,22 +48,14 @@ const History = function () {
 
     const record = function(command) {
         if (history.length > HISTORY_SIZE) {
-            if (!overwrite) {
-                console.log(`History size exceeded the size of ${HISTORY_SIZE},
-                doing Undo one more time will overwrite the last recorded value`)
-                overwrite = true
-                return
-            }
-        }
-
-        if (overwrite) {
+            console.log(`History is full, last value shall be overwritten.
+            To avoid loss of data, please apply changes`)
             marker = HISTORY_SIZE - 1
-            overwrite = false
         }
 
         const addCommand = (cmd) => {
             marker = marker + 1
-            history.splice(marker, 0, cmd)
+            history.splice(marker, history.length - marker, cmd)
         }
 
         if (!doesExist()) {
@@ -79,7 +70,7 @@ const History = function () {
 
     const canLookForward = function (index) {
         const size = history.length
-        return doesExist() && index < size
+        return size > 0 && index < size
     }
 
     const peekInHistory = function (index) {
@@ -95,7 +86,6 @@ const History = function () {
         if (cmd === null) {
             cmd = peekInHistory(marker)
             readCache = true
-            index = index - 1
         }
         cmd.execute(readCache)
         marker = index
@@ -104,13 +94,7 @@ const History = function () {
     const playForward = function () {
         let index = marker + 1
         if (!canLookForward(index)) return
-
         let cmd = peekInHistory(index)
-        if (cmd === null) {
-            // skip null values
-            index = index + 1
-            cmd = peekInHistory(index)
-        }
         cmd.execute(false)
         marker = index
     }

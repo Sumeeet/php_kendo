@@ -5,36 +5,14 @@ CT.ArrayUtils.isArray = (val) =>
     Array.isArray(val) ? Either.of(val) :
         CT.Utils.left(`${val} is not an array`)
 
-CT.ArrayUtils.isEqual = CT.Utils.curry((prop, orgVal, val) => {
-    const errMsg = [];
-    orgVal.forEach((v, i) => {
-        if (v !== val[i]) {
-            errMsg.pushMessage(CT.Utils.left(`${prop} changed: ${v} -> ${v[i]}`));
-        }
-    });
-    return errMsg.length > 0 ? CT.Utils.left(errMsg) : CT.Utils.left(val);
-});
+CT.ArrayUtils.hasDuplicates = CT.Utils.curry( (msg, arr) => {
+    const duplicates = {}
+    const find = CT.Utils.curry((d, e) => d[e] = (d[e] || 0) + 1)
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(CT.Utils.forEach(find(duplicates))),
+        CT.Utils.chain(CT.ArrayUtils.isArray),
+        Maybe.of)
 
-CT.ArrayUtils.hasDuplicates = (array) => {
-    const map = new Map();
-    array.forEach((item, index) =>  {
-        if (!map.has(item)) {
-            map.set(item, [index]);
-        } else {
-            map.get(item).push(index);
-        }
-    });
-    return Array.from(map.values()).filter((item) => item.length > 1);
-}
-
-CT.ArrayUtils.contains = (value, array) => {
-    const map = new Map();
-    array.forEach((item, index) =>  {
-        if (item === value && !map.has(item)) {
-            map.set(item, [index]);
-        } else {
-            map.get(item).push(index);
-        }
-    });
-    return Array.from(map.values()).filter((item) => item.length > 0);
-}
+    execute(arr)
+    return duplicates
+})

@@ -39,5 +39,5 @@ CT.Validations.ifExist = CT.Utils.curry((msg, c, val) =>
     val.indexOf(c) < 0 ? CT.Utils.left(msg) :
         Either.of(val));
 
-CT.Validations.comparision = CT.Utils.curry((msg, compFunc, val1, val0) =>
+CT.Validations.compare = CT.Utils.curry((msg, compFunc, val1, val0) =>
     compFunc(val1, val0) ? CT.Utils.left(msg) : Either.of(val0))

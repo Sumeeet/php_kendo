@@ -66,6 +66,7 @@ class MainView implements IView
         <script src="./JsLib/Command.js"></script>
         <script src="./JsLib/StringUtils.js"></script>
         <script src="./JsLib/Maybe.js"></script>
+        <script src="./JsLib/ArrayUtils.js"></script>
 
         <script src="./Modules/Module1/ModuleInstance.js"></script>
         <script src="./Modules/Module1/BmiMapper.js"></script>

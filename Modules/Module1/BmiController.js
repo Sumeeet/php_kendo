@@ -89,4 +89,10 @@ const BmiController = function (viewModel) {
             }))
         }
     }
+
+    function reset() {
+        undoRedo.clear()
+    }
+
+    return { reset }
 }

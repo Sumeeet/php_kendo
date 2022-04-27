@@ -14,6 +14,8 @@ CT.Utils.curry = (fn) => {
     };
 }
 
+CT.Utils.forEach = CT.Utils.curry((func, functor) => functor.forEach(e => func(e)));
+
 CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
 
 CT.Utils.chain = CT.Utils.curry((func, m) => m.chain(func));
@@ -65,6 +67,8 @@ CT.Utils.concat = CT.Utils.curry((f, r) => {
     const results = [r.result, result.result]
     return { result: results, orgValue: r.orgValue }
 })
+
+CT.Utils.sort = CT.Utils.curry((func, functor) => functor.sort(func));
 
 CT.Utils.updateError = CT.Utils.curry((id, result) => {
     try {
