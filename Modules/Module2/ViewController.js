@@ -3,6 +3,20 @@ const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
 
+    function bindDependencies (viewModel) {
+        const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'), ["fage", "sage"])
+        viewModel.set('ageGrid.value', data)
+
+        //const data = viewModel.get('ageGrid.value')
+        const dataSource = {
+            columns: gridInfo.columns,
+            dataSource: data,
+            width: gridInfo.width,
+            height: gridInfo.height,
+            editable: "incell" }
+        $('#ageGridId').kendoGrid(dataSource)
+    }
+
     (function() {
         viewModel.registerValidations('fage.value', [v.compare
             (
@@ -21,5 +35,6 @@ const ViewController = function (viewModel) {
             ), v.isPositive('Age must be a positive number')],
             u.updateError("errorId2")
         );
+        bindDependencies(viewModel)
     })();
 }

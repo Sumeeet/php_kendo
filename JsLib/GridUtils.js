@@ -1,8 +1,14 @@
 var CT = CT || {};
 CT.GridUtils = CT.GridUtils || {};
 
-CT.GridUtils.create = (data, colInfo = null) => {
-    if (data === null || !Array.isArray(data)) return []
+/**
+ *
+ * @param data array of row data
+ * @param gridInfo
+ * @returns {*[]|*}
+ */
+CT.GridUtils.populate = (data, colInfo = null) => {
+    if (data === null) return []
 
     if (colInfo === null) {
         // generate default column names 'col0', 'col1'....
@@ -12,6 +18,12 @@ CT.GridUtils.create = (data, colInfo = null) => {
             return row
         })
     }
+
+    return data.map(r => {
+        const row = {}
+        r.forEach((value, i) => row[colInfo[i] ?? `c${i}`] = value)
+        return row
+    })
 }
 
 CT.GridUtils.getGrid = (gridId) => {

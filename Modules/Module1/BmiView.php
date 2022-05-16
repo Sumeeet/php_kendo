@@ -32,7 +32,8 @@ class BmiView implements IView
             'name' => 'BMI', 'style' => 'margin: 5px',
             'errorId' => 'errorId4']);
 
-        $grid = new GridView(['gridId' => 'bmiGridId']);
+        $grid = new GridView(['attribute' => 'bmiGrid',
+            'gridId' => 'bmiGridId']);
 ?>
 <div>
     <div class = 'horizontal_layout'>

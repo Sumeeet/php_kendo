@@ -19,10 +19,14 @@ const BmiController = function (viewModel) {
         })
 
         // initialize bmi grid
-        const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500, height: 830 }
-        dataSource.dataSource.data = bmiMapper.getBmiGridData()
+        //const dataSource = { dataSource: { data: {}}, columns: {}, width: 1500, height: 830, editable: "incell" }
+        // dataSource.dataSource.data = bmiMapper.getBmiGridData()
+        viewModel.set('bmiGrid', bmiMapper.getBmiGridData())
+
         // dataSource.columns = bmiMapper.getBmiColumnInfo()
-        $('#gridId').kendoGrid(dataSource)
+        //$('#gridId').kendoGrid(dataSource)
+        //var grid = $("#grid").data("kendoGrid");
+        //grid.editCell($("#grid td:eq(0)"));
     }
 
     function bindCommands (viewModel) {

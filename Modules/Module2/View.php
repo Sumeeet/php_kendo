@@ -2,6 +2,7 @@
 
 namespace CT\Modules\Module2;
 
+use CT\Controls\GridView;
 use CT\Controls\LabelledNumericTextView;
 use CT\Interfaces\IView;
 
@@ -18,6 +19,9 @@ class View implements IView
             'inpId' => 'sageId', 'labelId' => 'sageLabelId',
             'name' => 'Sons Age', 'style' => 'margin: 5px',
             'errorId' => 'errorId2']);
+
+        $grid = new GridView(['attribute' => 'ageGrid.value',
+            'gridId' => 'ageGridId']);
 ?>
 <div>
     <div class = 'horizontal_layout'>
@@ -26,6 +30,7 @@ class View implements IView
         $sageView->render();
         ?>
     </div>
+    <?php $grid->render(); ?>
 </div>
 
 <?php

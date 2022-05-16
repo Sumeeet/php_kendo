@@ -12,10 +12,6 @@ const ModuleInstance = function() {
         const viewModel = new ViewModel(url)
         viewModel.init([limits_url])
         .then(result => {
-            viewModel.bind(result, mainView, footerView);
-
-            // initialize all the controllers here
-            new ViewController(viewModel)
 
             applyButton.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -35,6 +31,11 @@ const ModuleInstance = function() {
                 event.stopPropagation();
                 caches.delete('ct_cache')
             })
+
+            viewModel.bind(result, mainView, footerView);
+
+            // initialize all the controllers here
+            new ViewController(viewModel)
         })
         .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
     }

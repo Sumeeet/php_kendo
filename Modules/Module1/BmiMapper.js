@@ -49,7 +49,7 @@ const BmiMapper = () => {
     // })
 
     const getBmiGridData = () => {
-        return CT.GridUtils.create(bmiTable)
+        return CT.GridUtils.populate(bmiTable)
     }
 
     return { getBmiGridData, calculateBmi }
