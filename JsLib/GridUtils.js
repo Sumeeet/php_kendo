@@ -1,29 +1,20 @@
 var CT = CT || {};
 CT.GridUtils = CT.GridUtils || {};
 
-/**
- *
- * @param data array of row data
- * @param gridInfo
- * @returns {*[]|*}
- */
 CT.GridUtils.populate = (data, colInfo = null) => {
-    if (data === null) return []
-
-    if (colInfo === null) {
-        // generate default column names 'col0', 'col1'....
-        return data.map(r => {
-            const row = {}
-            r.forEach((value, i) => row[`c${i}`] = value)
-            return row
-        })
-    }
-
-    return data.map(r => {
+    const u = CT.Utils
+    const createRow = u.curry((rowData) => {
         const row = {}
-        r.forEach((value, i) => row[colInfo[i] ?? `c${i}`] = value)
+        rowData.forEach((value, i) => row[colInfo[i] ?? `c${i}`] = value)
         return row
     })
+
+    const execute = u.compose(
+        u.chain(u.map(createRow)),
+        Maybe.of
+    )
+
+    return execute(data)
 }
 
 CT.GridUtils.getGrid = (gridId) => {

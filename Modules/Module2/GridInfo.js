@@ -11,6 +11,6 @@ const gridInfo = {
             width: "100px",
         }
     ],
-    width: "400px",
+    width: "420px",
     height: "400px"
 }
