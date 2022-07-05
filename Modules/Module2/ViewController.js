@@ -2,12 +2,12 @@
 const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
+    const g = CT.GridUtils;
 
     function bindDependencies (viewModel) {
         const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'), ["fage", "sage"])
         viewModel.set('ageGrid.value', data)
 
-        //const data = viewModel.get('ageGrid.value')
         const dataSource = {
             columns: gridInfo.columns,
             dataSource: data,
@@ -15,6 +15,38 @@ const ViewController = function (viewModel) {
             height: gridInfo.height,
             editable: "incell" }
         $('#ageGridId').kendoGrid(dataSource)
+    }
+
+    function bindCommands (viewModel) {
+        viewModel.set('ageGrid.addRow', function () {
+            const addRowCommand = new AddRowCommand(CT.Actions)
+            // const removeRowCommand = new RemoveRowCommand(CT.Actions, 'ageGridId', CELL_INSERTION_POSITION.end)
+            // Commands can be added to undo/redo undoRedo.push(removeRowCommand)
+            addRowCommand.execute('ageGridId', CELL_INSERTION_POSITION.end)
+        })
+
+        viewModel.set('ageGrid.removeRow', function () {
+            const removeRowCommand = new RemoveRowCommand(CT.Actions)
+            removeRowCommand.execute('ageGridId', CELL_INSERTION_POSITION.end)
+        })
+
+        // TODO_SK get rid of this, needs this strangely to execute bind commands
+        viewModel.set('apply', function () {
+            return;
+        })
+    }
+
+    function getGridInfo(data) {
+        if (!gridInfo || !data) return []
+
+        // TODO: add missing columns headers
+        const addMissingColumns = u.compose(
+            u.map(),
+            u.chain(u.filter((row) => 0)),
+            Maybe.of
+        )
+
+        return addMissingColumns(data)
     }
 
     (function() {
@@ -35,6 +67,9 @@ const ViewController = function (viewModel) {
             ), v.isPositive('Age must be a positive number')],
             u.updateError("errorId2")
         );
+
         bindDependencies(viewModel)
+
+        bindCommands(viewModel)
     })();
 }

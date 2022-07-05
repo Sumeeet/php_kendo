@@ -5,7 +5,7 @@ CT.GridUtils.populate = (data, colInfo = null) => {
     const u = CT.Utils
     const createRow = u.curry((rowData) => {
         const row = {}
-        rowData.forEach((value, i) => row[colInfo[i] ?? `c${i}`] = value)
+        rowData.forEach((value, i) => row[colInfo === null ? `col${i}` : colInfo[i] ?? `col${i}`] = value)
         return row
     })
 
@@ -28,6 +28,22 @@ CT.GridUtils.getData = (gridId) => {
     const readItems = (grid) => CT.GridUtils.hasData(grid) ? grid.items() : null
     const read = CT.Utils.compose(
         CT.Utils.chain(readItems),
+        Maybe.of,
+        CT.GridUtils.getGrid)
+    return read(gridId)
+}
+
+CT.GridUtils.getSourceData = (gridId) => {
+    const read = CT.Utils.compose(
+        CT.Utils.chain((grid) => grid.dataSource.data()),
+        Maybe.of,
+        CT.GridUtils.getGrid)
+    return read(gridId)
+}
+
+CT.GridUtils.getSource = (gridId) => {
+    const read = CT.Utils.compose(
+        CT.Utils.chain((grid) => grid.dataSource),
         Maybe.of,
         CT.GridUtils.getGrid)
     return read(gridId)
@@ -108,5 +124,41 @@ CT.GridUtils.hasDuplicates = CT.Utils.curry((ci, gridId) => {
         CT.Utils.map(CT.ArrayUtils.hasDuplicates('')),
         readData
     )
+    return execute(gridId)
+})
+
+CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
+    const insert = CT.Utils.curry((pos, source) => {
+        // TODO: copy first item if any, later on will add blank, default or user defined values
+        const rowCount = source.total()
+        const sourceData = source.data()
+        const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
+        source.insert(rowCount, rowCopy)
+        console.log(`row added: ${pos}`);
+    })
+
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(insert(position)),
+        Maybe.of,
+        CT.GridUtils.getSource
+    )
+
+    return execute(gridId)
+})
+
+CT.GridUtils.removeRow = CT.Utils.curry((position, gridId) => {
+    const remove = CT.Utils.curry((pos, source) => {
+        const rowCount = source.total()
+        const grid = CT.GridUtils.getGrid(gridId)
+        grid.removeRow(`tr:eq("${rowCount}")`);
+        console.log(`row removed: ${pos}`);
+    })
+
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(remove(position)),
+        Maybe.of,
+        CT.GridUtils.getSource
+    )
+
     return execute(gridId)
 })

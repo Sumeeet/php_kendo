@@ -3,6 +3,7 @@
 namespace CT\Modules\Module2;
 
 use CT\Controls\FooterView;
+use CT\Controls\ToolBarView;
 use CT\Interfaces\IView;
 
 class MainView implements IView
@@ -12,7 +13,6 @@ class MainView implements IView
 
     public function __construct(IView $view) {
         $this->view = $view;
-
         $this->footerView = new FooterView(['id' => 'footerViewId', 'changed' => 'changed']);
     }
 
@@ -51,6 +51,9 @@ class MainView implements IView
         <script src="./Modules/Module2/ModuleInstance.js"></script>
         <script src="./Modules/Module2/ViewController.js"></script>
         <script src="./Modules/Module2/GridInfo.js"></script>
+        <script src="./JsLib/Constants.js"></script>
+        <script src="./JsLib/Command.js"></script>
+        <script src="./JsLib/Actions.js"></script>
     </html>
 <?php
     }

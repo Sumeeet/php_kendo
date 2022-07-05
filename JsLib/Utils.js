@@ -14,7 +14,11 @@ CT.Utils.curry = (fn) => {
     };
 }
 
-CT.Utils.forEach = CT.Utils.curry((func, functor) => functor.forEach(e => func(e)));
+CT.Utils.forEach = CT.Utils.curry((func, functor) => functor.forEach((e, i) => func(e, i)));
+
+//CT.Utils.forEachFill = CT.Utils.curry((obj, func, functor) => functor.forEach((e, i) => func(obj, e, i)));
+
+CT.Utils.reduce = CT.Utils.curry((func, initialValue, functor) => functor.reduce(func, initialValue))
 
 CT.Utils.map = CT.Utils.curry((func, functor) => functor.map(func));
 
@@ -78,3 +82,7 @@ CT.Utils.updateError = CT.Utils.curry((id, result) => {
         console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
     }
 })
+
+//CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) : func2(v))
+
+CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func))
