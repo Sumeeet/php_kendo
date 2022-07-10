@@ -3,7 +3,6 @@ const undoRedo = new UndoRedo()
 const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
-    const g = CT.GridUtils;
 
     function bindDependencies (viewModel) {
         const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'), ["fage", "sage"])
@@ -22,7 +21,7 @@ const ViewController = function (viewModel) {
         viewModel.set('ageGrid.addRow', function () {
             const add = CT.GridUtils.addRow(CELL_INSERTION_POSITION.end)
             const remove = CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end)
-            undoRedo.push('ageGridId', new CompositeAddRemoveCommand(CT.Actions,
+            undoRedo.push('ageGridId', new AddRemoveCommand(CT.GridUtils,
                 () => add('ageGridId'),
                 () => remove('ageGridId'))
             )
@@ -30,28 +29,26 @@ const ViewController = function (viewModel) {
         })
 
         viewModel.set('ageGrid.removeRow', function () {
-            const removeRowCommand = new RemoveRowCommand(CT.Actions)
-            removeRowCommand.execute('ageGridId', CELL_INSERTION_POSITION.end)
+            CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
         })
 
         // TODO_SK get rid of this, needs this strangely to execute bind commands
         viewModel.set('apply', function () {
-            return;
         })
     }
 
-    function getGridInfo(data) {
-        if (!gridInfo || !data) return []
-
-        // TODO: add missing columns headers
-        const addMissingColumns = u.compose(
-            u.map(),
-            u.chain(u.filter((row) => 0)),
-            Maybe.of
-        )
-
-        return addMissingColumns(data)
-    }
+    // function getGridInfo(data) {
+    //     if (!gridInfo || !data) return []
+    //
+    //     // TODO: add missing columns headers
+    //     const addMissingColumns = u.compose(
+    //         u.map(),
+    //         u.chain(u.filter((row) => 0)),
+    //         Maybe.of
+    //     )
+    //
+    //     return addMissingColumns(data)
+    // }
 
     (function() {
         viewModel.registerValidations('fage.value', [v.compare
