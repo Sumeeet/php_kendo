@@ -1,8 +1,10 @@
 'use strict'
-const undoRedo = new UndoRedo()
+const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands)
+
 const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
+    const g = CT.GridUtils
 
     function bindDependencies (viewModel) {
         const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'), ["fage", "sage"])
@@ -19,9 +21,9 @@ const ViewController = function (viewModel) {
 
     function bindCommands (viewModel) {
         viewModel.set('ageGrid.addRow', function () {
-            const add = CT.GridUtils.addRow(CELL_INSERTION_POSITION.end)
-            const remove = CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end)
-            undoRedo.push('ageGridId', new AddRemoveCommand(CT.GridUtils,
+            const add = g.addRow(CELL_INSERTION_POSITION.end)
+            const remove = g.removeRow(CELL_INSERTION_POSITION.end)
+            undoRedo.push('ageGridId', new AddRemoveCommand(g,
                 () => add('ageGridId'),
                 () => remove('ageGridId'))
             )

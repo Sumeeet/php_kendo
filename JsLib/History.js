@@ -1,4 +1,4 @@
-const UndoRedo = function() {
+const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
     const undoMap = new Map()
 
     const isEmpty = function() {
@@ -12,7 +12,7 @@ const UndoRedo = function() {
             return
         }
 
-        const history = new History()
+        const history = new History(itemType)
         history.record(cmd)
         undoMap.set(key, history)
     }
@@ -37,7 +37,7 @@ const UndoRedo = function() {
     return { push, clear, undo, redo }
 }
 
-const History = function () {
+const History = function (itemType) {
     const HISTORY_SIZE = 100
     let history = []
     let marker = -1
@@ -78,7 +78,10 @@ const History = function () {
     }
 
     const playBack = function () {
-        let index = marker - 1
+        // if item type is values then wen need to apply previous value
+        // on every undo operation. If it's a command, then it should be played
+        // in order. itemType = 0 is for value and 1 for command
+        let index = marker - itemType
         if (!canLookBack(index)) return
 
         let readCache = false
@@ -87,8 +90,13 @@ const History = function () {
             cmd = peekInHistory(marker)
             readCache = true
         }
-        cmd.execute(readCache)
-        marker = index
+
+        // this check is needed to handle command case, for value type it will
+        // return when canLookBack is called
+        if (cmd) {
+            cmd.execute(readCache)
+            marker = marker - 1
+        }
     }
 
     const playForward = function () {
