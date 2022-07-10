@@ -133,6 +133,7 @@ CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
         const rowCount = source.total()
         const sourceData = source.data()
         const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
+        // TODO: get index from position constant
         source.insert(rowCount, rowCopy)
         console.log(`row added: ${pos}`);
     })
@@ -150,8 +151,11 @@ CT.GridUtils.removeRow = CT.Utils.curry((position, gridId) => {
     const remove = CT.Utils.curry((pos, source) => {
         const rowCount = source.total()
         const grid = CT.GridUtils.getGrid(gridId)
-        grid.removeRow(`tr:eq("${rowCount}")`);
-        console.log(`row removed: ${pos}`);
+        // TODO: get index from position constant
+        if (rowCount > 0) {
+            grid.removeRow(`tr:eq("${rowCount}")`);
+            console.log(`row removed: ${pos}`);
+        }
     })
 
     const execute = CT.Utils.compose(

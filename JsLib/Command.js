@@ -20,3 +20,18 @@ const RemoveRowCommand = function (receiver, action = CT.Actions.removeRow) {
     }
     return  { execute }
 }
+
+const CompositeAddRemoveCommand = function (receiver, addAction, removeAction) {
+    let undo = true
+    const execute = function () {
+        if (undo) {
+            removeAction.apply(receiver)
+            undo = false
+        }
+        else {
+            addAction.apply(receiver)
+            undo = true
+        }
+    }
+    return  { execute }
+}

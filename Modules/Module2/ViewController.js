@@ -1,4 +1,5 @@
 'use strict'
+const undoRedo = new UndoRedo()
 const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
@@ -19,10 +20,13 @@ const ViewController = function (viewModel) {
 
     function bindCommands (viewModel) {
         viewModel.set('ageGrid.addRow', function () {
-            const addRowCommand = new AddRowCommand(CT.Actions)
-            // const removeRowCommand = new RemoveRowCommand(CT.Actions, 'ageGridId', CELL_INSERTION_POSITION.end)
-            // Commands can be added to undo/redo undoRedo.push(removeRowCommand)
-            addRowCommand.execute('ageGridId', CELL_INSERTION_POSITION.end)
+            const add = CT.GridUtils.addRow(CELL_INSERTION_POSITION.end)
+            const remove = CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end)
+            undoRedo.push('ageGridId', new CompositeAddRemoveCommand(CT.Actions,
+                () => add('ageGridId'),
+                () => remove('ageGridId'))
+            )
+            add('ageGridId')
         })
 
         viewModel.set('ageGrid.removeRow', function () {
