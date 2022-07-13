@@ -15,6 +15,7 @@ const ViewController = function (viewModel) {
             dataSource: data,
             width: gridInfo.width,
             height: gridInfo.height,
+            selectable: "row",
             editable: "incell" }
         $('#ageGridId').kendoGrid(dataSource)
     }
@@ -28,6 +29,14 @@ const ViewController = function (viewModel) {
                 () => remove('ageGridId'))
             )
             add('ageGridId')
+        })
+
+        viewModel.set('ageGrid.addBeforeRow', function () {
+            g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
+        })
+
+        viewModel.set('ageGrid.addAfterRow', function () {
+            g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
         })
 
         viewModel.set('ageGrid.removeRow', function () {

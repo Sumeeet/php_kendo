@@ -28,6 +28,9 @@ class View implements IView
             [
                 'addRow' => ['id' => 'addRowId', 'name' => '+ Row', 'action' => 'ageGrid.addRow'],
                 'removeRow' => ['id' => 'removeRowId', 'name' => '- Row', 'action' => 'ageGrid.removeRow'],
+                'addBeforeRow' => ['id' => 'addBeforeRowId', 'name' => '+= Row', 'action' => 'ageGrid.addBeforeRow'],
+                'addAfterRow' => ['id' => 'addAfterRowId', 'name' => '=+ Row', 'action' => 'ageGrid.addAfterRow'],
+                'removeRow' => ['id' => 'removeRowId', 'name' => '- Row', 'action' => 'ageGrid.removeRow'],
                 'addColumn' => ['id' => 'addColumnId', 'name' => '+ Column', 'action' => 'age.addColumn'],
                 'removeColumn' => ['id' => 'removeColumnId', 'name' => '- Column', 'action' => 'age.removeColumn']
             ]);
