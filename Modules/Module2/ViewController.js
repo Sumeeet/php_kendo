@@ -6,9 +6,29 @@ const ViewController = function (viewModel) {
     const u = CT.Utils;
     const g = CT.GridUtils
 
+    function registerValidations(viewModel) {
+        viewModel.registerValidations('fage.value', [v.compare
+            (
+                "Fathers age should be greater than sons age",
+                (sage, fage) => fage < sage, // criterion to compare
+                viewModel.get('sage.value') // value to compare with
+            ), v.isPositive('Age must be a positive number')],
+            u.updateError("errorId1")
+        );
+
+        viewModel.registerValidations('sage.value',[v.compare
+            (
+                "Sons age should be less than fathers age",
+                (fage, sage) => sage > fage, // criterion to compare
+                viewModel.get('fage.value') // value to compare with
+            ), v.isPositive('Age must be a positive number')],
+            u.updateError("errorId2")
+        );
+    }
+
     function bindDependencies (viewModel) {
-        const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'), ["fage", "sage"])
-        viewModel.set('ageGrid.value', data)
+        const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'),
+            CT.GridUtils.getColumnNames(gridInfo.columns))
 
         const dataSource = {
             columns: gridInfo.columns,
@@ -18,6 +38,8 @@ const ViewController = function (viewModel) {
             selectable: "row",
             editable: "incell" }
         $('#ageGridId').kendoGrid(dataSource)
+
+        viewModel.set('ageGrid.value', data)
     }
 
     function bindCommands (viewModel) {
@@ -62,23 +84,7 @@ const ViewController = function (viewModel) {
     // }
 
     (function() {
-        viewModel.registerValidations('fage.value', [v.compare
-            (
-                "Fathers age should be greater than sons age",
-                (sage, fage) => fage < sage, // criterion to compare
-                viewModel.get('sage.value') // value to compare with
-            ), v.isPositive('Age must be a positive number')],
-            u.updateError("errorId1")
-        );
-
-        viewModel.registerValidations('sage.value',[v.compare
-            (
-                "Sons age should be less than fathers age",
-                (fage, sage) => sage > fage, // criterion to compare
-                viewModel.get('fage.value') // value to compare with
-            ), v.isPositive('Age must be a positive number')],
-            u.updateError("errorId2")
-        );
+        registerValidations(viewModel)
 
         bindDependencies(viewModel)
 

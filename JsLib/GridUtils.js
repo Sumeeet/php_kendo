@@ -1,11 +1,21 @@
 var CT = CT || {};
 CT.GridUtils = CT.GridUtils || {};
 
-CT.GridUtils.populate = (data, colInfo = null) => {
+CT.GridUtils.getColumnNames = (gridInfo) => {
+    const colNames = CT.Utils.curry((key, colsInfo) => colsInfo.map((colInfo) => colInfo['field']))
+    const getNames = CT.Utils.compose(
+        CT.Utils.chain(colNames('field')),
+        Maybe.of
+    )
+
+    return getNames(gridInfo)
+}
+
+CT.GridUtils.populate = (data, colsName = null) => {
     const u = CT.Utils
     const createRow = u.curry((rowData) => {
         const row = {}
-        rowData.forEach((value, i) => row[colInfo === null ? `col${i}` : colInfo[i] ?? `col${i}`] = value)
+        rowData.forEach((value, i) => row[colsName === null ? `col${i}` : colsName[i] ?? `col${i}`] = value)
         return row
     })
 
@@ -150,18 +160,15 @@ CT.GridUtils.hasDuplicates = CT.Utils.curry((ci, gridId) => {
     return execute(gridId)
 })
 
-CT.GridUtils.getRowInsertionIndex = CT.Utils.curry(
-    (dataSource,
-        position,
-        selectedIndex) => {
+CT.GridUtils.getRowInsertionIndex = CT.Utils.curry((ds, pos, si) => {
 
-        const rowCount = dataSource.total()
-        selectedIndex = Math.max(0, selectedIndex === -1 ? rowCount - 1 : selectedIndex)
-        selectedIndex = Math.min(selectedIndex, rowCount)
-        if (position === CELL_INSERTION_POSITION.start) return 0
-        if (position === CELL_INSERTION_POSITION.end) return rowCount
-        if (position === CELL_INSERTION_POSITION.before) return selectedIndex
-        if (position === CELL_INSERTION_POSITION.after) return Math.max(selectedIndex, selectedIndex + 1)
+        const rowCount = ds.total()
+        si = Math.max(0, si === -1 ? rowCount - 1 : si)
+        si = Math.min(si, rowCount)
+        if (pos === CELL_INSERTION_POSITION.start) return 0
+        if (pos === CELL_INSERTION_POSITION.end) return rowCount
+        if (pos === CELL_INSERTION_POSITION.before) return si
+        if (pos === CELL_INSERTION_POSITION.after) return Math.max(si, si + 1)
 })
 
 CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
