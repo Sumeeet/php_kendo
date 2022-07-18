@@ -83,6 +83,6 @@ CT.Utils.updateError = CT.Utils.curry((id, result) => {
     }
 })
 
-//CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) : func2(v))
+CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) : func2(v))
 
 CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func))

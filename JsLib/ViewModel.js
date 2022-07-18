@@ -78,6 +78,7 @@ const ViewModel = function(url) {
                             changedObservableObject.set('changed', !(errorMap.size > 0))
                         }
                     })
+                    .catch(e => console.log(e))
                 }
                 catch (e) {
                     console.log(`Undefined Value ${e}`)
@@ -248,10 +249,32 @@ const ViewModel = function(url) {
      */
     const runValidations = function(prop = null) {
         const propPaths = prop === null ? Array.from(controlIdValidatorMap.keys()) : [prop];
-        const awaitFunc = propPaths.map(propPath => controlIdValidatorMap.get(propPath).validateFunc(get(propPath)))
-        return Promise.all(awaitFunc)
-        .then((response) => recordErrors(response))
-        .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
+        const canValidate = (propPath) => controlIdValidatorMap.get(propPath) !== undefined
+        const getValidate = (propPath) => controlIdValidatorMap.get(propPath).validateFunc(get(propPath))
+        const funcNotDefined = (propPath) => undefined
+
+        const awaitValidate = (funcToValidate) => {
+            return Promise.all(funcToValidate)
+                .then((response) => recordErrors(response))
+                .catch(e => console.log(
+                    `There has been a problem with validate function(s) : ${e.message}`))
+        }
+
+        const getValidateFunc = CT.Utils.compose(
+            CT.Utils.IfElse(
+                canValidate,
+                getValidate,
+                funcNotDefined),
+        )
+
+        const validateProp = CT.Utils.compose(
+            awaitValidate,
+            CT.Utils.filter((f) => f !== undefined),
+            CT.Utils.chain(CT.Utils.map(getValidateFunc)),
+            Maybe.of
+        )
+
+       return validateProp(propPaths)
     }
 
     /**
