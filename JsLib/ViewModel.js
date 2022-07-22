@@ -179,7 +179,9 @@ const ViewModel = function(url) {
                 changedObservableObject.set('changed', errorMap.size === 0);
             }
         }
-        err.errFn(err.error)
+        if (err.errFn) {
+            err.errFn(err.error)
+        }
         return pass
     }
 
@@ -282,7 +284,7 @@ const ViewModel = function(url) {
      * @param prop
      * @param fns
      */
-    const registerValidations = function(prop, fns, errFn) {
+    const registerValidations = function(prop, fns, errFn = null) {
         // TODO: better way to transform and take care of boundary cases
         const first = fns.pop();
         let composedFns = fns.map(fn => u.chain(fn));

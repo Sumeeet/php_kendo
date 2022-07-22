@@ -24,12 +24,20 @@ const ViewController = function (viewModel) {
             ), v.isPositive('Age must be a positive number')],
             u.updateError("errorId2")
         );
+
+        viewModel.registerValidations('ageGrid.value', [
+                u.compose(
+                    u.map(v.isPositive('Age must be a positive number')),
+                    g.map(g.getColData('fage')),
+                )]
+        );
     }
 
     function bindDependencies (viewModel) {
-        const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'),
-            CT.GridUtils.getColumnNames(gridInfo.columns))
+        // const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'),
+        //     CT.GridUtils.getColumnNames(gridInfo.columns))
 
+        const data = viewModel.get('ageGrid.value')
         const dataSource = {
             columns: gridInfo.columns,
             dataSource: data,
@@ -39,7 +47,7 @@ const ViewController = function (viewModel) {
             editable: "incell" }
         $('#ageGridId').kendoGrid(dataSource)
 
-        viewModel.set('ageGrid.value', data)
+        //viewModel.set('ageGrid.value', data)
     }
 
     function bindCommands (viewModel) {

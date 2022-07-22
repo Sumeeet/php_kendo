@@ -38,12 +38,15 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
     let result;
     switch (e.constructor) {
         case Left:
-            result = { pass: false, message: f(e.$val) };
+            result = { pass: false, message: f(e.$val) }
             break;
         case Right:
             //result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
-            result = { pass: true, message: `Success` };
+            result = { pass: true, message: `Success` }
             break;
+        case Array:
+            // TODO check each element of an array for Left or Right
+            return e.map(r => result.push({ pass: false, message: f(r.$val) }))
     }
     return result;
 });

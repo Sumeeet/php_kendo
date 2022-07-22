@@ -51,6 +51,8 @@ CT.GridUtils.getSourceData = (gridId) => {
     return read(gridId)
 }
 
+CT.GridUtils.getColData = CT.Utils.curry((colName, data) => data[colName])
+
 CT.GridUtils.getSource = (gridId) => {
     const read = CT.Utils.compose(
         CT.Utils.chain((grid) => grid.dataSource),
@@ -89,7 +91,7 @@ CT.GridUtils.getColumnSelector = (start, end) => `td:nth-child(n+${start}):nth-c
 
 CT.GridUtils.filter = CT.Utils.curry((selector, data) => $(data).filter(selector))
 
-CT.GridUtils.map = CT.Utils.curry((func, data) => $.map(data, item => func(item.cells)))
+CT.GridUtils.map = CT.Utils.curry((func, data) => $.map(data, item => func(item)))
 
 CT.GridUtils.each = CT.Utils.curry((func, data) => $.each(data, func))
 
@@ -114,7 +116,9 @@ CT.GridUtils.readColumnWise = CT.Utils.curry((rs, re, cs, ce, data) => {
 
     const read = CT.Utils.compose(
         rowsToCols,
-        CT.GridUtils.map(CT.GridUtils.filter(selector)),
+        CT.GridUtils.map(
+            CT.Utils.compose(CT.GridUtils.filter(selector), (item) => item.cells)
+        ),
         CT.GridUtils.readRows(rs, re))
 
     const execute = CT.Utils.compose(
@@ -130,7 +134,9 @@ CT.GridUtils.readRowWise = CT.Utils.curry((rs, re, cs, ce, data) => {
 
     const read = CT.Utils.compose(
         CT.Utils.map(row => [...row]),
-        CT.GridUtils.map(CT.GridUtils.filter(selector)),
+        CT.GridUtils.map(
+            CT.Utils.compose(CT.GridUtils.filter(selector), (item) => item.cells)
+        ),
         CT.GridUtils.readRows(rs, re)
     )
 
