@@ -16,6 +16,7 @@ const ViewController = function (viewModel) {
             u.updateError("errorId1")
         );
 
+        // TODO: validations compares with old value rather than changed
         viewModel.registerValidations('sage.value',[v.compare
             (
                 "Sons age should be less than fathers age",
@@ -25,11 +26,20 @@ const ViewController = function (viewModel) {
             u.updateError("errorId2")
         );
 
-        viewModel.registerValidations('ageGrid.value', [
-                u.compose(
-                    u.map(v.isPositive('Age must be a positive number')),
-                    g.map(g.getColData('fage')),
-                )]
+        // map each element of a grid column and check for number validation
+        viewModel.registerValidations('ageGrid.value',
+            [g.map(u.compose(
+                v.isPositive('Age must be a positive number'),
+                u.getData('fage')
+            ))]
+        );
+
+        // map each element of a grid column and check for number validation
+        viewModel.registerValidations('ageGrid.value',
+            [g.map(u.compose(
+                v.isPositive('Age must be a positive number'),
+                u.getData('sage')
+            ))]
         );
     }
 

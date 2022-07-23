@@ -35,20 +35,18 @@ CT.Utils.left = (x) => new Left(x);
 CT.Utils.identity = x => x;
 
 CT.Utils.either = CT.Utils.curry((f, g, e) => {
-    let result;
     switch (e.constructor) {
         case Left:
-            result = { pass: false, message: f(e.$val) }
-            break;
+            return { pass: false, message: f(e.$val) }
         case Right:
             //result = { pass: true, message: `value ${g(e.$val)} applied successfully` };
-            result = { pass: true, message: `Success` }
-            break;
+            return { pass: true, message: `Success` }
         case Array:
             // TODO check each element of an array for Left or Right
-            return e.map(r => result.push({ pass: false, message: f(r.$val) }))
+            return e.map(r => { return {pass: false, message: f(r.$val)} })
+        default:
+            throw new Error('Unknown result type')
     }
-    return result;
 });
 
 CT.Utils.toFixed = CT.Utils.curry((decimals, value) => Number(value).toFixed(decimals))
@@ -89,3 +87,10 @@ CT.Utils.updateError = CT.Utils.curry((id, result) => {
 CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) : func2(v))
 
 CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func))
+
+CT.Utils.getData = CT.Utils.curry((prop, data) => {
+    const getData = CT.Utils.compose(
+        CT.Utils.chain(CT.Utils.identity),
+        Maybe.of)
+    return getData(data[prop])
+})

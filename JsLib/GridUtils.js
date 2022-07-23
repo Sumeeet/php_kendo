@@ -51,8 +51,6 @@ CT.GridUtils.getSourceData = (gridId) => {
     return read(gridId)
 }
 
-CT.GridUtils.getColData = CT.Utils.curry((colName, data) => data[colName])
-
 CT.GridUtils.getSource = (gridId) => {
     const read = CT.Utils.compose(
         CT.Utils.chain((grid) => grid.dataSource),
