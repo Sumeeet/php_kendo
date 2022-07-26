@@ -41,3 +41,6 @@ CT.Validations.ifExist = CT.Utils.curry((msg, c, val) =>
 
 CT.Validations.compare = CT.Utils.curry((msg, compFunc, val1, val0) =>
     compFunc(val1, val0) ? CT.Utils.left(msg) : Either.of(val0))
+
+CT.Validations.fetchAndCompare = CT.Utils.curry((msg, compFunc, getFunc, val0) =>
+    compFunc(getFunc(), val0) ? CT.Utils.left(msg) : Either.of(val0))

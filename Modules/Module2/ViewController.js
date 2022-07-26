@@ -7,21 +7,21 @@ const ViewController = function (viewModel) {
     const g = CT.GridUtils
 
     function registerValidations(viewModel) {
-        viewModel.registerValidations('fage.value', [v.compare
+        viewModel.registerValidations('fage.value', [v.fetchAndCompare
             (
                 "Fathers age should be greater than sons age",
                 (sage, fage) => fage < sage, // criterion to compare
-                viewModel.get('sage.value') // value to compare with
+                () => viewModel.get('sage.value') // value to compare with
             ), v.isPositive('Age must be a positive number')],
             u.updateError("errorId1")
         );
 
         // TODO: validations compares with old value rather than changed
-        viewModel.registerValidations('sage.value',[v.compare
+        viewModel.registerValidations('sage.value',[v.fetchAndCompare
             (
                 "Sons age should be less than fathers age",
                 (fage, sage) => sage > fage, // criterion to compare
-                viewModel.get('fage.value') // value to compare with
+                () => viewModel.get('fage.value') // value to compare with
             ), v.isPositive('Age must be a positive number')],
             u.updateError("errorId2")
         );
