@@ -146,22 +146,15 @@ CT.GridUtils.readRowWise = CT.Utils.curry((rs, re, cs, ce, data) => {
     return execute(data)
 })
 
-CT.GridUtils.hasDuplicates = CT.Utils.curry((ci, gridId) => {
-    const innerText = CT.Utils.map(e => e.innerText)
-
-    const readData = CT.Utils.compose(
-        CT.Utils.map(e => innerText(e)),
-        // -1 indicates all rows, starting from index 1 (skip headers or other rows)
-        CT.Utils.chain(CT.GridUtils.readColumnWise(4, -1, ci, ci)),
-        Maybe.of,
-        CT.GridUtils.getData
-    )
-
+CT.GridUtils.hasDuplicates = CT.Utils.curry((msg, prop, data) => {
     const execute = CT.Utils.compose(
-        CT.Utils.map(CT.ArrayUtils.hasDuplicates('')),
-        readData
+        (dupCount) => dupCount.length === 0 ? Either.of(data) :
+            CT.Utils.left(`${msg} ${dupCount} `),
+        (d) => Object.keys(d).filter((k) => d[k] > 1),
+        CT.ArrayUtils.countDuplicates,
+        CT.Utils.map(CT.Utils.getData(prop))
     )
-    return execute(gridId)
+    return execute(data)
 })
 
 CT.GridUtils.getRowInsertionIndex = CT.Utils.curry((ds, pos, si) => {
@@ -180,7 +173,7 @@ CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
         // TODO: copy first item if any, later on will add blank, default or user defined values
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
-        source.insert(index, { fage: 0, sage: 0 })
+        source.insert(index, { fage: 10, sage: 10 })
         console.log(`row added: ${index}`);
     })
 

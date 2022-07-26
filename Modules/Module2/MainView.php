@@ -51,6 +51,7 @@ class MainView implements IView
         <script src="./JsLib/Constants.js"></script>
         <script src="./JsLib/History.js"></script>
         <script src="./JsLib/Command.js"></script>
+        <script src="./JsLib/ArrayUtils.js"></script>
 
         <script src="./Modules/Module2/ModuleInstance.js"></script>
         <script src="./Modules/Module2/ViewController.js"></script>

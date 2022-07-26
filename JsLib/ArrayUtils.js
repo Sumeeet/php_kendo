@@ -5,7 +5,7 @@ CT.ArrayUtils.isArray = (val) =>
     Array.isArray(val) ? Either.of(val) :
         CT.Utils.left(`${val} is not an array`)
 
-CT.ArrayUtils.hasDuplicates = CT.Utils.curry( (msg, arr) => {
+CT.ArrayUtils.countDuplicates = CT.Utils.curry( (arr) => {
     const duplicates = {}
     const find = CT.Utils.curry((d, e) => d[e] = (d[e] || 0) + 1)
     const execute = CT.Utils.compose(
