@@ -5,14 +5,23 @@ CT.ArrayUtils.isArray = (val) =>
     Array.isArray(val) ? Either.of(val) :
         CT.Utils.left(`${val} is not an array`)
 
-CT.ArrayUtils.countDuplicates = CT.Utils.curry( (arr) => {
-    const duplicates = {}
+CT.ArrayUtils.hasDuplicates = CT.Utils.curry((msg, prop, arr) => {
     const find = CT.Utils.curry((d, e) => d[e] = (d[e] || 0) + 1)
-    const execute = CT.Utils.compose(
-        CT.Utils.chain(CT.Utils.forEach(find(duplicates))),
-        CT.Utils.chain(CT.ArrayUtils.isArray),
-        Maybe.of)
+    const countDuplicates = CT.Utils.curry((duplicates, data) => {
+        const count = CT.Utils.compose(
+            () => duplicates,
+            CT.Utils.chain(CT.Utils.forEach(find(duplicates))),
+            Maybe.of)
 
-    execute(arr)
-    return duplicates
+        return count(data)
+    })
+
+    const execute = CT.Utils.compose(
+        (dupCount) => dupCount.length === 0 ? Either.of(arr) :
+            CT.Utils.left(`${msg} ${dupCount} `),
+        (d) => Object.keys(d).filter((k) => d[k] > 1),
+        countDuplicates({}),
+        CT.Utils.map(CT.Utils.getData(prop))
+    )
+    return execute(arr)
 })

@@ -5,6 +5,7 @@ const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
     const g = CT.GridUtils
+    const a = CT.ArrayUtils
 
     function registerValidations(viewModel) {
         viewModel.registerValidations('fage.value', [v.fetchAndCompare
@@ -33,7 +34,7 @@ const ViewController = function (viewModel) {
                     u.chain(v.isInRange(0, 100)),
                     v.isPositive('Age must be a positive number'),
                     u.getData('fage'))),
-                g.hasDuplicates('Duplicate values', 'fage')
+                a.hasDuplicates('Duplicate values', 'fage')
             ]
         );
 

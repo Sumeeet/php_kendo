@@ -97,13 +97,15 @@ CT.GridUtils.readRows = CT.Utils.curry((rs, re, data) => {
     // -1 indicates all rows
     const [s, e] = CT.GridUtils.checkRange(rs, re === -1 ? data.length : re)
     const selector = CT.GridUtils.getRowSelector(s, e)
-    const execute = CT.Utils.compose(CT.Utils.chain(CT.GridUtils.filter(selector)), Maybe.of)
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(CT.GridUtils.filter(selector)),
+        Maybe.of)
     return execute(data)
 })
 
-CT.GridUtils.readColumnWise = CT.Utils.curry((rs, re, cs, ce, data) => {
+CT.GridUtils.readGridColumn = CT.Utils.curry((rs, re, cs, ce, gridId) => {
     [cs, ce] = CT.GridUtils.checkRange(cs, ce)
-    const selector = `td:nth-child(n+${cs}):nth-child(-n+${ce})`
+    const selector = CT.GridUtils.getColumnSelector(cs, ce)
 
     const rowsToCols = (rows) => {
         const cols = []
@@ -121,12 +123,13 @@ CT.GridUtils.readColumnWise = CT.Utils.curry((rs, re, cs, ce, data) => {
 
     const execute = CT.Utils.compose(
         CT.Utils.chain(read),
-        Maybe.of)
+        Maybe.of,
+        CT.GridUtils.getData)
 
-    return execute(data)
+    return execute(gridId)
 })
 
-CT.GridUtils.readRowWise = CT.Utils.curry((rs, re, cs, ce, data) => {
+CT.GridUtils.readGridRow = CT.Utils.curry((rs, re, cs, ce, gridId) => {
     [cs, ce] = CT.GridUtils.checkRange(cs, ce)
     const selector = CT.GridUtils.getColumnSelector(cs, ce)
 
@@ -140,21 +143,11 @@ CT.GridUtils.readRowWise = CT.Utils.curry((rs, re, cs, ce, data) => {
 
     const execute = CT.Utils.compose(
         CT.Utils.chain(read),
-        Maybe.of
+        Maybe.of,
+        CT.GridUtils.getData
     )
 
-    return execute(data)
-})
-
-CT.GridUtils.hasDuplicates = CT.Utils.curry((msg, prop, data) => {
-    const execute = CT.Utils.compose(
-        (dupCount) => dupCount.length === 0 ? Either.of(data) :
-            CT.Utils.left(`${msg} ${dupCount} `),
-        (d) => Object.keys(d).filter((k) => d[k] > 1),
-        CT.ArrayUtils.countDuplicates,
-        CT.Utils.map(CT.Utils.getData(prop))
-    )
-    return execute(data)
+    return execute(gridId)
 })
 
 CT.GridUtils.getRowInsertionIndex = CT.Utils.curry((ds, pos, si) => {
