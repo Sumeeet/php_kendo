@@ -65,22 +65,29 @@ const ViewController = function (viewModel) {
     }
 
     function bindCommands (viewModel) {
-        viewModel.set('ageGrid.addRow', function () {
-            const add = g.addRow(CELL_INSERTION_POSITION.end)
-            const remove = g.removeRow(CELL_INSERTION_POSITION.end)
+        const pushAddRemoveCommand = (index) => {
+            const add = g.addRowAt(index)
+            // index + 1 - inserted row has higher index after addition
+            // so removal needs to be done at index 1 more than the inserted one.
+            const remove = g.removeRowAt(index + 1)
             undoRedo.push('ageGridId', new AddRemoveCommand(g,
                 () => add('ageGridId'),
                 () => remove('ageGridId'))
             )
-            add('ageGridId')
+        }
+        viewModel.set('ageGrid.addRow', function () {
+            const index = g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')
+            pushAddRemoveCommand(index)
         })
 
         viewModel.set('ageGrid.addBeforeRow', function () {
-            g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
+            const index = g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
+            pushAddRemoveCommand(index)
         })
 
         viewModel.set('ageGrid.addAfterRow', function () {
-            g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
+            const index = g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
+            pushAddRemoveCommand(index)
         })
 
         viewModel.set('ageGrid.removeRow', function () {

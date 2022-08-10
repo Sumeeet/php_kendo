@@ -69,7 +69,7 @@ CT.GridUtils.getSelectedRow = (gridId) => {
     return selectRow(gridId)
 }
 
-CT.GridUtils.getSelectedRowId = (gridId) => {
+CT.GridUtils.getSelectedRowIndex = (gridId) => {
     const selectedIndex = (row) => row.index()
     const selectedRowIndex = CT.Utils.compose(
         selectedIndex,
@@ -167,17 +167,32 @@ CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
         source.insert(index, { fage: 10, sage: 10 })
-        console.log(`row added: ${index}`);
+        console.log(`row added at index: ${index}`)
+        return index
+    })
+
+    const dataSource = CT.GridUtils.getSource(gridId)
+    const execute = CT.Utils.compose(
+        insert(dataSource),
+        CT.GridUtils.getRowInsertionIndex(dataSource, position),
+        CT.GridUtils.getSelectedRowIndex,
+    )
+    return execute(gridId)
+})
+
+CT.GridUtils.addRowAt = CT.Utils.curry((index, gridId) => {
+    const insert = CT.Utils.curry((source, index) => {
+        // TODO: copy first item if any, later on will add blank, default or user defined values
+        // const sourceData = source.data()
+        // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
+        source.insert(index, { fage: 10, sage: 10 })
+        console.log(`row added at index: ${index}`)
+        return index
     })
 
     const dataSource = CT.GridUtils.getSource(gridId)
 
-    const execute = CT.Utils.compose(
-        insert(dataSource),
-        CT.GridUtils.getRowInsertionIndex(dataSource, position),
-        CT.GridUtils.getSelectedRowId,
-    )
-    return execute(gridId)
+    return insert(dataSource, index)
 })
 
 CT.GridUtils.removeRow = CT.Utils.curry((position, gridId) => {
@@ -188,12 +203,33 @@ CT.GridUtils.removeRow = CT.Utils.curry((position, gridId) => {
         if (rowCount > 0) {
             const row = CT.GridUtils.getRowSelector(rowCount, rowCount)
             grid.removeRow(row)//`tr:eq("${rowCount}")`);
-            console.log(`row removed: ${pos}`);
+            console.log(`row removed at index: ${pos}`);
         }
     })
 
     const execute = CT.Utils.compose(
         CT.Utils.chain(remove(position)),
+        Maybe.of,
+        CT.GridUtils.getSource
+    )
+
+    return execute(gridId)
+})
+
+CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
+    const remove = CT.Utils.curry((idx, source) => {
+        const rowCount = source.total()
+        const grid = CT.GridUtils.getGrid(gridId)
+        // TODO: get index from position constant
+        if (rowCount > 0) {
+            const row = CT.GridUtils.getRowSelector(idx, idx)
+            grid.removeRow(row)//`tr:eq("${rowCount}")`);
+            console.log(`row removed at index: ${idx}`);
+        }
+    })
+
+    const execute = CT.Utils.compose(
+        CT.Utils.chain(remove(index)),
         Maybe.of,
         CT.GridUtils.getSource
     )
