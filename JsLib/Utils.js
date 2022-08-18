@@ -94,3 +94,13 @@ CT.Utils.getData = CT.Utils.curry((prop, data) => {
         Maybe.of)
     return getData(data[prop])
 })
+
+CT.Utils.composeFunctions = (fns) => {
+    const first = fns.pop()
+    let composedFns = fns.map(fn => CT.Utils.chain(fn))
+    if (first) {
+        composedFns.push(first)
+    }
+    composedFns.splice(0, 0, CT.Utils.either(CT.Utils.identity, CT.Utils.identity))
+    return CT.Utils.compose(...composedFns)
+}

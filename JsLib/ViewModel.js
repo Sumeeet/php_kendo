@@ -285,13 +285,8 @@ const ViewModel = function(url) {
      * @param fns
      */
     const registerValidations = function(prop, fns, errFn = null) {
-        // TODO: better way to transform and take care of boundary cases
-        const first = fns.pop();
-        let composedFns = fns.map(fn => u.chain(fn));
-        composedFns.push(first);
-        composedFns.splice(0, 0, u.either(u.identity, u.identity))
-
-        const validateFunc = doValidate(u.compose(...composedFns));
+        const composedFns = CT.Utils.composeFunctions(fns)
+        const validateFunc = doValidate(composedFns)
         if (!controlIdValidatorMap.has(prop)) {
             controlIdValidatorMap.set(prop, { validateFunc: validateFunc, error: { }, prop: prop, errFn: errFn });
         }
