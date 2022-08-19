@@ -74,7 +74,10 @@ const ViewModel = function(url) {
                     .then(response => {
                         // values of calculated fields not part of cached/original model
                         if (cachedValue !== undefined) {
-                            console.log(`${propPath} changed: ${cachedValue} -> ${value}`)
+                            if (!Array.isArray(value)) {
+                                console.log(
+                                    `${propPath} changed: ${cachedValue} -> ${value}`)
+                            }
                             changedObservableObject.set('changed', !(errorMap.size > 0))
                         }
                     })

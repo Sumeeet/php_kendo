@@ -47,7 +47,8 @@ const ViewController = function (viewModel) {
                     )
                 ),
                 a.hasDuplicates('Duplicate values', 'fage')
-            ]
+            ],
+            u.logConsole
         );
 
         // TODO: won't register as 'ageGrid.value' is already a map key, fix it

@@ -43,7 +43,7 @@ CT.Utils.either = CT.Utils.curry((f, g, e) => {
             return { pass: true, message: `Success` }
         case Array:
             // TODO check each element of an array for Left or Right
-            return e.map(r => { return {pass: false, message: f(r.$val)} })
+            return e.map(r => { return {pass: r.pass, message: f(r.message)} })
         default:
             throw new Error('Unknown result type')
     }
@@ -83,6 +83,18 @@ CT.Utils.updateError = CT.Utils.curry((id, result) => {
     } catch (e) {
         console.error(`Unable to locate DOM element for ID '${id}'. ${e}`)
     }
+})
+
+CT.Utils.logConsole = CT.Utils.curry((result) => {
+    const log = CT.Utils.IfElse(
+        Array.isArray,
+        CT.Utils.compose(
+            CT.Utils.forEach(r => console.log(r.message)),
+            CT.Utils.filter(r => !r.pass),
+        ),
+        (r) => console.log(r.message)
+    )
+    log(result)
 })
 
 CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) : func2(v))
