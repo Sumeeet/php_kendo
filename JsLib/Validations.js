@@ -39,8 +39,35 @@ CT.Validations.ifExist = CT.Utils.curry((msg, c, val) =>
     val.indexOf(c) < 0 ? CT.Utils.left(msg) :
         Either.of(val));
 
-CT.Validations.compare = CT.Utils.curry((msg, compFunc, val1, val0) =>
-    compFunc(val1, val0) ? CT.Utils.left(msg) : Either.of(val0))
+CT.Validations.compare = CT.Utils.curry((msg, compFunc, val0, val1) =>
+    compFunc(val0, val1) ?
+        CT.Utils.left(`${msg}`) :
+        Either.of(val0))
 
 CT.Validations.fetchAndCompare = CT.Utils.curry((msg, compFunc, getFunc, val0) =>
-    compFunc(getFunc(), val0) ? CT.Utils.left(msg) : Either.of(val0))
+    compFunc(getFunc(), val0) ?
+        CT.Utils.left(msg) :
+        Either.of(val0))
+
+CT.Validations.compareProp = CT.Utils.curry((msg, compFunc, prop0, prop1, data) => {
+    const getData = CT.Utils.curry((prop, data) => data[prop])
+    const fetchCmp = CT.Utils.curry((getData0, getData1, data) => {
+        const val0 = getData0(data)
+        const val1 = getData1(data)
+        return compFunc(val0, val1) ?
+            CT.Utils.left(`${msg}`) :
+            Either.of(data)
+    })
+
+    const cmp = CT.Utils.compose(
+        CT.Utils.chain(
+            fetchCmp(
+                getData(prop0),
+                getData(prop1))
+        ),
+        CT.Utils.chain(CT.Utils.propExist('Property does not exist', prop1)),
+        CT.Utils.propExist('Property does not exist', prop0)
+    )
+
+    return cmp(data)
+})

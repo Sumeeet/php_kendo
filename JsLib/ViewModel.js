@@ -104,9 +104,9 @@ const ViewModel = function(url) {
         })
     }
 
-    const doValidate = function(validate) {
+    const doValidate = function(validateFunc) {
         return function(...value) {
-            this.error = validate.call(this, ...value)
+            this.error = validateFunc.call(this, ...value)
             return this;
         }
     }
@@ -285,7 +285,7 @@ const ViewModel = function(url) {
      * @param fns
      */
     const registerValidations = function(prop, fns, errFn = null) {
-        const composedFns = CT.Utils.composeFunctions(fns)
+        const composedFns = CT.Utils.chainAndCompose(fns)
         const validateFunc = doValidate(composedFns)
         if (!controlIdValidatorMap.has(prop)) {
             controlIdValidatorMap.set(prop, { validateFunc: validateFunc, error: { }, prop: prop, errFn: errFn });

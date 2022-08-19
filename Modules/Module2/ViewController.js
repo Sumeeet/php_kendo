@@ -8,37 +8,49 @@ const ViewController = function (viewModel) {
     const a = CT.ArrayUtils
 
     function registerValidations(viewModel) {
-        viewModel.registerValidations('fage.value', [v.fetchAndCompare
-            (
-                "Fathers age should be greater than sons age",
-                (sage, fage) => fage < sage, // criterion to compare
-                () => viewModel.get('sage.value') // value to compare with
-            ), v.isPositive('Age must be a positive number')],
+        viewModel.registerValidations('fage.value',
+            [
+                v.fetchAndCompare(
+                    "Fathers age should be greater than sons age",
+                    (sage, fage) => fage < sage, // criterion to compare
+                    () => viewModel.get('sage.value') // value to compare with
+                ),
+                v.isPositive('Age must be a positive number')],
             u.updateError("errorId1")
         );
 
         // TODO: validations compares with old value rather than changed
-        viewModel.registerValidations('sage.value',[v.fetchAndCompare
-            (
-                "Sons age should be less than fathers age",
-                (fage, sage) => sage > fage, // criterion to compare
-                () => viewModel.get('fage.value') // value to compare with
-            ), v.isPositive('Age must be a positive number')],
+        viewModel.registerValidations('sage.value',
+            [
+                v.fetchAndCompare(
+                    "Sons age should be less than fathers age",
+                    (fage, sage) => sage > fage, // criterion to compare
+                    () => viewModel.get('fage.value') // value to compare with
+                ),
+                v.isPositive('Age must be a positive number')],
             u.updateError("errorId2")
         );
 
         // map each element of a grid column and check for number validation
         viewModel.registerValidations('ageGrid.value',
             [
-                g.map(u.compose(
-                    u.chain(v.isInRange(0, 100)),
-                    v.isPositive('Age must be a positive number'),
-                    u.getData('fage'))),
+                g.map(
+                    u.chainAndCompose([
+                        v.isInRange(0, 100),
+                        v.isPositive('Age must be a positive number'),
+                        u.getData('fage'),
+                        v.compareProp(
+                            "Fathers age should be greater than sons age",
+                            (sage, fage) => sage > fage,
+                            'sage', 'fage'
+                        )]
+                    )
+                ),
                 a.hasDuplicates('Duplicate values', 'fage')
             ]
         );
 
-        // map each element of a grid column and check for number validation
+        // TODO: won't register as 'ageGrid.value' is already a map key, fix it
         viewModel.registerValidations('ageGrid.value',
             [g.map(u.compose(
                 v.isPositive('Age must be a positive number'),

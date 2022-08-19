@@ -10,18 +10,23 @@ CT.ArrayUtils.hasDuplicates = CT.Utils.curry((msg, prop, arr) => {
     const countDuplicates = CT.Utils.curry((duplicates, data) => {
         const count = CT.Utils.compose(
             () => duplicates,
-            CT.Utils.chain(CT.Utils.forEach(find(duplicates))),
+            CT.Utils.chain(
+                CT.Utils.forEach(
+                    CT.Utils.chain(find(duplicates))
+                )
+            ),
             Maybe.of)
 
         return count(data)
     })
 
     const execute = CT.Utils.compose(
-        (dupCount) => dupCount.length === 0 ? Either.of(arr) :
-            CT.Utils.left(`${msg} ${dupCount} `),
+        (dupValues) => dupValues.length === 0 ?
+            Either.of(arr) :
+            CT.Utils.left(`${msg} ${dupValues}`),
         (d) => Object.keys(d).filter((k) => d[k] > 1),
         countDuplicates({}),
-        CT.Utils.map(CT.Utils.getData(prop))
+        CT.Utils.map(CT.Utils.getData(prop)),
     )
     return execute(arr)
 })

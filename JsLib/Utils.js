@@ -67,6 +67,7 @@ CT.Utils.validateAt = CT.Utils.curry((f, i, v) => {
     return { result: result, orgValue: v }
 })
 
+// TODO: very confusing, clean it
 CT.Utils.concat = CT.Utils.curry((f, r) => {
     const result = f(r.orgValue)
     const results = [r.result, result.result]
@@ -90,12 +91,17 @@ CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func))
 
 CT.Utils.getData = CT.Utils.curry((prop, data) => {
     const getData = CT.Utils.compose(
-        CT.Utils.chain(CT.Utils.identity),
+        CT.Utils.chain((data) => Either.of(data[prop])),
+        CT.Utils.chain(CT.Utils.propExist('Property does not exist', prop)),
         Maybe.of)
-    return getData(data[prop])
+    return getData(data)
 })
 
-CT.Utils.composeFunctions = (fns) => {
+CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
+    data.hasOwnProperty(prop) ? Either.of(data) : CT.Utils.left(`${msg}: ${prop}`)
+)
+
+CT.Utils.chainAndCompose = (fns) => {
     const first = fns.pop()
     let composedFns = fns.map(fn => CT.Utils.chain(fn))
     if (first) {
