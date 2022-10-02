@@ -3,8 +3,8 @@
 namespace CT\Modules\Module2;
 
 use CT\Controls\FooterView;
-use CT\Controls\ToolBarView;
 use CT\Interfaces\IView;
+use CT\WebCore\XMLRenderer;
 
 class MainView implements IView
 {
@@ -13,7 +13,6 @@ class MainView implements IView
 
     public function __construct(IView $view) {
         $this->view = $view;
-        $this->footerView = new FooterView(['id' => 'footerViewId', 'changed' => 'changed']);
     }
 
     public function render() {
@@ -35,8 +34,9 @@ class MainView implements IView
         </head>
         <body id="mainViewId">
         <div>
-            <?php $this->view->render(); ?>
-            <?php $this->footerView->render(); ?>
+            <?php
+            XMLRenderer::render("./Modules/Module2/Controls.xml");
+            ?>
         </div>
         </body>
 

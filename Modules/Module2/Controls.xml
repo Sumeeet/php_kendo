@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<control name = 'module2'>
+    <components>
+
+        <!-- fathers age composite view-->
+        <label id = 'fageLabelId' name = 'Fathers Age'></label>
+        <numeric_input id = 'fageInputId' bind = 'fage.value'></numeric_input>
+
+        <!-- sons age composite view-->
+        <label id = 'sageLabelId' name = 'Sons Age'></label>
+        <numeric_input id = 'sageInputId' bind = 'sage.value'></numeric_input>
+
+        <!-- collection of buttons for footer view -->
+        <group id = 'griToolBarId' layout = 'horizontal'>
+            <button id = 'addRowId' name = '+ Row' action = 'ageGrid.addRow'></button>
+            <button id = 'removeRowId' name = '- Row' action = 'ageGrid.removeRow'></button>
+            <button id = 'addBeforeRowId' name = '+= Row' action = 'ageGrid.addBeforeRow'></button>
+            <button id = 'addAfterRowId' name = '=+ Row' action = 'ageGrid.addAfterRow'></button>
+        </group>
+
+        <!-- father and son age grid-->
+        <grid id = 'ageGridId' bind = 'ageGrid.value'></grid>
+
+        <!-- collection of buttons for footer view -->
+        <group id = 'footerId' layout = 'horizontal'>
+            <button id = 'loadId' name = 'Load' action = 'onLoad'></button>
+            <button id = 'cacheId' name = 'Clear Cache' action = 'onClear'></button>
+            <button id = 'applyId' name = 'Apply' bind = 'changed' action = 'onApply'></button>
+        </group>
+    </components>
+</control>
+

@@ -13,8 +13,15 @@ const ModuleInstance = function() {
         viewModel.init([limits_url])
         .then(result => {
 
-            applyButton.addEventListener('click', (event) => {
-                event.stopPropagation();
+            viewModel.set('onLoad', function () {
+                DataProxy().getData(url).then(response => console.log(response));
+            })
+
+            viewModel.set('onClear', function () {
+                caches.delete('ct_cache')
+            })
+
+            viewModel.set('onApply', function () {
                 viewModel.getChangedModel()
                 .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
                 .then(result => {
@@ -22,15 +29,9 @@ const ModuleInstance = function() {
                 });
             })
 
-            loadButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                DataProxy().getData(url).then(response => console.log(response));
-            }, false);
-
-            cacheButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                caches.delete('ct_cache')
-            })
+            // // TODO_SK get rid of this, needs this strangely to execute bind commands
+            // viewModel.set('apply', function () {
+            // })
 
             viewModel.bind(result, mainView, footerView);
 

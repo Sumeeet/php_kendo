@@ -16,11 +16,11 @@ class NumericTextView implements IView
     {
         echo <<< HTML
         <div>
-            <input id = {$this->myBindAttributes['inpId']}
-            style = "text-align:left; width: max-content; margin-right: 10px"
+            <input id = {$this->myBindAttributes['id']}
+            style = "text-align:left; width: max-content; margin: 5px"
             class = "c-input c-numeric"
             data-step = 0
-            data-bind = "value: {$this->myBindAttributes['attribute']}"
+            data-bind = "value: {$this->myBindAttributes['bind']}"
             data-role = "numerictextbox"/>
         </div>
         HTML;
