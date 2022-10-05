@@ -1,10 +1,7 @@
 const getElement = id => document.getElementById(id)
 const ModuleInstance = function() {
-    const applyButton = getElement('applyId')
-    const cacheButton = getElement('cacheId')
-    const loadButton = getElement('loadId')
     const mainView = getElement('mainViewId')
-    const footerView = getElement('footerViewId')
+    const footerView = getElement('applyId')
 
     function init(url) {
         //caches.delete('CT_cache');
@@ -29,9 +26,9 @@ const ModuleInstance = function() {
                 });
             })
 
-            // // TODO_SK get rid of this, needs this strangely to execute bind commands
-            // viewModel.set('apply', function () {
-            // })
+            // TODO_SK get rid of this, needs this strangely to execute bind commands
+            viewModel.set('apply', function () {
+            })
 
             viewModel.bind(result, mainView, footerView);
 

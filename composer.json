@@ -10,7 +10,8 @@
     }
   ],
   "require": {
-    "php": ">=7.4.0"
+    "php": ">=7.4.0",
+    "ext-dom": "*"
   },
   "autoload": {
     "psr-4": {

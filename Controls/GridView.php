@@ -6,22 +6,19 @@ namespace CT\Controls;
 use CT\Interfaces\IView;
 use Kendo\UI\Grid;
 
-class GridView implements IView
+class GridView extends BaseView implements IView
 {
-    private array $myBindAttributes;
     public function __construct(array $bindAttributes) {
         $this->myBindAttributes = $bindAttributes;
+
+        $this->myBindAttributes += ['class' => "k-grid k-widget k-grid-display-block"];
+        $this->myBindAttributes += ['data-role' => 'grid'];
+        $this->myBindAttributes += ['data-bind' => "source: {$this->myBindAttributes['bind']}"];
+        // these keys are not directly used as attributes, remove them
+        array_diff($this->myBindAttributes, ['bind']);
     }
 
-    public function render() {
-        echo <<<HTML
-            <div data-role = "grid"
-            id = {$this->myBindAttributes['id']}
-            class = "k-grid k-widget k-grid-display-block" 
-            data-editable = "true"
-            data-bind = "source: {$this->myBindAttributes['bind']}"
-            title = "Grid" style = "font-size: small; margin: 5px">
-            </div>
-HTML;
+    public function render($root) {
+        return $this->renderVirtualDOM($root, 'div');
     }
 }

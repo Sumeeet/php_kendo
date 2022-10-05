@@ -2,15 +2,14 @@
 
 namespace CT\WebCore;
 
-use CT\Controls\ButtonView;
-use CT\Controls\GridView;
-use CT\Controls\LabelView;
-use CT\Controls\NumericTextView;
-use CT\Controls\TextView;
-use JetBrains\PhpStorm\Pure;
+use DOMDocument;
+use DOMException;
 
 class XMLRenderer
 {
+    /**
+     * @throws DOMException
+     */
     static public function render(string $path)
     {
         libxml_use_internal_errors(true);
@@ -18,21 +17,22 @@ class XMLRenderer
 
         if(!$file) return;
 
-        //$file->components->children()[0]->attributes()
-        self::renderControls($file->components);
+        $doc = new DOMDocument();
+        self::renderControls($file->components, $doc, $doc);
+        print_r($doc->saveHTML());
     }
 
-    static private function renderControls($root) {
-        // TODO: Draw nested div tags for layouts
-        foreach ($root->children() as $child) {
+    /**
+     * @throws DOMException
+     */
+    static private function renderControls($node, $doc, $parent) {
+        foreach ($node->children() as $child) {
             $type = $child->getName();
-            $attributes = self::isGroup($type) ?
-                self::makeGroupAttributes($child->attributes()):
-                self::makeAttributes($child->attributes());
-
+            $attributes = self::makeAttributes($child->attributes());
             $control = ControlsFactory::create($type, $attributes);
-            self::renderControls($child);
-            $control?->render();
+            $element = $control?->render($doc);
+            $parent->appendChild($element);
+            self::renderControls($child, $doc, $element);
         }
     }
 
@@ -54,32 +54,12 @@ class XMLRenderer
         return $file;
     }
 
-    #[Pure] static private function makeAttributes($attributes): array
+    static private function makeAttributes($attributes): array
     {
         $attrArray = [];
         foreach ($attributes as $key => $value) {
             ($attrArray += [$key => $value]);
         }
         return $attrArray;
-    }
-
-    #[Pure] static private function makeGroupAttributes($attributes): array
-    {
-        $attrArray = [];
-        foreach ($attributes as $key => $value) {
-            $attrArray +=  match ($key) {
-                'layout' => (['class' => $value.'_'.$key]),
-                default => ([$key => $value]),
-            };
-        }
-        return $attrArray;
-    }
-
-    static private function isGroup(string $controlType): bool
-    {
-        return match ($controlType) {
-            'group' => true,
-            default => false,
-        };
     }
 }

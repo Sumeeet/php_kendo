@@ -23,6 +23,8 @@ use CT\Modules\Module2\View;
 //echo $template->renderBlock('content', ['header' => 'BMI Calculator']);
 
 //$view = new MainView(new BmiView());
-$view = new MainView(new View());
-//$view = new FormView();
-$view->render();
+$view = new MainView();
+try {
+    $view->render(null);
+} catch (DOMException $e) {
+}

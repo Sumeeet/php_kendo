@@ -88,22 +88,22 @@ const ViewController = function (viewModel) {
                 () => remove('ageGridId'))
             )
         }
-        viewModel.set('ageGrid.addRow', function () {
+        viewModel.set('addRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')
             pushAddRemoveCommand(index)
         })
 
-        viewModel.set('ageGrid.addBeforeRow', function () {
+        viewModel.set('addBeforeRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
             pushAddRemoveCommand(index)
         })
 
-        viewModel.set('ageGrid.addAfterRow', function () {
+        viewModel.set('addAfterRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
             pushAddRemoveCommand(index)
         })
 
-        viewModel.set('ageGrid.removeRow', function () {
+        viewModel.set('removeRow', function () {
             CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
         })
 

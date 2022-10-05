@@ -15,7 +15,7 @@ class ToolBarView implements IView
         $this->id = $id;
     }
 
-    public function render()
+    public function render($root)
     {
 ?>
         <div id = <?= $this->id ?> class = "horizontal_layout">

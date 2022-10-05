@@ -4,5 +4,5 @@ namespace CT\Interfaces;
 
 interface IView
 {
-    public function render();
+    public function render($root);
 }

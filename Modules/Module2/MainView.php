@@ -2,20 +2,18 @@
 
 namespace CT\Modules\Module2;
 
-use CT\Controls\FooterView;
 use CT\Interfaces\IView;
 use CT\WebCore\XMLRenderer;
 
 class MainView implements IView
 {
-    private IView $view;
-    private IView $footerView;
-
-    public function __construct(IView $view) {
-        $this->view = $view;
+    public function __construct() {
     }
 
-    public function render() {
+    /**
+     * @throws \DOMException
+     */
+    public function render($root) {
         ?>
 
     <!DOCTYPE html>

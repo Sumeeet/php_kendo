@@ -8,7 +8,6 @@ use CT\Controls\NumericTextView;
 use CT\Controls\TextView;
 use CT\Controls\ButtonView;
 use CT\Controls\LabelView;
-use JetBrains\PhpStorm\Pure;
 
 class ControlsFactory
 {
@@ -29,7 +28,7 @@ class ControlsFactory
             'grid' => new GridView($attributes),
             'button' => new ButtonView($attributes),
             'label' => new LabelView($attributes),
-            'group' => new GroupView($attributes),
+            'group', 'block' => new GroupView($attributes),
             default => null,
         };
     }

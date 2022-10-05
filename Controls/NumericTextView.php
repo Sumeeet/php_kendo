@@ -1,28 +1,24 @@
 <?php
 
-
 namespace CT\Controls;
 
 use CT\Interfaces\IView;
 
-class NumericTextView implements IView
+class NumericTextView extends BaseView implements IView
 {
-    private array $myBindAttributes;
-    public function __construct(array $bindAttributes) {
+    public function __construct(array $bindAttributes)
+    {
         $this->myBindAttributes = $bindAttributes;
+        $this->myBindAttributes += ['class' => "c-input c-numeric"];
+        $this->myBindAttributes += ['data-role' => 'numerictextbox'];
+        $this->myBindAttributes += ['data-step' => 0];
+        $this->myBindAttributes += ['data-bind' => "value: {$this->myBindAttributes['bind']}"];
+
+        // these keys are not directly used as attributes, remove them
+        array_diff($this->myBindAttributes, ['bind']);
     }
 
-    public function render()
-    {
-        echo <<< HTML
-        <div>
-            <input id = {$this->myBindAttributes['id']}
-            style = "text-align:left; width: max-content; margin: 5px"
-            class = "c-input c-numeric"
-            data-step = 0
-            data-bind = "value: {$this->myBindAttributes['bind']}"
-            data-role = "numerictextbox"/>
-        </div>
-        HTML;
+    public function render($root) {
+        return $this->renderVirtualDOM($root, 'input');
     }
 }

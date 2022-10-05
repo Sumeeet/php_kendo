@@ -19,7 +19,7 @@ class LabelledTextView implements IView
         $this->myLabelView = new LabelView($bindAttributes);
     }
 
-    public function render()
+    public function render($root)
     {
         echo <<<HTML
 <div style = "{$this->myBindAttributes['style']}">
