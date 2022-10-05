@@ -8,14 +8,15 @@ use CT\Interfaces\IView;
 class TextView extends BaseView implements IView
 {
     public function __construct(array $bindAttributes) {
-        $this->myBindAttributes = $bindAttributes;
-        $this->myBindAttributes += ['class' => "c-input c-textbox k-textbox"];
-        $this->myBindAttributes += ['data-role' => 'textbox'];
-        $this->myBindAttributes += ['data-value-update' => 'keypress'];
-        $this->myBindAttributes += ['data-bind' => "value: {$this->myBindAttributes['bind']}"];
+        $bindAttributes += ['class' => "c-input c-textbox k-textbox"];
+        $bindAttributes += ['data-role' => 'textbox'];
+        $bindAttributes += ['data-value-update' => 'keypress'];
+        $bindAttributes += ['data-bind' => "value: {$bindAttributes['bind']}"];
 
         // these keys are not directly used as attributes, remove them
-        array_diff($this->myBindAttributes, ['bind']);
+        unset($bindAttributes['bind']);
+        $this->myBindAttributes = $bindAttributes;
+
     }
 
     public function render($root)

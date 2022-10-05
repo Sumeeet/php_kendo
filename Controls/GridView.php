@@ -9,13 +9,13 @@ use Kendo\UI\Grid;
 class GridView extends BaseView implements IView
 {
     public function __construct(array $bindAttributes) {
-        $this->myBindAttributes = $bindAttributes;
+        $bindAttributes += ['class' => "k-grid k-widget k-grid-display-block"];
+        $bindAttributes += ['data-role' => 'grid'];
+        $bindAttributes += ['data-bind' => "source: {$bindAttributes['bind']}"];
 
-        $this->myBindAttributes += ['class' => "k-grid k-widget k-grid-display-block"];
-        $this->myBindAttributes += ['data-role' => 'grid'];
-        $this->myBindAttributes += ['data-bind' => "source: {$this->myBindAttributes['bind']}"];
         // these keys are not directly used as attributes, remove them
-        array_diff($this->myBindAttributes, ['bind']);
+        unset($bindAttributes['bind']);
+        $this->myBindAttributes = $bindAttributes;
     }
 
     public function render($root) {

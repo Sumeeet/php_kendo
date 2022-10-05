@@ -9,15 +9,16 @@ use DOMException;
 class ButtonView extends BaseView implements IView
 {
     public function __construct(array $bindAttributes) {
-        $this->myBindAttributes = $bindAttributes;
-        $this->myBindAttributes += ['class' =>
+        $bindAttributes += ['class' =>
             "k-button k-button-md k-button-rectangle k-rounded-md k-button-solid k-button-solid-base"];
-        $this->myBindAttributes += ['button-role' => 'button'];
-        $this->myBindAttributes += ['data-bind' =>
-            "enabled: {$this->myBindAttributes['bind']}, events: {click: {$this->myBindAttributes['action'] }}"];
+        $bindAttributes += ['button-role' => 'button'];
+        $bindAttributes += ['data-bind' =>
+            "enabled: {$bindAttributes['bind']}, events: {click: {$bindAttributes['action'] }}"];
 
         // these keys are not directly used as attributes, remove them
-        array_diff($this->myBindAttributes, ['bind', 'action']);
+        unset($bindAttributes['bind']);
+        unset($bindAttributes['action']);
+        $this->myBindAttributes = $bindAttributes;
     }
 
     public function render($root) {

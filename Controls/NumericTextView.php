@@ -8,14 +8,14 @@ class NumericTextView extends BaseView implements IView
 {
     public function __construct(array $bindAttributes)
     {
-        $this->myBindAttributes = $bindAttributes;
-        $this->myBindAttributes += ['class' => "c-input c-numeric"];
-        $this->myBindAttributes += ['data-role' => 'numerictextbox'];
-        $this->myBindAttributes += ['data-step' => 0];
-        $this->myBindAttributes += ['data-bind' => "value: {$this->myBindAttributes['bind']}"];
+        $bindAttributes += ['class' => "c-input c-numeric"];
+        $bindAttributes += ['data-role' => 'numerictextbox'];
+        $bindAttributes += ['data-step' => 0];
+        $bindAttributes += ['data-bind' => "value: {$bindAttributes['bind']}"];
 
         // these keys are not directly used as attributes, remove them
-        array_diff($this->myBindAttributes, ['bind']);
+        unset($bindAttributes['bind']);
+        $this->myBindAttributes = $bindAttributes;
     }
 
     public function render($root) {

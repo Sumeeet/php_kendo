@@ -27,8 +27,8 @@ const ModuleInstance = function() {
             })
 
             // TODO_SK get rid of this, needs this strangely to execute bind commands
-            viewModel.set('apply', function () {
-            })
+            // viewModel.set('apply', function () {
+            // })
 
             viewModel.bind(result, mainView, footerView);
 

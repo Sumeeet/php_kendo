@@ -7,8 +7,8 @@ use CT\Interfaces\IView;
 class LabelView extends BaseView implements IView
 {
     public function __construct(array $bindAttributes) {
+        $bindAttributes += ['class' => "c-label"];
         $this->myBindAttributes = $bindAttributes;
-        $this->myBindAttributes += ['class' => "c-label"];
     }
 
     public function render($root) {

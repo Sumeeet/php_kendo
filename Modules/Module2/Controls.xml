@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <control name = 'module2'>
-    <components>
+    <group id = 'container'>
 
         <!-- fathers age composite view-->
         <label id = 'fageLabelId' name = 'Fathers Age'></label>
@@ -28,6 +28,6 @@
             <button id = 'cacheId' name = 'Clear Cache' bind = '' action = 'onClear'></button>
             <button id = 'applyId' name = 'Apply' bind = 'changed' action = 'onApply'></button>
         </block>
-    </components>
+    </group>
 </control>
 

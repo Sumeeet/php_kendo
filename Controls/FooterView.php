@@ -13,7 +13,7 @@ class FooterView implements IView
         $this->myBindAttributes = $bindAttributes;
     }
 
-    public function render()
+    public function render($root)
     {
         echo <<<HTML
         <div id={$this->myBindAttributes['id']} class = "horizontalLayout">

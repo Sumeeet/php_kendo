@@ -18,7 +18,7 @@ class XMLRenderer
         if(!$file) return;
 
         $doc = new DOMDocument();
-        self::renderControls($file->components, $doc, $doc);
+        self::renderControls($file, $doc, $doc);
         print_r($doc->saveHTML());
     }
 
