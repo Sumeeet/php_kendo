@@ -1,7 +1,6 @@
 <?php
 
-
-namespace CT\Controls;
+namespace CT\Core\Controls;
 
 use CT\Core\Interface\IView;
 

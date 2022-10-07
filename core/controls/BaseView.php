@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Controls;
+namespace CT\Core\Controls;
 
 abstract class BaseView
 {

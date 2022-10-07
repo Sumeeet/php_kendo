@@ -2,12 +2,12 @@
 
 namespace CT\WebCore;
 
-use CT\Controls\GridView;
-use CT\Controls\GroupView;
-use CT\Controls\NumericTextView;
-use CT\Controls\TextView;
-use CT\Controls\ButtonView;
-use CT\Controls\LabelView;
+use CT\Core\Controls\GridView;
+use CT\Core\Controls\GroupView;
+use CT\Core\Controls\NumericTextView;
+use CT\Core\Controls\TextView;
+use CT\Core\Controls\ButtonView;
+use CT\Core\Controls\LabelView;
 
 class ControlsFactory
 {
