@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Modules\Module2;
+namespace CT\Modules\Age;
 
 use CT\Core\Interface\IView;
 use CT\Core\Lib\XMLRenderer;
@@ -25,7 +25,7 @@ class MainView implements IView
             <meta name='viewport' content='width=device-width, initial-scale=1'>
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" rel="stylesheet" />
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" rel="stylesheet" />
-            <link href="./Modules/Module2/main.css" rel="stylesheet"/>
+            <link href="./Modules/Age/main.css" rel="stylesheet"/>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
 
@@ -33,7 +33,7 @@ class MainView implements IView
         <body id="mainViewId">
         <div>
             <?php
-            XMLRenderer::render("./Modules/Module2/Controls.xml");
+            XMLRenderer::render("./Modules/Age/Controls.xml");
             ?>
         </div>
         </body>
@@ -51,9 +51,9 @@ class MainView implements IView
         <script src="./core/jslib/Command.js"></script>
         <script src="./core/jslib/ArrayUtils.js"></script>
 
-        <script src="./Modules/Module2/ModuleInstance.js"></script>
-        <script src="./Modules/Module2/ViewController.js"></script>
-        <script src="./Modules/Module2/GridInfo.js"></script>
+        <script src="./Modules/Age/ModuleInstance.js"></script>
+        <script src="./Modules/Age/ViewController.js"></script>
+        <script src="./Modules/Age/GridInfo.js"></script>
     </html>
 <?php
     }

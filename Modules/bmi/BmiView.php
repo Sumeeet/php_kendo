@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Modules\Module1;
+namespace CT\Modules\Bmi;
 
 use CT\Controls\LabelledNumericTextView;
 use CT\Controls\LabelledTextView;
