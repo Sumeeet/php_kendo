@@ -3,7 +3,7 @@
 namespace CT\Modules\Module2;
 
 use CT\Core\Interface\IView;
-use CT\WebCore\XMLRenderer;
+use CT\Core\Lib\XMLRenderer;
 
 class MainView implements IView
 {

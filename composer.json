@@ -16,8 +16,6 @@
   "autoload": {
     "psr-4": {
       "CT\\Modules\\": "Modules/",
-      "CT\\Controls\\": "Controls/",
-      "CT\\WebCore\\": "WebCore/",
       "CT\\Core\\": "core/"
     }
   }

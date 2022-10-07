@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\WebCore;
+namespace CT\Core\Lib;
 
 use CT\Core\Controls\GridView;
 use CT\Core\Controls\GroupView;
