@@ -38,18 +38,18 @@ class MainView implements IView
         </div>
         </body>
 
-        <script src="./JsLib/Decorators.js"></script>
-        <script src="./JsLib/Utils.js"></script>
-        <script src="./JsLib/Validations.js"></script>
-        <script src="./JsLib/Either.js"></script>
-        <script src="./JsLib/DataProxy.js"></script>
-        <script src="./JsLib/ViewModel.js"></script>
-        <script src="./JsLib/GridUtils.js"></script>
-        <script src="./JsLib/Maybe.js"></script>
-        <script src="./JsLib/Constants.js"></script>
-        <script src="./JsLib/History.js"></script>
-        <script src="./JsLib/Command.js"></script>
-        <script src="./JsLib/ArrayUtils.js"></script>
+        <script src="./core/jslib/Decorators.js"></script>
+        <script src="./core/jslib/Utils.js"></script>
+        <script src="./core/jslib/Validations.js"></script>
+        <script src="./core/jslib/Either.js"></script>
+        <script src="./core/jslib/DataProxy.js"></script>
+        <script src="./core/jslib/ViewModel.js"></script>
+        <script src="./core/jslib/GridUtils.js"></script>
+        <script src="./core/jslib/Maybe.js"></script>
+        <script src="./core/jslib/Constants.js"></script>
+        <script src="./core/jslib/History.js"></script>
+        <script src="./core/jslib/Command.js"></script>
+        <script src="./core/jslib/ArrayUtils.js"></script>
 
         <script src="./Modules/Module2/ModuleInstance.js"></script>
         <script src="./Modules/Module2/ViewController.js"></script>
