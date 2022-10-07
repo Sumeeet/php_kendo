@@ -3,7 +3,7 @@
 
 namespace CT\Controls;
 
-use CT\Interfaces\IView;
+use CT\Core\Interface\IView;
 use CT\Controls\TextView;
 use CT\Controls\LabelView;
 

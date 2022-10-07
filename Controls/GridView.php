@@ -3,7 +3,7 @@
 
 namespace CT\Controls;
 
-use CT\Interfaces\IView;
+use CT\Core\Interface\IView;
 use Kendo\UI\Grid;
 
 class GridView extends BaseView implements IView

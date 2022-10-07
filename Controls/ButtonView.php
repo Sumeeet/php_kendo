@@ -3,7 +3,7 @@
 
 namespace CT\Controls;
 
-use CT\Interfaces\IView;
+use CT\Core\Interface\IView;
 use DOMException;
 
 class ButtonView extends BaseView implements IView

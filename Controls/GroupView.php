@@ -2,7 +2,7 @@
 
 namespace CT\Controls;
 
-use CT\Interfaces\IView;
+use CT\Core\Interface\IView;
 
 class GroupView extends BaseView implements IView
 {

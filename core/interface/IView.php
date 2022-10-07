@@ -1,6 +1,6 @@
 <?php
 
-namespace CT\Interfaces;
+namespace CT\Core\Interface;
 
 interface IView
 {
