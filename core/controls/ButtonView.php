@@ -4,24 +4,23 @@
 namespace CT\Core\Controls;
 
 use CT\Core\Interface\IView;
-use DOMException;
 
 class ButtonView extends BaseView implements IView
 {
-    public function __construct(array $bindAttributes) {
-        $bindAttributes += ['class' =>
+    public function __construct(array $attributes) {
+        $attributes += ['class' =>
             "k-button k-button-md k-button-rectangle k-rounded-md k-button-solid k-button-solid-base"];
-        $bindAttributes += ['button-role' => 'button'];
-        $bindAttributes += ['data-bind' =>
-            "enabled: {$bindAttributes['bind']}, events: {click: {$bindAttributes['action'] }}"];
+        $attributes += ['button-role' => 'button'];
+        $attributes += ['data-bind' =>
+            "enabled: {$attributes['bind']}, events: {click: {$attributes['action'] }}"];
 
         // these keys are not directly used as attributes, remove them
-        unset($bindAttributes['bind']);
-        unset($bindAttributes['action']);
-        $this->myBindAttributes = $bindAttributes;
+        unset($attributes['bind']);
+        unset($attributes['action']);
+        $this->myAttributes = $attributes;
     }
 
     public function render($root) {
-        return $this->renderVirtualDOM($root, 'button', $this->myBindAttributes['name']);
+        return $this->renderVirtualDOM($root, 'button', $this->myAttributes['name']);
     }
 }

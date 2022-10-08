@@ -6,8 +6,8 @@ use CT\Core\Interface\IView;
 
 class GroupView extends BaseView implements IView
 {
-    public function __construct(array $bindAttributes) {
-        $this->myBindAttributes = $bindAttributes;
+    public function __construct(array $attributes) {
+        $this->myAttributes = $attributes;
     }
 
     public function render($root) {

@@ -29,10 +29,13 @@ class XMLRenderer
         foreach ($node->children() as $child) {
             $type = $child->getName();
             $attributes = self::makeAttributes($child->attributes());
-            $control = ControlsFactory::create($type, $attributes);
-            $element = $control?->render($doc);
-            $parent->appendChild($element);
-            self::renderControls($child, $doc, $element);
+            $control = ControlsFactory::create($type, $attributes, $child);
+            // not all XML nodes are renderable i.e. columns
+            if ($control) {
+                $element = $control->render($doc);
+                $parent->appendChild($element);
+                self::renderControls($child, $doc, $element);
+            }
         }
     }
 

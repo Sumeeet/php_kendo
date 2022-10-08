@@ -6,12 +6,12 @@ use CT\Core\Interface\IView;
 
 class LabelView extends BaseView implements IView
 {
-    public function __construct(array $bindAttributes) {
-        $bindAttributes += ['class' => "c-label"];
-        $this->myBindAttributes = $bindAttributes;
+    public function __construct(array $attributes) {
+        $attributes += ['class' => "c-label"];
+        $this->myAttributes = $attributes;
     }
 
     public function render($root) {
-        return $this->renderVirtualDOM($root, 'span', $this->myBindAttributes['name']);
+        return $this->renderVirtualDOM($root, 'span', $this->myAttributes['name']);
     }
 }

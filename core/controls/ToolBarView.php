@@ -4,27 +4,34 @@ namespace CT\Core\Controls;
 
 use CT\Core\Interface\IView;
 
-class ToolBarView implements IView
+class ToolBarView extends BaseView implements IView
 {
-    private array $myBindAttributes;
-    private string $id;
-
-    public function __construct(string $id, array $bindAttributes) {
-        $this->myBindAttributes = $bindAttributes;
-        $this->id = $id;
+    public function __construct(array $attributes) {
+        $this->myAttributes = $this->makeAttributes($attributes);
     }
 
-    public function render($root)
-    {
-?>
-        <div id = <?= $this->id ?> class = "horizontal_layout">
-        <?php
-            foreach ($this->myBindAttributes as $key => $buttonAttributes) {
-                $myButton = new ButtonView($buttonAttributes);
-                $myButton->render();
-            }
-        ?>
-        </div>
-<?php
+    public function render($root) {
+        $group = new GroupView(['id' => 'toolBarId']);
+        $parent = $group->render($root);
+        foreach ($this->myAttributes as $attribute) {
+            $button = new ButtonView($attribute);
+            $parent->appendChild($button->render($root));
+        }
+        return $parent;
+    }
+
+    private function makeAttributes($attributes): array {
+        $operations = explode('|', $attributes['actions']);
+        $toolBarAttributes = [];
+        foreach ($operations as $op) {
+            $toolBarAttributes[] = [
+                'id' => $op . 'Id',
+                'name' => $op,
+                'bind' => '',
+                'action' => $op
+            ];
+        }
+        return $toolBarAttributes;
     }
 }
+
