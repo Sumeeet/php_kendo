@@ -74,21 +74,29 @@ const ViewController = function (viewModel) {
         viewModel.set('addRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')
             pushAddRemoveCommand(index)
+            this.set('canremoveRow', g.hasData('ageGridId'))
         })
 
         viewModel.set('addBeforeRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
             pushAddRemoveCommand(index)
+            this.set('canremoveRow', g.hasData('ageGridId'))
         })
 
         viewModel.set('addAfterRow', function () {
             const index = g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
             pushAddRemoveCommand(index)
+            this.set('canremoveRow', g.hasData('ageGridId'))
         })
 
         viewModel.set('removeRow', function () {
             CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
+            this.set('canremoveRow', g.hasData('ageGridId'))
         })
+
+        viewModel.set('canaddRow', true)
+
+        viewModel.set('canremoveRow', g.hasData('ageGridId'))
 
         // TODO_SK get rid of this, needs this strangely to execute bind commands
         viewModel.set('apply', function () {
