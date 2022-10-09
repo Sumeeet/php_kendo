@@ -11,16 +11,16 @@
         <label id = 'sageLabelId' name = 'Sons Age'></label>
         <numeric_input id = 'sageInputId' bind = 'sage.value'></numeric_input>
 
-        <!-- collection of buttons for footer view -->
-        <group id = 'griToolBarId' class = 'horizontal_layout'>
-            <button id = 'addRowId' name = '+ Row' bind = '' action = 'addRow'></button>
-            <button id = 'removeRowId' name = '- Row' bind = '' action = 'removeRow'></button>
-            <button id = 'addBeforeRowId' name = '+= Row' bind = '' action = 'addBeforeRow'></button>
-            <button id = 'addAfterRowId' name = '=+ Row' bind = '' action = 'addAfterRow'></button>
+        <!--  Grid and its operations -->
+        <group class = 'vertical_layout'>
+            <toolbar id = 'toolbarId' actions = 'addRow|removeRow'/>
+            <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '420px' height = '400px'>
+                <columns>
+                    <column field = 'fage' title = 'Fathers Age' width = '200px'></column>
+                    <column field = 'sage' title = 'Sons Age' width = '200px'></column>
+                </columns>
+            </grid>
         </group>
-
-        <!-- father and son age grid-->
-        <grid id = 'ageGridId' bind = 'ageGrid.value' row_ops = 'add|remove|dragdrop'></grid>
 
         <!-- collection of buttons for footer view -->
         <block id = 'footerId' class = 'horizontal_layout'>

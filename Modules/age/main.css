@@ -7,6 +7,11 @@
 .horizontal_layout {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    justify-content: flex-start;
+}
+
+.vertical_layout {
+    display: flex;
+    flex-direction: column;
     justify-content: flex-start;
 }

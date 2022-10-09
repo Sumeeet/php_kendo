@@ -4,7 +4,7 @@ namespace CT\Core\Controls;
 
 abstract class BaseView
 {
-    protected array $myAttributes;
+    protected array $myAttributes = [];
 
     protected function renderVirtualDOM($root, $elementName, $elementValue = '')
     {
@@ -13,5 +13,14 @@ abstract class BaseView
             $element->setAttribute($key, $value);
         }
         return $element;
+    }
+
+    protected function unsetAttributes(array $array, array $filterArray) {
+        foreach ($filterArray as $element) {
+            if (array_key_exists($element, $array)) {
+                unset($array[$element]);
+            }
+        }
+        $this->myAttributes += $array;
     }
 }

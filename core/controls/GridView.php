@@ -9,31 +9,30 @@ class GridView extends BaseView implements IView
 {
     private ToolBarView $toolBarView;
     public function __construct(array $attributes, $node) {
-        $attributes += ['class' => "k-grid k-widget k-grid-display-block"];
-        $attributes += ['data-role' => 'grid'];
-        $attributes += ['data-bind' => "source: {$attributes['bind']}"];
-        $attributes +=  ['data-columns' => $this->makeAttributes($node->columns)];
+        $this->myAttributes += ['class' => "k-grid k-widget k-grid-display-block"];
+        $this->myAttributes += ['data-role' => 'grid'];
+        $this->myAttributes += ['data-bind' => "source: {$attributes['bind']}"];
+        $this->myAttributes += ['data-editable' => "{$attributes['editable']}"];
+        $this->myAttributes +=  ['style' => "height: {$attributes['height']}; width: {$attributes['width']}"];
+        $this->myAttributes +=  ['data-columns' => $this->makeAttributes($node->columns)];
 
-        // these keys are not directly used as attributes, remove them
-        unset($attributes['bind']);
-        $this->myAttributes = $attributes;
+        // these keys are not directly used as attributes, remove them, add remaining
+        $this->unsetAttributes($attributes, ['bind', 'width', 'height', 'editable']);
     }
 
     public function render($root) {
         return $this->renderVirtualDOM($root, 'div');
     }
 
-    private function makeAttributes($columns): bool|string
-    {
+    private function makeAttributes($columns): bool|string {
         $attributes = [];
         foreach ($columns->column as $column) {
             $colAttributes = [];
             foreach($column->attributes() as $key => $value) {
-                $colAttributes[$key] = $value;
+                $colAttributes[$key] = (string)$value;
             }
-            $attributes += $colAttributes;
+            $attributes[] = $colAttributes;
         }
-        print_r(json_encode($attributes));
         return json_encode($attributes);
     }
 }

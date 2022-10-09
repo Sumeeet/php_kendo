@@ -5,7 +5,7 @@ const ModuleInstance = function() {
 
     function init(url) {
         //caches.delete('CT_cache');
-        const limits_url = "./Modules/Module2/valueProperties.json";
+        const limits_url = "./Modules/Age/valueProperties.json";
         const viewModel = new ViewModel(url)
         viewModel.init([limits_url])
         .then(result => {
@@ -42,7 +42,7 @@ const ModuleInstance = function() {
 
 document.onreadystatechange = () => {
     // TODO: Module should or can be initialized from external trigger too
-    const url = "./Modules/Module2/test-data.json";
+    const url = "./Modules/Age/test-data.json";
     const instance = new ModuleInstance()
     if (document.readyState === 'complete') instance.init(url)
 }

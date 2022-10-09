@@ -60,23 +60,6 @@ const ViewController = function (viewModel) {
         );
     }
 
-    function bindDependencies (viewModel) {
-        // const data = CT.GridUtils.populate(viewModel.get('ageGrid.value'),
-        //     CT.GridUtils.getColumnNames(gridInfo.columns))
-
-        const data = viewModel.get('ageGrid.value')
-        const dataSource = {
-            columns: gridInfo.columns,
-            dataSource: data,
-            width: gridInfo.width,
-            height: gridInfo.height,
-            selectable: "row",
-            editable: "incell" }
-        $('#ageGridId').kendoGrid(dataSource)
-
-        //viewModel.set('ageGrid.value', data)
-    }
-
     function bindCommands (viewModel) {
         const pushAddRemoveCommand = (index) => {
             const add = g.addRowAt(index)
@@ -112,23 +95,8 @@ const ViewController = function (viewModel) {
         })
     }
 
-    // function getGridInfo(data) {
-    //     if (!gridInfo || !data) return []
-    //
-    //     // TODO: add missing columns headers
-    //     const addMissingColumns = u.compose(
-    //         u.map(),
-    //         u.chain(u.filter((row) => 0)),
-    //         Maybe.of
-    //     )
-    //
-    //     return addMissingColumns(data)
-    // }
-
     (function() {
         registerValidations(viewModel)
-
-        bindDependencies(viewModel)
 
         bindCommands(viewModel)
     })();

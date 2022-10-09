@@ -13,9 +13,8 @@ class NumericTextView extends BaseView implements IView
         $attributes += ['data-step' => 0];
         $attributes += ['data-bind' => "value: {$attributes['bind']}"];
 
-        // these keys are not directly used as attributes, remove them
-        unset($attributes['bind']);
-        $this->myAttributes = $attributes;
+        // these keys are not directly used as attributes, remove them, add remaining
+        $this->unsetAttributes($attributes, ['bind']);
     }
 
     public function render($root) {

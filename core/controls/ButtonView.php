@@ -14,10 +14,8 @@ class ButtonView extends BaseView implements IView
         $attributes += ['data-bind' =>
             "enabled: {$attributes['bind']}, events: {click: {$attributes['action'] }}"];
 
-        // these keys are not directly used as attributes, remove them
-        unset($attributes['bind']);
-        unset($attributes['action']);
-        $this->myAttributes = $attributes;
+        // these keys are not directly used as attributes, remove them, add remaining
+        $this->unsetAttributes($attributes, ['bind', 'action']);
     }
 
     public function render($root) {

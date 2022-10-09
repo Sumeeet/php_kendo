@@ -12,9 +12,8 @@ class TextView extends BaseView implements IView
         $attributes += ['data-value-update' => 'keypress'];
         $attributes += ['data-bind' => "value: {$attributes['bind']}"];
 
-        // these keys are not directly used as attributes, remove them
-        unset($attributes['bind']);
-        $this->myAttributes = $attributes;
+        // these keys are not directly used as attributes, remove them, add remaining
+        $this->unsetAttributes($attributes, ['bind']);
 
     }
 
