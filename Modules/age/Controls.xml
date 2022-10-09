@@ -4,29 +4,29 @@
     <group id = 'container'>
 
         <!-- fathers age composite view-->
-        <label id = 'fageLabelId' name = 'Fathers Age'></label>
-        <numeric_input id = 'fageInputId' bind = 'fage.value'></numeric_input>
+        <label id = 'fageLabelId' name = 'Fathers Age'/>
+        <numeric_input id = 'fageInputId' bind = 'fage.value'/>
 
         <!-- sons age composite view-->
-        <label id = 'sageLabelId' name = 'Sons Age'></label>
-        <numeric_input id = 'sageInputId' bind = 'sage.value'></numeric_input>
+        <label id = 'sageLabelId' name = 'Sons Age'/>
+        <numeric_input id = 'sageInputId' bind = 'sage.value'/>
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
-            <toolbar id = 'toolbarId' actions = 'addRow|removeRow'/>
+            <toolbar id = 'toolbarId' actions = '+ : addRow | - : removeRow' class = 'horizontal_layout'/>
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '420px' height = '400px'>
                 <columns>
-                    <column field = 'fage' title = 'Fathers Age' width = '200px'></column>
-                    <column field = 'sage' title = 'Sons Age' width = '200px'></column>
+                    <column field = 'fage' title = 'Fathers Age' width = '200px'/>
+                    <column field = 'sage' title = 'Sons Age' width = '200px'/>
                 </columns>
             </grid>
         </group>
 
         <!-- collection of buttons for footer view -->
         <block id = 'footerId' class = 'horizontal_layout'>
-            <button id = 'loadId' name = 'Load' bind = '' action = 'onLoad'></button>
-            <button id = 'cacheId' name = 'Clear Cache' bind = '' action = 'onClear'></button>
-            <button id = 'applyId' name = 'Apply' bind = 'changed' action = 'onApply'></button>
+            <button id = 'loadId' name = 'Load' bind = '' action = 'onLoad'/>
+            <button id = 'cacheId' name = 'Clear Cache' bind = '' action = 'onClear'/>
+            <button id = 'applyId' name = 'Apply' bind = 'changed' action = 'onApply'/>
         </block>
     </group>
 </control>
