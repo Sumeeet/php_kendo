@@ -3,13 +3,15 @@
 namespace CT\Modules;
 
 use CT\Core\Interface\IView;
-use CT\Core\Lib\XMLRenderer;
 
-class ModuleView implements IView
+class ModuleView
 {
-    private string $myModulePath = '';
-    public function __construct($modulePath) {
-        $this->myModulePath = $modulePath;
+    private IView $myView;
+    /**
+     * @throws \DOMException
+     */
+    public function __construct(IView $view) {
+        $this->myView = $view;
     }
 
     /**
@@ -27,18 +29,12 @@ class ModuleView implements IView
             <meta name='viewport' content='width=device-width, initial-scale=1'>
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" rel="stylesheet" />
             <link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" rel="stylesheet" />
-            <link href="./Modules/Age/main.css" rel="stylesheet"/>
+            <link href="./Modules/Main.css" rel="stylesheet"/>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
             <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
 
         </head>
         <body id="mainViewId">
-        <div>
-            <?php
-            XMLRenderer::render($this->myModulePath);
-            ?>
-        </div>
-        </body>
 
         <script src="./core/jslib/Decorators.js"></script>
         <script src="./core/jslib/Utils.js"></script>
@@ -53,9 +49,13 @@ class ModuleView implements IView
         <script src="./core/jslib/Command.js"></script>
         <script src="./core/jslib/ArrayUtils.js"></script>
 
-        <script src="./Modules/Age/ModuleInstance.js"></script>
-        <script src="./Modules/Age/ViewController.js"></script>
-        <script src="./Modules/Age/GridInfo.js"></script>
+        <div>
+            <?php
+            $this->myView->render(null);
+            ?>
+        </div>
+        </body>
+
         </html>
         <?php
     }
