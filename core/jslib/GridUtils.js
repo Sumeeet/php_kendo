@@ -32,10 +32,16 @@ CT.GridUtils.getGrid = (gridId) => {
     return $(gridId).data("kendoGrid");
 };
 
-CT.GridUtils.hasData = (grid) => grid.dataSource.data().length > 0
+CT.GridUtils.hasData = (gridId) => {
+    const execute = CT.Utils.compose(
+        CT.Utils.chain((grid => grid.dataSource.data().length > 0)),
+        Maybe.of,
+        CT.GridUtils.getGrid)
+    return execute(gridId)
+}
 
 CT.GridUtils.getData = (gridId) => {
-    const readItems = (grid) => CT.GridUtils.hasData(grid) ? grid.items() : null
+    const readItems = (grid) => grid.dataSource.data().length > 0 ? grid.items() : null
     const read = CT.Utils.compose(
         CT.Utils.chain(readItems),
         Maybe.of,
@@ -196,21 +202,21 @@ CT.GridUtils.addRowAt = CT.Utils.curry((index, gridId) => {
 })
 
 CT.GridUtils.removeRow = CT.Utils.curry((position, gridId) => {
-    const remove = CT.Utils.curry((pos, source) => {
-        const rowCount = source.total()
-        const grid = CT.GridUtils.getGrid(gridId)
+    const remove = CT.Utils.curry((pos, grid) => {
+        const rowCount = grid.dataSource.total()
         // TODO: get index from position constant
         if (rowCount > 0) {
             const row = CT.GridUtils.getRowSelector(rowCount, rowCount)
-            grid.removeRow(row)//`tr:eq("${rowCount}")`);
+            grid.removeRow(`tr:eq("${rowCount}")`);
             console.log(`row removed at index: ${pos}`);
         }
+        return rowCount
     })
 
     const execute = CT.Utils.compose(
         CT.Utils.chain(remove(position)),
         Maybe.of,
-        CT.GridUtils.getSource
+        CT.GridUtils.getGrid
     )
 
     return execute(gridId)

@@ -7,7 +7,6 @@ use CT\Core\Interface\IView;
 
 class GridView extends BaseView implements IView
 {
-    private ToolBarView $toolBarView;
     public function __construct(array $attributes, $node) {
         $this->myAttributes += ['class' => "k-grid k-widget k-grid-display-block"];
         $this->myAttributes += ['data-role' => 'grid'];
