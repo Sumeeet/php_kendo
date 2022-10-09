@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<control name = 'Bmi'>
+    <group id = 'container' class = 'vertical_layout'>
+
+        <!-- collection of buttons for footer view -->
+        <block id = 'toolBarId' class = 'horizontal_layout'>
+            <button id = 'undoId' name = 'Undo' bind = 'canUndo' action = 'undo'/>
+            <button id = 'redoId' name = 'Redo' bind = 'canRedo' action = 'redo'/>
+        </block>
+
+        <group id = 'bmiCalculatorId' class = 'horizontal_layout'>
+            <label id = 'ageLabelId' name = 'Age'/>
+            <numeric_input id = 'ageInputId' bind = 'age.value'/>
+
+            <label id = 'heightLabelId' name = 'Height(cm)'/>
+            <numeric_input id = 'heightInputId' bind = 'height.value'/>
+
+            <label id = 'weightLabelId' name = 'Weight(Kgs)'/>
+            <numeric_input id = 'weightInputId' bind = 'weight.value'/>
+
+            <label id = 'bmiLabelId' name = 'BMI'/>
+            <numeric_input id = 'bmiInputId' bind = 'bmi'/>
+        </group>
+
+        <grid id = 'bmiGridId' bind = 'bmiGrid' editable = 'false' width = '1400px' height = '830px'>
+        </grid>
+
+        <!-- collection of buttons for footer view -->
+        <block id = 'footerId' class = 'horizontal_layout'>
+            <button id = 'loadId' name = 'Load' bind = '' action = 'onLoad'/>
+            <button id = 'cacheId' name = 'Clear Cache' bind = '' action = 'onClear'/>
+            <button id = 'applyId' name = 'Apply' bind = 'changed' action = 'onApply'/>
+        </block>
+    </group>
+</control>
+

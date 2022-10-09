@@ -4,9 +4,9 @@ const BmiController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils
 
-    const ageEdit = getElement('ageId')
-    const heightEdit = getElement('heightId')
-    const weightEdit = getElement('weightId')
+    const ageEdit = getElement('ageInputId')
+    const heightEdit = getElement('heightInputId')
+    const weightEdit = getElement('weightInputId')
 
     // const debounce = CT.Decorators.debounce(addCommands, 400);
 
@@ -30,11 +30,11 @@ const BmiController = function (viewModel) {
     }
 
     function bindCommands (viewModel) {
-        viewModel.set('age.undo', function () {
+        viewModel.set('undo', function () {
             undoRedo.undo('age.value')
         })
 
-        viewModel.set('age.redo', function () {
+        viewModel.set('redo', function () {
             undoRedo.redo('age.value')
         })
 

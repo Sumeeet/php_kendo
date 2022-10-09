@@ -2,51 +2,29 @@
 
 namespace CT\Modules\Bmi;
 
-use CT\Controls\LabelledNumericTextView;
-use CT\Controls\LabelledTextView;
-use CT\Interfaces\IView;
-use CT\Controls\GridView;
-use CT\WebCore\JsonParser;
+use CT\Core\Interface\IView;
+use CT\Core\Lib\XMLRenderer;
+use DOMException;
 
 class BmiView implements IView
 {
-    public function render()
+    /**
+     * @throws DOMException
+     */
+    public function render($root)
     {
-        $ageView = new LabelledNumericTextView(['attribute' => 'age.value',
-            'inpId' => 'ageId', 'labelId' => 'ageLabelId:',
-            'name' => 'Age', 'style' => 'margin: 5px',
-            'errorId' => 'errorId1']);
-
-        $heightView = new LabelledNumericTextView(['attribute' => 'height.value',
-            'inpId' => 'heightId', 'labelId' => 'heightLabelId',
-            'name' => 'Height (cm)', 'style' => 'margin: 5px',
-            'errorId' => 'errorId2']);
-
-        $weightView = new LabelledNumericTextView(['attribute' => 'weight.value',
-            'inpId' => 'weightId', 'labelId' => 'weightLabelId',
-            'name' => 'Weight (kgs)', 'style' => 'margin: 5px',
-            'errorId' => 'errorId3']);
-
-        $bmiView = new LabelledNumericTextView(['attribute' => 'bmi',
-            'inpId' => 'bmiId', 'labelId' => 'bmiLabelId',
-            'name' => 'BMI', 'style' => 'margin: 5px',
-            'errorId' => 'errorId4']);
-
-        $grid = new GridView(['attribute' => 'bmiGrid',
-            'gridId' => 'bmiGridId']);
-?>
-<div>
-    <div class = 'horizontal_layout'>
-        <?php
-        $ageView->render();
-        $heightView->render();
-        $weightView->render();
-        $bmiView->render();
         ?>
-    </div>
-    <?php $grid->render(); ?>
-</div>
 
-<?php
+        <div>
+            <?php
+            XMLRenderer::render("./Modules/Bmi/Controls.xml");
+            ?>
+        </div>
+
+        <script src="./Modules/Bmi/ModuleInstance.js"></script>
+        <script src="./Modules/Bmi/BmiController.js"></script>
+        <script src="./Modules/Bmi/BmiMapper.js"></script>
+
+        <?php
     }
 }

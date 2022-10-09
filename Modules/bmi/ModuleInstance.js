@@ -8,11 +8,11 @@ const ModuleInstance = function() {
 
     function init(url) {
         //caches.delete('CT_cache');
-        const limits_url = "./Modules/Module1/valueProperties.json";
+        const limits_url = "./Modules/Bmi/valueProperties.json";
         const viewModel = new ViewModel(url)
         viewModel.init([limits_url])
         .then(result => {
-            viewModel.bind(result, mainView, footerView);
+            viewModel.bind(result, mainView, applyId);
 
             // initialize all the controllers here
             const bmiController = new BmiController(viewModel)
@@ -48,7 +48,7 @@ const ModuleInstance = function() {
 
 document.onreadystatechange = () => {
     // TODO: Module should or can be initialized from external trigger too
-    const url = "./Modules/Module1/test-data.json";
+    const url = "./Modules/Bmi/test-data.json";
     const instance = new ModuleInstance()
     if (document.readyState === 'complete') instance.init(url)
 }

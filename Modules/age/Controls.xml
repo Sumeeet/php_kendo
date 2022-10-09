@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<control name = 'module2'>
+<control name = 'Age'>
     <group id = 'container'>
 
         <!-- fathers age composite view-->
