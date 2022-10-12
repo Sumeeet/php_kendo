@@ -4,6 +4,15 @@ const ModuleInstance = function() {
     const footerView = getElement('applyId')
 
     function init(url) {
+        // CT.Utils.LoadTemplates(['./core/templates/grid.tmpl.htm'])
+        // .then(result => {
+        //     document.body.insertAdjacentHTML('beforeend', result)
+        //     const firstTemplate = kendo.template($("#boolean_template").html(), { useWithBlock: false } );
+        //     const r = firstTemplate( {checked: true});
+        //     //$( "#firstcontainer" ).html( result );
+        // })
+        // .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+
         //caches.delete('CT_cache');
         const limits_url = "./Modules/Age/valueProperties.json";
         const viewModel = new ViewModel(url)

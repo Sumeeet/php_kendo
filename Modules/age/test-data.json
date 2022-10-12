@@ -8,18 +8,22 @@
   "ageGrid": {
     "value": [
       {
+        "checked": true,
         "fage": 57,
         "sage": 31
       },
       {
+        "checked": false,
         "fage": 65,
         "sage": 38
       },
       {
+        "checked": false,
         "fage": 70,
         "sage": 45
       },
       {
+        "checked": false,
         "fage": 27,
         "sage": 1
       }

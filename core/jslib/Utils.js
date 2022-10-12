@@ -122,3 +122,22 @@ CT.Utils.chainAndCompose = (fns) => {
     composedFns.splice(0, 0, CT.Utils.either(CT.Utils.identity, CT.Utils.identity))
     return CT.Utils.compose(...composedFns)
 }
+
+CT.Utils.LoadTemplates = (paths) => {
+    const loadTemplate = CT.Utils.curry((options, path) => fetch(path))
+
+    const awaitLoadTemplates = (loadTemplatesFunc) => {
+        return Promise.all(loadTemplatesFunc)
+        .then((response) => response[0].text())
+        .catch(e => console.log(
+            `There has been a problem with loading templates : ${e.message}`))
+    }
+
+    const execute = CT.Utils.compose(
+        awaitLoadTemplates,
+        CT.Utils.chain(CT.Utils.map(loadTemplate({'method': 'GET'}))),
+        Maybe.of
+    )
+
+    return execute(paths)
+}

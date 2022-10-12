@@ -5,6 +5,8 @@ namespace CT\Core\Controls;
 
 use CT\Core\Interface\IView;
 
+define("BOOLEAN_TEMPLATE", '<input type="checkbox" #= checked ? \'checked = "checked"\' : "" #/>');
+
 class GridView extends BaseView implements IView
 {
     public function __construct(array $attributes, $node) {
@@ -28,10 +30,25 @@ class GridView extends BaseView implements IView
         foreach ($columns->column as $column) {
             $colAttributes = [];
             foreach($column->attributes() as $key => $value) {
-                $colAttributes[$key] = (string)$value;
+                $template = $this->getTemplate($key, $value, $column['field']);
+                    $colAttributes[$key] = (string)$value;
+                if ($template !== null) {
+                    $colAttributes['template'] = $template;
+                }
             }
             $attributes[] = $colAttributes;
         }
         return json_encode($attributes);
+    }
+
+    private function getTemplate($key, $value, $field): ?string {
+        if ($key !== 'type') return null;
+
+        $fieldName = (string)$field;
+        print_r("#= CT.Templates.getBooleanTemplate({$field}) #");
+        return match ((string)$value) {
+            'boolean' => "#= CT.Templates.getBooleanTemplate({$field}) #",
+            default => null,
+        };
     }
 }

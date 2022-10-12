@@ -16,7 +16,7 @@ const ViewController = function (viewModel) {
                     () => viewModel.get('sage.value') // value to compare with
                 ),
                 v.isPositive('Age must be a positive number')],
-            u.updateError("errorId1")
+            u.logConsole
         );
 
         // TODO: validations compares with old value rather than changed
@@ -28,7 +28,7 @@ const ViewController = function (viewModel) {
                     () => viewModel.get('fage.value') // value to compare with
                 ),
                 v.isPositive('Age must be a positive number')],
-            u.updateError("errorId2")
+            u.logConsole
         );
 
         // map each element of a grid column and check for number validation

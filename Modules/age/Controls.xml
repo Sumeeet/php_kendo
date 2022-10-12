@@ -3,19 +3,26 @@
 <control name = 'Age'>
     <group id = 'container'>
 
-        <!-- fathers age composite view-->
-        <label id = 'fageLabelId' name = 'Fathers Age'/>
-        <numeric_input id = 'fageInputId' bind = 'fage.value'/>
+        <block id = 'footerId' class = 'horizontal_layout'>
+            <block>
+            <!-- fathers age composite view-->
+                <label id = 'fageLabelId' name = 'Fathers Age' class = 'block'/>
+                <numeric_input id = 'fageInputId' bind = 'fage.value'/>
+            </block>
 
-        <!-- sons age composite view-->
-        <label id = 'sageLabelId' name = 'Sons Age'/>
-        <numeric_input id = 'sageInputId' bind = 'sage.value'/>
+            <block>
+                <!-- sons age composite view-->
+                <label id = 'sageLabelId' name = 'Sons Age' class = 'block'/>
+                <numeric_input id = 'sageInputId' bind = 'sage.value'/>
+            </block>
+        </block>
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
             <toolbar id = 'toolbarId' actions = '+ : addRow | - : removeRow' class = 'horizontal_layout'/>
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '420px' height = '400px'>
                 <columns>
+                    <column field = 'checked' title = 'Select' width = '200px' type = 'boolean'/>
                     <column field = 'fage' title = 'Fathers Age' width = '200px'/>
                     <column field = 'sage' title = 'Sons Age' width = '200px'/>
                 </columns>
