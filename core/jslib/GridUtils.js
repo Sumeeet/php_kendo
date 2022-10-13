@@ -172,7 +172,7 @@ CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
         // TODO: copy first item if any, later on will add blank, default or user defined values
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
-        source.insert(index, { fage: 10, sage: 10 })
+        source.insert(index, { checked: false, fage: 10, sage: 10 })
         console.log(`row added at index: ${index}`)
         return index
     })
@@ -191,7 +191,7 @@ CT.GridUtils.addRowAt = CT.Utils.curry((index, gridId) => {
         // TODO: copy first item if any, later on will add blank, default or user defined values
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
-        source.insert(index, { fage: 10, sage: 10 })
+        source.insert(index, { checked: false, fage: 10, sage: 10 })
         console.log(`row added at index: ${index}`)
         return index
     })

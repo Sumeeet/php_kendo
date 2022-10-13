@@ -45,10 +45,9 @@ class GridView extends BaseView implements IView
         if ($key !== 'type') return null;
 
         $fieldName = (string)$field;
-        print_r("#= CT.Templates.getBooleanTemplate({$field}) #");
         return match ((string)$value) {
-            'boolean' => "#= CT.Templates.getBooleanTemplate({$field}) #",
-            default => null,
+            'boolean' => "#= CT.Templates.getBooleanTemplate($fieldName)#",
+            default => null
         };
     }
 }

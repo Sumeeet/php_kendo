@@ -51,7 +51,7 @@ const ModuleInstance = function() {
 
 document.onreadystatechange = () => {
     // TODO: Module should or can be initialized from external trigger too
-    const url = "./Modules/Age/test-data.json";
+    const url = "./Modules/Age/test-data1.json";
     const instance = new ModuleInstance()
     if (document.readyState === 'complete') instance.init(url)
 }
