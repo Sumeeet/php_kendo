@@ -36,7 +36,7 @@ class ToolBarView extends BaseView implements IView
                 'name' => $name,
                 'bind' => 'can'.$bind,
                 'action' => $bind,
-                'style' =>  "height: 20px; width: 20px; margin: 5px"
+                'class' => 'ct-toolbar'
             ];
         }
         return $toolBarAttributes;
