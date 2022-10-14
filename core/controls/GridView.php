@@ -19,7 +19,11 @@ class GridView extends BaseView implements IView
         $this->merge($attributes, ['bind', 'width', 'height', 'editable']);
     }
 
-    public function render($root) {
+    /**
+     * @throws \DOMException
+     */
+    public function render($root): bool|\DOMElement
+    {
         return $this->renderVirtualDOM($root, 'div');
     }
 

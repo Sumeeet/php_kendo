@@ -2,11 +2,26 @@
 
 namespace CT\Core\Controls;
 
+use DOMDocument;
+use DOMElement;
+use DOMException;
+
 abstract class BaseView
 {
     protected array $myAttributes = [];
 
-    protected function renderVirtualDOM($root, $elementName, $elementValue = '')
+    /**
+     * Render HTML elements in memory.
+     *
+     * @param $root         DOMDocument instance
+     * @param $elementName  string HTML element as name i.e. div, button, label etc.
+     * @param $elementValue string Text to be shown in UI
+     *
+     * @return DOMElement|bool
+     * @throws DOMException
+     */
+    protected function renderVirtualDOM(DOMDocument $root, string $elementName,
+        string $elementValue = ''): DOMElement|bool
     {
         $element = $root->createElement($elementName, $elementValue);
         foreach ($this->myAttributes as $key => $value) {
@@ -16,8 +31,10 @@ abstract class BaseView
     }
 
     /**
-     * @param array $array
-     * @param array $filters
+     * Merge user defined attributes with component specific attributes
+     * @param array $array custom attributes
+     * @param array $filters filter attributes which are used to compose new
+     *                       attributes
      *
      * @return void
      */

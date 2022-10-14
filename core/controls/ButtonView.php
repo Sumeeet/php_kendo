@@ -18,7 +18,11 @@ class ButtonView extends BaseView implements IView
         $this->merge($attributes, ['bind', 'action']);
     }
 
-    public function render($root) {
+    /**
+     * @throws \DOMException
+     */
+    public function render($root): bool|\DOMElement
+    {
         return $this->renderVirtualDOM($root, 'button', $this->myAttributes['name']);
     }
 }

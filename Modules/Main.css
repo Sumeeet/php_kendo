@@ -19,3 +19,15 @@
 .block {
     display: block;
 }
+
+#container {
+    margin: 15px;
+    padding: 5px;
+}
+
+.ct-toolbar {
+    height: max-content;
+    width: max-content;
+    /* top right bottom left */
+    margin: 5px 5px 5px 0;
+}
