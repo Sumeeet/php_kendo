@@ -20,8 +20,8 @@
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
             <block id = 'footerId' class = 'horizontal_layout'>
-                <button id = 'addRowId' class = 'ct-toolbar' name = '+' bind = '' message = 'addRow'/>
-                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' bind = 'canRemoveRow' message = 'removeRow'/>
+                <button id = 'addRowId' class = 'ct-toolbar' name = '+' bind = '' action = '' message = 'addRow'/>
+                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' bind = 'canRemoveRow' action = '' message = 'removeRow'/>
             </block>
 
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '600px' height = '400px'>

@@ -141,3 +141,5 @@ CT.Utils.LoadTemplates = (paths) => {
 
     return execute(paths)
 }
+
+CT.Utils.isUndefined = (obj) => obj === null || obj === undefined || obj === ''

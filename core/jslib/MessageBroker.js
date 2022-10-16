@@ -18,7 +18,10 @@ const MessageBroker = function () {
             }
         }
 
-        const execute = CT.Utils.compose(u.forEach(broadcast), splitTrimMessage)
+        const execute = CT.Utils.compose(
+            u.map(u.forEach(broadcast)),
+            u.map(splitTrimMessage),
+            Maybe.of)
         execute(message)
     }
 
@@ -35,7 +38,11 @@ const MessageBroker = function () {
             queue.subscribe(command)
         }
 
-        const execute = CT.Utils.compose(u.forEach(sub), splitTrimMessage)
+        const execute = CT.Utils.compose(
+            u.map(u.forEach(sub)),
+            u.map(splitTrimMessage),
+            Maybe.of)
+
         execute(message)
     }
 

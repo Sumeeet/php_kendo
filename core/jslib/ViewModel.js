@@ -196,7 +196,7 @@ const ViewModel = function(url) {
      */
     const set = function(prop, value) {
         try {
-            if (!value) {
+            if (u.isUndefined(value)) {
                 // get it from the cache
                 dataProxy.getData(url, {'method': 'GET'})
                 .then(function(cachedModel) {

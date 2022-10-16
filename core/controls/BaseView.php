@@ -39,13 +39,13 @@ abstract class BaseView
      * @return void
      */
     protected function merge(array $array, array $filters = []) {
-        $filteredArray = array_filter(
-            $array,
-            fn($key) => !array_key_exists($key, $filters),
-            ARRAY_FILTER_USE_KEY
-        );
+        foreach ($filters as $key) {
+            if (isset($array[$key])) {
+                unset($array[$key]);
+            }
+        }
 
-        $this->mergeAttribute($filteredArray);
+        $this->mergeAttribute($array);
     }
 
     private function mergeAttribute(array $attributes) {
