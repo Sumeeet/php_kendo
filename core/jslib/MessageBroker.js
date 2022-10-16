@@ -1,26 +1,42 @@
 const MessageBroker = function () {
+    const su = CT.StringUtils
+    const u = CT.Utils
     let messageQueueMap = new Map()
 
+    const splitTrim = u.compose(u.map(su.trim), su.split)
+    const splitTrimStrings = u.curry((func, delimiter, value) => func(delimiter, value))
+    const splitTrimMessage = splitTrimStrings(splitTrim, '|')
+
     const broadcastMessage = function (message) {
-        const queueName = `${message}Queue`
-        let queue = messageQueueMap.get(queueName)
-        if (queue) {
-            console.log(`message: ${message}`)
-            // notify subscribers
-            queue.add(message)
+        const broadcast = (msg) => {
+            const queueName = `${msg}Queue`
+            let queue = messageQueueMap.get(queueName)
+            if (queue) {
+                console.log(`message: ${msg}`)
+                // notify subscribers
+                queue.add(msg)
+            }
         }
+
+        const execute = CT.Utils.compose(u.forEach(broadcast), splitTrimMessage)
+        execute(message)
     }
 
     const subscribe = function (message, command) {
-        const queueName = `${message}Queue`
-        let queue = messageQueueMap.get(queueName)
-        if (!queue) {
-            queue = new MessageQueue(queueName)
-            messageQueueMap.set(queueName, queue)
+        const sub = (msg) => {
+            const queueName = `${msg}Queue`
+            let queue = messageQueueMap.get(queueName)
+            if (!queue) {
+                queue = new MessageQueue(queueName)
+                messageQueueMap.set(queueName, queue)
+            }
+
+            // client (command knows how to handle a request when a message is received)
+            queue.subscribe(command)
         }
 
-        // client (command knows how to handle a request when a message is received)
-        queue.subscribe(command)
+        const execute = CT.Utils.compose(u.forEach(sub), splitTrimMessage)
+        execute(message)
     }
 
     return { broadcastMessage, subscribe }

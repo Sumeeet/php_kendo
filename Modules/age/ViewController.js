@@ -72,43 +72,32 @@ const ViewController = function (viewModel) {
             )
         }
 
-        messageBroker.subscribe('addRow', new EditCommand(g,
-            () => g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')))
+        messageBroker.subscribe('addRow',
+            new EditCommand(u, u.compose( pushAddRemoveCommand,
+                () => g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')))
+        )
 
-        messageBroker.subscribe('removeRow', new EditCommand(g,
-            () => g.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')))
+        messageBroker.subscribe('addRowBefore',
+            new EditCommand(u, u.compose( pushAddRemoveCommand,
+                () => g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')))
+        )
 
+        messageBroker.subscribe('addRowAfter',
+            new EditCommand(u, u.compose( pushAddRemoveCommand,
+                () => g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')))
+        )
 
-        // viewModel.set('addRow', function () {
-        //     const index = g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')
-        //     pushAddRemoveCommand(index)
-        //     this.set('canremoveRow', g.hasData('ageGridId'))
-        // })
-        //
-        // viewModel.set('addBeforeRow', function () {
-        //     const index = g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')
-        //     pushAddRemoveCommand(index)
-        //     this.set('canremoveRow', g.hasData('ageGridId'))
-        // })
-        //
-        // viewModel.set('addAfterRow', function () {
-        //     const index = g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')
-        //     pushAddRemoveCommand(index)
-        //     this.set('canremoveRow', g.hasData('ageGridId'))
-        // })
-        //
-        // viewModel.set('removeRow', function () {
-        //     CT.GridUtils.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
-        //     this.set('canremoveRow', g.hasData('ageGridId'))
-        // })
-        //
-        // viewModel.set('canaddRow', true)
-        //
-        // viewModel.set('canremoveRow', g.hasData('ageGridId'))
-        //
-        // // TODO_SK get rid of this, needs this strangely to execute bind commands
-        // viewModel.set('apply', function () {
-        // })
+        messageBroker.subscribe('removeRow | addRow',
+            new EditCommand(u, (msg) => {
+                u.IfElse(
+                    () => msg === 'addRow',
+                    () => viewModel.set('canRemoveRow', g.hasData('ageGridId')),
+                    () => {
+                        g.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
+                        viewModel.set('canRemoveRow', g.hasData('ageGridId'))
+                    })(msg)
+                }, () => g.hasData('ageGridId'))
+        )
     }
 
     (function() {

@@ -11,7 +11,11 @@ class LabelView extends BaseView implements IView
         $this->merge($attributes);
     }
 
-    public function render($root) {
+    /**
+     * @throws \DOMException
+     */
+    public function render($root): bool|\DOMElement
+    {
         return $this->renderVirtualDOM($root, 'span', $this->myAttributes['name']);
     }
 }
