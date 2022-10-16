@@ -6,9 +6,8 @@ const messageBroker = new MessageBroker('');
 
     const processEvents = (event) => {
         const message = event.target.getAttribute('message')
-        if (message !== '') {
-            messageBroker.broadcastMessage(message)
-        }
+        if (CT.Utils.isUndefined(message)) return
+        messageBroker.broadcastMessage(message)
     }
 
     eventType.forEach((type) => {
