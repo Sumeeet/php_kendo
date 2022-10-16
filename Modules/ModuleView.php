@@ -49,6 +49,10 @@ class ModuleView
         <script src="./core/jslib/Command.js"></script>
         <script src="./core/jslib/ArrayUtils.js"></script>
         <script src="./core/Templates/Templates.js"></script>
+        <script src="./core/jslib/MessageQueue.js"></script>
+        <script src="./core/jslib/MessageBroker.js"></script>
+        <script src="./core/jslib/GlobalEventListener.js"></script>
+
 
         <div>
             <?php
