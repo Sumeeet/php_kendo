@@ -1,13 +1,16 @@
-const Command = function (receiver) {}
-
-const EditCommand = function (receiver, action) {
+const EditCommand = function (receiver, action, canAction = () => true) {
     const execute = function () {
-        action.apply(receiver, arguments)
+        return action.apply(receiver, arguments)
     }
-    return  { execute }
+
+    const canExecute = function () {
+        return canAction.apply(receiver, arguments)
+    }
+    return  { execute, canExecute }
 }
 
-const AddRemoveCommand = function (receiver, addAction, removeAction) {
+const AddRemoveCommand = function (receiver, addAction, removeAction,
+    canAction = () => true) {
     let undo = true
     const execute = function () {
         if (undo) {
@@ -19,5 +22,9 @@ const AddRemoveCommand = function (receiver, addAction, removeAction) {
             undo = true
         }
     }
-    return  { execute }
+
+    const canExecute = function () {
+        return canAction.apply(receiver, arguments)
+    }
+    return  { execute, canExecute }
 }

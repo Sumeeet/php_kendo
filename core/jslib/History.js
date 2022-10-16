@@ -5,16 +5,16 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         return undoMap.size === 0
     }
 
-    const push = function(key, cmd) {
-        if (undoMap.has(key)) {
-            const history = undoMap.get(key)
+    const push = function(prop, cmd) {
+        if (undoMap.has(prop)) {
+            const history = undoMap.get(prop)
             history.record(cmd)
             return
         }
 
         const history = new History(itemType)
         history.record(cmd)
-        undoMap.set(key, history)
+        undoMap.set(prop, history)
     }
 
     const clear = function() {
@@ -24,12 +24,24 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
 
     const undo = function(prop) {
         if (isEmpty()) return null
+
+        if (!undoMap.has(prop)) {
+            console.log(`Property doesn't exist: ${prop}`)
+            return
+        }
+
         const history = undoMap.get(prop)
         history.playBack()
     }
 
     const redo = function(prop) {
         if (isEmpty()) return null
+
+        if (!undoMap.has(prop)) {
+            console.log(`Property doesn't exist: ${prop}`)
+            return
+        }
+
         const history = undoMap.get(prop)
         history.playForward()
     }

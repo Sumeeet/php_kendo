@@ -8,7 +8,6 @@ const messageBroker = new MessageBroker('');
         const message = event.target.getAttribute('message')
         if (message !== '') {
             messageBroker.broadcastMessage(message)
-            console.log(`message: ${message}`)
         }
     }
 

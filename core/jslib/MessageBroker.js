@@ -5,6 +5,7 @@ const MessageBroker = function () {
         const queueName = `${message}Queue`
         let queue = messageQueueMap.get(queueName)
         if (queue) {
+            console.log(`message: ${message}`)
             // notify subscribers
             queue.add(message)
         }
