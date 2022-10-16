@@ -19,25 +19,26 @@ const ModuleInstance = function() {
         viewModel.init([limits_url])
         .then(result => {
 
-            viewModel.set('onLoad', function () {
-                DataProxy().getData(url).then(response => console.log(response));
-            })
+            messageBroker.subscribe('onLoad',
+                new EditCommand(this,
+                    () => DataProxy().getData(url).then(response => console.log(response)))
+            )
 
-            viewModel.set('onClear', function () {
-                caches.delete('ct_cache')
-            })
+            messageBroker.subscribe('onClear',
+                new EditCommand(this,
+                    () => caches.delete('ct_cache'))
+            )
 
-            viewModel.set('onApply', function () {
-                viewModel.getChangedModel()
-                .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
-                .then(result => {
-                    viewModel.reset();
-                });
-            })
-
-            // TODO_SK get rid of this, needs this strangely to execute bind commands
-            // viewModel.set('apply', function () {
-            // })
+            messageBroker.subscribe('onApply',
+                new EditCommand(this,
+                    () => {
+                        viewModel.getChangedModel()
+                        .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
+                        .then(result => {
+                            viewModel.reset();
+                        });
+                    })
+            )
 
             viewModel.bind(result, mainView, footerView);
 
