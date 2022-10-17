@@ -28,3 +28,8 @@ const AddRemoveCommand = function (receiver, addAction, removeAction,
     }
     return  { execute, canExecute }
 }
+
+
+const CommandMessage = function (targetId, command) {
+    return Object.assign({ targetId: targetId }, command)
+}

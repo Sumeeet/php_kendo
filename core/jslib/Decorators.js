@@ -26,14 +26,15 @@ CT.Decorators.localCache = function(func) {
 
 /**
  * Debounce function rejects all the intermediate calls happen before ms time
- * has elapsed and resets previous elapsed time to ms time again. Only when timeout
- * occurs then func is called. This helps in avoiding too many frequent checks or changes
+ * has elapsed and resets previous elapsed time to ms time again. Only when
+ * timeout occurs then func is called. This helps in avoiding too many frequent
+ * checks or changes
  * @param func Function called after ms time
  * @param ms time in milliseconds. Changed function 'func' shall be called
  * after ms time is elapsed.
  * @param recordFunc records which property is changed or changed last time
- * without adding duplicate. This is called regardless of time reset, as intermediate
- * calls or property change needs to be captured.
+ * without adding duplicate. This is called regardless of time reset, as
+ *     intermediate calls or property change needs to be captured.
  * @returns {function(): void}
  */
 CT.Decorators.debounce = function(func, ms, recordFunc = null) {
@@ -61,5 +62,13 @@ CT.Decorators.makeAsync = function(func) {
                 resolve(result);
             }
         })
+    }
+}
+
+CT.Decorators.delayBy = function (func, ms) {
+    return function (...args) {
+        setTimeout(function() {
+            func.apply(this, args)
+        }, ms);
     }
 }

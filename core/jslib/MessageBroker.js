@@ -9,41 +9,32 @@ const MessageBroker = function () {
 
     const broadcastMessage = function (message) {
         const broadcast = (msg) => {
-            const queueName = `${msg}Queue`
+            const queueName = `${msg.message}Queue`
             let queue = messageQueueMap.get(queueName)
             if (queue) {
-                console.log(`message: ${msg}`)
+                console.log(`message: ${msg.message}`)
                 // notify subscribers
-                queue.add(msg)
+                queue.publish(msg)
             }
         }
 
         const execute = CT.Utils.compose(
-            u.map(u.forEach(broadcast)),
-            u.map(splitTrimMessage),
+            u.map(broadcast),
             Maybe.of)
+
         execute(message)
     }
 
-    const subscribe = function (message, command) {
-        const sub = (msg) => {
-            const queueName = `${msg}Queue`
-            let queue = messageQueueMap.get(queueName)
-            if (!queue) {
-                queue = new MessageQueue(queueName)
-                messageQueueMap.set(queueName, queue)
-            }
-
-            // client (command knows how to handle a request when a message is received)
-            queue.subscribe(command)
+    const subscribe = function (message, commands) {
+        const queueName = `${message}Queue`
+        let queue = messageQueueMap.get(queueName)
+        if (!queue) {
+            queue = new MessageQueue(queueName)
+            messageQueueMap.set(queueName, queue)
         }
 
-        const execute = CT.Utils.compose(
-            u.map(u.forEach(sub)),
-            u.map(splitTrimMessage),
-            Maybe.of)
-
-        execute(message)
+        // client (command knows how to handle a request when a message is received)
+        queue.subscribe(commands)
     }
 
     return { broadcastMessage, subscribe }

@@ -22,15 +22,15 @@ const MessageQueue = function (name) {
 
     const notify = function (message) {
         subscribers.forEach(sub => {
-            if (sub.canExecute()) {
-                sub.execute(message)
+            if (sub.canExecute(message.source)) {
+                sub.execute(sub.targetId)
             } else {
-                console.log(`unable to process message: ${message}`)
+                console.log(`unable to process message: ${message.message}`)
             }
         })
     }
 
-    const add = function(message) {
+    const publish = function(message) {
         marker = marker + 1
         messageQueue.splice(marker, messageQueue.length - marker, message)
         notify(message)
@@ -42,7 +42,7 @@ const MessageQueue = function (name) {
         }
 
         let message = peekInHistory(marker)
-        notify()
+        notify(message)
         marker = marker - 1
     }
 
@@ -50,7 +50,7 @@ const MessageQueue = function (name) {
         let index = marker + 1
         if (!canLookForward(index)) return
         let message = peekInHistory(index)
-        notify();
+        notify(message);
         marker = index
     }
 
@@ -59,9 +59,9 @@ const MessageQueue = function (name) {
         marker = -1
     }
 
-    const subscribe = function (command) {
-        subscribers.push(command)
+    const subscribe = function (commands) {
+        subscribers = [...subscribers, ...commands]
     }
 
-    return { add, playBack, playForward, erase, subscribe }
+    return { publish, playBack, playForward, erase, subscribe }
 }

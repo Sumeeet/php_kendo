@@ -72,31 +72,58 @@ const ViewController = function (viewModel) {
             )
         }
 
+        const disableElement = CT.Utils.curry((gridId, id) => {
+            const element = getElement(id)
+            g.hasData(gridId) ? element.removeAttribute('disabled') :
+                element.setAttribute('disabled', '')
+        })
+
         messageBroker.subscribe('addRow',
-            new EditCommand(u, u.compose( pushAddRemoveCommand,
-                () => g.addRow(CELL_INSERTION_POSITION.end, 'ageGridId')))
+            [
+                new CommandMessage('ageGridId',
+                    new EditCommand(u,
+                        u.compose(
+                            pushAddRemoveCommand,
+                            g.addRow(CELL_INSERTION_POSITION.end)))),
+                new CommandMessage('removeRowId',
+                    new EditCommand(u, disableElement('ageGridId')))
+            ]
+        )
+
+        messageBroker.subscribe('removeRow', [
+                new CommandMessage('ageGridId',
+                    new EditCommand(u,
+                    u.compose(
+                        pushAddRemoveCommand,
+                        g.removeRow(CELL_INSERTION_POSITION.end)),
+                    () => g.hasData('ageGridId'))),
+                new CommandMessage('removeRowId',
+                    new EditCommand('u', disableElement('ageGridId')))
+            ]
         )
 
         messageBroker.subscribe('addRowBefore',
-            new EditCommand(u, u.compose( pushAddRemoveCommand,
-                () => g.addRow(CELL_INSERTION_POSITION.before, 'ageGridId')))
+            [
+                new CommandMessage('ageGridId',
+                    new EditCommand(u,
+                        u.compose(
+                            pushAddRemoveCommand,
+                            g.addRow(CELL_INSERTION_POSITION.before)))),
+                new CommandMessage('removeRowId',
+                    new EditCommand(u, disableElement('ageGridId')))
+            ]
         )
 
         messageBroker.subscribe('addRowAfter',
-            new EditCommand(u, u.compose( pushAddRemoveCommand,
-                () => g.addRow(CELL_INSERTION_POSITION.after, 'ageGridId')))
-        )
-
-        messageBroker.subscribe('removeRow | addRow',
-            new EditCommand(u, (msg) => {
-                u.IfElse(
-                    () => msg === 'addRow',
-                    () => viewModel.set('canRemoveRow', g.hasData('ageGridId')),
-                    () => {
-                        g.removeRow(CELL_INSERTION_POSITION.end, 'ageGridId')
-                        viewModel.set('canRemoveRow', g.hasData('ageGridId'))
-                    })(msg)
-                }, () => g.hasData('ageGridId'))
+            [
+                new CommandMessage('ageGridId',
+                    new EditCommand(u,
+                        u.compose(
+                            pushAddRemoveCommand,
+                            g.addRow(CELL_INSERTION_POSITION.after)))),
+                new CommandMessage('removeRowId',
+                    new EditCommand(u, disableElement('ageGridId')))
+            ]
         )
     }
 

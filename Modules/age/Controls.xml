@@ -20,8 +20,8 @@
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
             <block id = 'footerId' class = 'horizontal_layout'>
-                <button id = 'addRowId' class = 'ct-toolbar' name = '+' bind = '' action = '' message = 'addRow'/>
-                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' bind = 'canRemoveRow' action = '' message = 'removeRow'/>
+                <button id = 'addRowId' class = 'ct-toolbar' name = '+' action = 'addRow'/>
+                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' action = 'removeRow'/>
             </block>
 
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '600px' height = '400px'>
@@ -35,9 +35,9 @@
 
         <!-- collection of buttons for footer view -->
         <block id = 'footerId' class = 'horizontal_layout'>
-            <button id = 'loadId' class = 'ct-toolbar' name = 'Load' bind = '' action = '' message = 'onLoad'/>
-            <button id = 'cacheId'  class = 'ct-toolbar' name = 'Clear Cache' bind = '' action = ''  message = 'onClear'/>
-            <button id = 'applyId' class = 'ct-toolbar' name = 'Apply' bind = 'changed' action = ''  message = 'onApply'/>
+            <button id = 'loadId' class = 'ct-toolbar' name = 'Load' action = 'onLoad'/>
+            <button id = 'cacheId'  class = 'ct-toolbar' name = 'Clear Cache' action = 'onClear'/>
+            <button id = 'applyId' class = 'ct-toolbar' name = 'Apply' action = 'onApply'/>
         </block>
     </group>
 </control>

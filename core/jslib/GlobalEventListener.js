@@ -7,7 +7,10 @@ const messageBroker = new MessageBroker('');
     const processEvents = (event) => {
         const message = event.target.getAttribute('message')
         if (CT.Utils.isUndefined(message)) return
-        messageBroker.broadcastMessage(message)
+        messageBroker.broadcastMessage({
+            message: message,
+            source: event.target
+        })
     }
 
     eventType.forEach((type) => {
