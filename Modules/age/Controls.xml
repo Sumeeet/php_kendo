@@ -22,6 +22,7 @@
             <block id = 'footerId' class = 'horizontal_layout'>
                 <button id = 'addRowId' class = 'ct-toolbar' name = '+' action = 'addRow'/>
                 <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' action = 'removeRow'/>
+                <button id = 'gridHelpId'  class = 'ct-toolbar' name = '?' action = 'help'/>
             </block>
 
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '600px' height = '400px'>

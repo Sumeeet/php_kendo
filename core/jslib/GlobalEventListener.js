@@ -5,12 +5,15 @@ const messageBroker = new MessageBroker('');
     const eventType = ['click', 'dbclick', 'keyup']
 
     const processEvents = (event) => {
-        const message = event.target.getAttribute('message')
-        if (CT.Utils.isUndefined(message)) return
-        messageBroker.broadcastMessage({
-            message: message,
-            source: event.target
-        })
+        if (event.type === 'click') {
+            const message = event.target.getAttribute('message')
+            if (CT.Utils.isUndefined(message)) return
+            messageBroker.broadcastMessage(message)
+        } else if(event.type === 'keyup') {
+            if (event.ctrlKey) {
+                console.log(`KeyboardEvent: key='${event.key}' | code='${event.code}'`)
+            }
+        }
     }
 
     eventType.forEach((type) => {

@@ -22,10 +22,10 @@ const MessageQueue = function (name) {
 
     const notify = function (message) {
         subscribers.forEach(sub => {
-            if (sub.canExecute(message.source)) {
+            if (sub.canExecute(sub.targetId)) {
                 sub.execute(sub.targetId)
             } else {
-                console.log(`unable to process message: ${message.message}`)
+                console.log(`unable to process message: ${message}`)
             }
         })
     }

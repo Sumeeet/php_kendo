@@ -14,7 +14,7 @@ class GridView extends BaseView implements IView
         $this->myAttributes += ['data-editable' => "{$attributes['editable']}"];
         $this->myAttributes +=  ['style' => "height: {$attributes['height']}; width: {$attributes['width']}"];
         $this->myAttributes +=  ['data-columns' => $this->makeColumnAttributes($node->columns)];
-
+        $this->myAttributes +=  ['data-selectable' => true];
         // these keys are not directly used as attributes, remove them, add remaining
         $this->merge($attributes, ['bind', 'width', 'height', 'editable']);
     }

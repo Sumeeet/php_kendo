@@ -8,21 +8,13 @@ const MessageBroker = function () {
     const splitTrimMessage = splitTrimStrings(splitTrim, '|')
 
     const broadcastMessage = function (message) {
-        const broadcast = (msg) => {
-            const queueName = `${msg.message}Queue`
-            let queue = messageQueueMap.get(queueName)
-            if (queue) {
-                console.log(`message: ${msg.message}`)
-                // notify subscribers
-                queue.publish(msg)
-            }
+        const queueName = `${message}Queue`
+        let queue = messageQueueMap.get(queueName)
+        if (queue) {
+            console.log(`message: ${message}`)
+            // notify subscribers
+            queue.publish(message)
         }
-
-        const execute = CT.Utils.compose(
-            u.map(broadcast),
-            Maybe.of)
-
-        execute(message)
     }
 
     const subscribe = function (message, commands) {
