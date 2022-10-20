@@ -5,8 +5,8 @@ const UNDO_REDO_ITEMS = { value: 1, commands: 0 }
 Object.freeze(UNDO_REDO_ITEMS)
 
 const KEYBOARD_SHORTCUTS = {
-    add: 'Ctrl NumpadAdd',
-    remove: 'Ctrl NumpadSubtract',
-    undo: 'Ctrl KeyZ',
-    redo: 'CTrl KeyY'
+    add: 'ctrl NumpadAdd',
+    remove: 'ctrl NumpadSubtract',
+    undo: 'ctrl KeyZ',
+    redo: 'ctrl KeyY'
 }

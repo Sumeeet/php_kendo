@@ -3,9 +3,9 @@ const MessageBroker = function () {
     const u = CT.Utils
     let messageQueueMap = new Map()
 
-    const splitTrim = u.compose(u.map(su.trim), su.split)
-    const splitTrimStrings = u.curry((func, delimiter, value) => func(delimiter, value))
-    const splitTrimShortcuts = splitTrimStrings(splitTrim, ' ')
+    // const splitTrim = u.compose(u.map(su.trim), su.split)
+    // const splitTrimStrings = u.curry((func, delimiter, value) => func(delimiter, value))
+    // const splitTrimShortcuts = splitTrimStrings(splitTrim, ' ')
 
     const subscribe = function (triggers, name, listeners) {
         // TODO Generate a unique name
@@ -30,8 +30,10 @@ const MessageBroker = function () {
                         publishMessage(e)
                     }
                     else if (trigger.event == 'keyup') {
-                        const keys = splitTrimShortcuts(trigger.shortcuts)
-                        if (e.ctrlKey && keys[1] === e.code)
+                        const shortcut = (e.shiftKey ? 'shift ' : '') +
+                            (e.ctrlKey ? 'ctrl ' : '') +
+                            (e.altKey ? 'alt ' : '') + e.code
+                        if (shortcut === trigger.shortcut)
                             publishMessage(e)
                     }
                 })
