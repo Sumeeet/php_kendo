@@ -10,32 +10,32 @@ const ModuleInstance = function() {
         viewModel.init([limits_url])
         .then(result => {
 
-            messageBroker.subscribe('onLoad',
-                [
-                    new CommandMessage('',
-                        new EditCommand(this,
-                            () => DataProxy().getData(url).then(response => console.log(response))))
-                ])
-
-            messageBroker.subscribe('onClear',
-                [
-                    new CommandMessage('',
-                        new EditCommand(this,
-                            () => caches.delete('ct_cache')))
-                ])
-
-            messageBroker.subscribe('onApply',
-                [
-                    new CommandMessage('applyId',
-                        new EditCommand(this,
-                            () => {
-                                viewModel.getChangedModel()
-                                .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
-                                .then(result => {
-                                    viewModel.reset();
-                                });
-                            }))
-                ])
+            // messageBroker.subscribe('onLoad',
+            //     [
+            //         new CommandMessage('',
+            //             new EditCommand(this,
+            //                 () => DataProxy().getData(url).then(response => console.log(response))))
+            //     ])
+            //
+            // messageBroker.subscribe('onClear',
+            //     [
+            //         new CommandMessage('',
+            //             new EditCommand(this,
+            //                 () => caches.delete('ct_cache')))
+            //     ])
+            //
+            // messageBroker.subscribe('onApply',
+            //     [
+            //         new CommandMessage('applyId',
+            //             new EditCommand(this,
+            //                 () => {
+            //                     viewModel.getChangedModel()
+            //                     .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
+            //                     .then(result => {
+            //                         viewModel.reset();
+            //                     });
+            //                 }))
+            //     ])
 
             viewModel.bind(result, mainView, footerView);
 

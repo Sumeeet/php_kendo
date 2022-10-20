@@ -20,12 +20,12 @@
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
             <block id = 'footerId' class = 'horizontal_layout'>
-                <button id = 'addRowId' class = 'ct-toolbar' name = '+' action = 'addRow'/>
-                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-' action = 'removeRow'/>
-                <button id = 'gridHelpId'  class = 'ct-toolbar' name = '?' action = 'help'/>
+                <button id = 'addRowId' class = 'ct-toolbar' name = '+'/>
+                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-'/>
+                <button id = 'gridHelpId'  class = 'ct-toolbar' name = '?'/>
             </block>
 
-            <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '600px' height = '400px'>
+            <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '650px' height = '400px'>
                 <columns>
                     <column field = 'checked' title = 'Select' width = '200px' type = 'boolean'/>
                     <column field = 'fage' title = 'Fathers Age' width = '200px'/>
@@ -36,9 +36,9 @@
 
         <!-- collection of buttons for footer view -->
         <block id = 'footerId' class = 'horizontal_layout'>
-            <button id = 'loadId' class = 'ct-toolbar' name = 'Load' action = 'onLoad'/>
-            <button id = 'cacheId'  class = 'ct-toolbar' name = 'Clear Cache' action = 'onClear'/>
-            <button id = 'applyId' class = 'ct-toolbar' name = 'Apply' action = 'onApply'/>
+            <button id = 'loadId' class = 'ct-toolbar' name = 'Load'/>
+            <button id = 'cacheId'  class = 'ct-toolbar' name = 'Clear Cache'/>
+            <button id = 'applyId' class = 'ct-toolbar' name = 'Apply'/>
         </block>
     </group>
 </control>
