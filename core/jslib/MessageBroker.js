@@ -5,29 +5,48 @@ const MessageBroker = function () {
 
     const splitTrim = u.compose(u.map(su.trim), su.split)
     const splitTrimStrings = u.curry((func, delimiter, value) => func(delimiter, value))
-    const splitTrimMessage = splitTrimStrings(splitTrim, '|')
+    const splitTrimShortcuts = splitTrimStrings(splitTrim, ' ')
 
-    const broadcastMessage = function (message) {
-        const queueName = `${message}Queue`
-        let queue = messageQueueMap.get(queueName)
-        if (queue) {
-            console.log(`message: ${message}`)
-            // notify subscribers
-            queue.publish(message)
-        }
-    }
-
-    const subscribe = function (message, commands) {
-        const queueName = `${message}Queue`
+    const subscribe = function (triggers, name, listeners) {
+        // TODO Generate a unique name
+        const queueName = `${name}_queue`
         let queue = messageQueueMap.get(queueName)
         if (!queue) {
             queue = new MessageQueue(queueName)
             messageQueueMap.set(queueName, queue)
         }
 
-        // client (command knows how to handle a request when a message is received)
-        queue.subscribe(commands)
+        const publishMessage = (event) => {
+            const q = messageQueueMap.get(queueName)
+            q.publish(event)
+        }
+
+        const addEventsListener = (trigger) => {
+            trigger.element.addEventListener(trigger.event,
+                (e) => {
+                    if (trigger.event === 'click') {
+                        publishMessage(trigger.event)
+                    }
+                    else if (trigger.event == 'keyup') {
+                        const keys = splitTrimShortcuts(trigger.shortcuts)
+                        if (e.ctrlKey && keys[1] === e.code)
+                            publishMessage(trigger.event)
+                    }
+                })
+        }
+
+        u.map(addEventsListener, triggers)
+        bind(queueName, listeners)
     }
 
-    return { broadcastMessage, subscribe }
+    const bind = function (queueName, listeners) {
+        const queue = messageQueueMap.get(queueName)
+        if (queue) {
+            queue.subscribe(listeners)
+        }
+    }
+
+    return { subscribe }
 }
+
+const messageBroker = new MessageBroker('');
