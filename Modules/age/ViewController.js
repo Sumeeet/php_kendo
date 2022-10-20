@@ -80,7 +80,7 @@ const ViewController = function (viewModel) {
 
         const addRowTriggers = [
             { element : getElement('addRowId'), event: 'click' },
-            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.add },
+            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.add },
         ]
 
         messageBroker.subscribe(addRowTriggers, 'addRow', [
@@ -96,7 +96,7 @@ const ViewController = function (viewModel) {
 
         const removeRowTriggers = [
             { element : getElement('removeRowId'), event: 'click' },
-            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.remove },
+            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.remove },
         ]
 
         messageBroker.subscribe(removeRowTriggers, 'removeRow', [
@@ -108,7 +108,7 @@ const ViewController = function (viewModel) {
 
 
         const undoTriggers = [
-            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.undo },
+            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.undo },
         ]
         messageBroker.subscribe(undoTriggers, 'undo', [
             new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.undo(id) }))
@@ -116,7 +116,7 @@ const ViewController = function (viewModel) {
 
 
         const redoTriggers = [
-            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.redo },
+            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.redo },
         ]
         messageBroker.subscribe(redoTriggers, 'redo', [
             new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.redo(id) }))

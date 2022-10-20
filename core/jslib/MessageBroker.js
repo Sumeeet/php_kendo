@@ -30,8 +30,8 @@ const MessageBroker = function () {
                         publishMessage(e)
                     }
                     else if (trigger.event == 'keyup') {
-                        const shortcut = (e.shiftKey ? 'shift ' : '') +
-                            (e.ctrlKey ? 'ctrl ' : '') +
+                        const shortcut = (e.ctrlKey ? 'ctrl ' : '') +
+                            (e.shiftKey ? 'shift ' : '') +
                             (e.altKey ? 'alt ' : '') + e.code
                         if (shortcut === trigger.shortcut)
                             publishMessage(e)
