@@ -101,31 +101,26 @@ const ViewController = function (viewModel) {
 
         messageBroker.subscribe(removeRowTriggers, 'removeRow', [
                 new CommandMessage('ageGridId',
-                    new EditCommand(u,
-                        g.removeRow,
-                        g.hasData)),
+                    new EditCommand(u, g.removeRow, g.hasData)),
                 new CommandMessage('removeRowId',
                     new EditCommand('u', disableElement('ageGridId')))
         ])
 
 
-        // const undoTriggers = [
-        //     { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.undo },
-        // ]
-        // messageBroker.subscribe(undoTriggers, 'undo', [
-        //     new CommandMessage('ageGridId', new EditCommand(undoRedo, function () { this.undo() }))
-        // ])
+        const undoTriggers = [
+            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.undo },
+        ]
+        messageBroker.subscribe(undoTriggers, 'undo', [
+            new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.undo(id) }))
+        ])
 
 
-        // const redoTriggers = [
-        //     { element : getElement('ageGridId'), event: 'keyup', shortcuts: 'ctrl + KeyY' },
-        // ]
-        // const redoRedoQueueName = messageBroker.subscribe(redoTriggers, 'redo')
-        // messageBroker.bind(undoRedoQueueName, [
-        //         new CommandMessage('ageGridId',
-        //             new EditCommand(undoRedo, this.redo)),
-        //     ]
-        // )
+        const redoTriggers = [
+            { element : getElement('ageGridId'), event: 'keyup', shortcuts: KEYBOARD_SHORTCUTS.redo },
+        ]
+        messageBroker.subscribe(redoTriggers, 'redo', [
+            new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.redo(id) }))
+        ])
     }
 
     (function() {

@@ -16,21 +16,23 @@ const MessageBroker = function () {
             messageQueueMap.set(queueName, queue)
         }
 
-        const publishMessage = (event) => {
+        const publishMessage = (e) => {
+            e.stopImmediatePropagation()
             const q = messageQueueMap.get(queueName)
-            q.publish(event)
+            q.publish(e.type)
+            e.preventDefault()
         }
 
         const addEventsListener = (trigger) => {
             trigger.element.addEventListener(trigger.event,
                 (e) => {
                     if (trigger.event === 'click') {
-                        publishMessage(trigger.event)
+                        publishMessage(e)
                     }
                     else if (trigger.event == 'keyup') {
                         const keys = splitTrimShortcuts(trigger.shortcuts)
                         if (e.ctrlKey && keys[1] === e.code)
-                            publishMessage(trigger.event)
+                            publishMessage(e)
                     }
                 })
         }
