@@ -85,13 +85,14 @@ const ViewController = function (viewModel) {
 
         messageBroker.subscribe(addRowTriggers, 'addRow', [
             new CommandMessage('ageGridId',
-                new EditCommand (u,
-                    u.compose(
-                        pushAddRemoveCommand,
-                        g.addRow(CELL_INSERTION_POSITION.after)
-                    ))),
+                new EditCommand (g, g.addRow(CELL_INSERTION_POSITION.after))),
             new CommandMessage('removeRowId',
-                new EditCommand(u, disableElement('ageGridId')))
+                new EditCommand(u, disableElement('ageGridId'))),
+            new CommandMessage('ageGridId',
+                new EditCommand(u, u.compose(
+                    pushAddRemoveCommand,
+                    g.getSelectedRowIndex
+            )))
         ])
 
         const removeRowTriggers = [

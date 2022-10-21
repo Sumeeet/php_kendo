@@ -19,12 +19,12 @@
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
+            <block id = 'gridToolbarId' class = 'horizontal_layout'>
+                <button id = 'addRowId' class = 'ct-toolbar' name = '+'/>
+                <button id = 'removeRowId'  class = 'ct-toolbar' name = '-'/>
+                <button id = 'gridHelpId'  class = 'ct-toolbar' name = '?'/>
+            </block>
             <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '650px' height = '400px'>
-                <block id = 'gridToolbarId' class = 'horizontal_layout'>
-                    <button id = 'addRowId' class = 'ct-toolbar' name = '+'/>
-                    <button id = 'removeRowId'  class = 'ct-toolbar' name = '-'/>
-                    <button id = 'gridHelpId'  class = 'ct-toolbar' name = '?'/>
-                </block>
                 <columns>
                     <column field = 'checked' title = 'Select' width = '200px' type = 'boolean'/>
                     <column field = 'fage' title = 'Fathers Age' width = '200px'/>

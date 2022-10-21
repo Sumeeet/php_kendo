@@ -31,5 +31,6 @@ const AddRemoveCommand = function (receiver, addAction, removeAction,
 
 
 const CommandMessage = function (targetId, command) {
+    // forward calls to other command objects
     return Object.assign({ targetId: targetId }, command)
 }
