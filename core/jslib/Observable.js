@@ -27,10 +27,10 @@ CT.Observable.fromEvents = (events) => {
         }
 
         const processEvents = CT.Utils.curry((event, e) => {
-            if (event === 'click') {
+            if (event.event === 'click') {
                 publishMessage(e)
             }
-            else if (event == 'keyup') {
+            else if (event.event == 'keyup') {
                 const shortcut = (e.ctrlKey ? 'ctrl ' : '') +
                     (e.shiftKey ? 'shift ' : '') +
                     (e.altKey ? 'alt ' : '') + e.key.toLowerCase()
@@ -40,7 +40,7 @@ CT.Observable.fromEvents = (events) => {
         })
 
         const addEventsListener = (event) => {
-            event.element.addEventListener(event.event, processEvents(event.event))
+            event.element.addEventListener(event.event, processEvents(event))
         }
 
         CT.GridUtils.map(addEventsListener, events)
