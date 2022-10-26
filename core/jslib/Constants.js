@@ -5,14 +5,8 @@ const UNDO_REDO_ITEMS = { value: 1, commands: 0 }
 Object.freeze(UNDO_REDO_ITEMS)
 
 const KEYBOARD_SHORTCUTS = {
-    add: {
-        shortcut: 'ctrl shift +',
-        api: () => new AddRowCommand(),
-    }, // add a row to the grid
-    remove: {
-        shortcut: 'ctrl shift -',
-        api: () => new RemoveRowCommand(),
-    }, // remove row(s) from the grid. Multiple selected rows can be removed
+    add: 'ctrl shift +', // add a row to the grid
+    remove: 'ctrl shift -', // remove row(s) from the grid. Multiple selected rows can be removed
     undo: 'ctrl z', // general undo
     redo: 'ctrl y' // general redo
 }

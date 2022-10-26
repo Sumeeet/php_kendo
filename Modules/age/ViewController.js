@@ -72,8 +72,7 @@ const ViewController = function (viewModel) {
             )
         }
 
-        const disableElement = CT.Utils.curry((gridId, id) => {
-            const element = getElement(id)
+        const disableElement = CT.Utils.curry((gridId, element) => {
             g.hasData(gridId) ? element.removeAttribute('disabled') :
                 element.setAttribute('disabled', '')
         })
@@ -85,23 +84,26 @@ const ViewController = function (viewModel) {
             e.key.toLowerCase()
 
         // add row observables
-        const addRow = KEYBOARD_SHORTCUTS.add.api()
-        const addRowLeftClick = CT.Observable.fromEvent(getElement('addRowId'), 'click')
+        const addRow = new AddRowCommand()
+        const removeRowElement = getElement('removeRowId')
+        CT.Observable.fromEvent(getElement('addRowId'), 'click')
         .filter(e => e.button === MOUSE_BUTTON.left)
         .subscribe({
             next(e) {
                 const index = addRow('ageGridId')
                 pushAddRemoveCommand(index)
+                disableElement('ageGridId', removeRowElement)
             }
         })
 
         // remove row observable
-        const removeRow = KEYBOARD_SHORTCUTS.remove.api()
-        const removeRowLeftClick = CT.Observable.fromEvent(getElement('removeRowId'), 'click')
+        const removeRow = new RemoveRowCommand()
+        CT.Observable.fromEvent(removeRowElement, 'click')
         .filter(e => e.button === MOUSE_BUTTON.left)
         .subscribe({
             next(e) {
                 removeRow('ageGridId')
+                disableElement('ageGridId', removeRowElement)
             }
         })
 
@@ -110,39 +112,13 @@ const ViewController = function (viewModel) {
         .map(e => makeShortCutKey(e))
         .subscribe({
             next(shortcutKey) {
-                if (KEYBOARD_SHORTCUTS.add.shortcut === shortcutKey) {
+                if (KEYBOARD_SHORTCUTS.add === shortcutKey) {
                     addRow('ageGridId')
-                } else if (KEYBOARD_SHORTCUTS.remove.shortcut === shortcutKey) {
+                } else if (KEYBOARD_SHORTCUTS.remove === shortcutKey) {
                     removeRow('ageGridId')
                 }
             }
         })
-
-        //
-        // CT.Observable.fromEvents([
-        //     { element : getElement('removeRowId'), event: 'click' },
-        //     { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.remove },
-        // ]).subscribe( [
-        //         new CommandMessage('ageGridId', new RemoveRowCommand()),
-        //         new CommandMessage('removeRowId',
-        //             new EditCommand('u', disableElement('ageGridId')))
-        //     ]
-        // )
-
-        // const undoTriggers = [
-        //     { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.undo },
-        // ]
-        // observable.subscribe(undoTriggers, 'undo', [
-        //     new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.undo(id) }))
-        // ])
-        //
-        //
-        // const redoTriggers = [
-        //     { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.redo },
-        // ]
-        // observable.subscribe(redoTriggers, 'redo', [
-        //     new CommandMessage('ageGridId', new EditCommand(undoRedo, function (id) { this.redo(id) }))
-        // ])
     }
 
     (function() {
