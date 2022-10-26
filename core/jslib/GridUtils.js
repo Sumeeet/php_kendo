@@ -218,19 +218,20 @@ CT.GridUtils.addRowAt = CT.Utils.curry((index, gridId) => {
 })
 
 CT.GridUtils.removeRow = CT.Utils.curry((gridId) => {
-    const remove = CT.Utils.curry( function(grid, index) {
+    const remove = CT.Utils.curry( function(grid, rowCount, index) {
         // remove from the end if nothing is selected
-        index = index === -1 ? grid.dataSource.total() - 1 : index
+        index = index === -1 ? rowCount - 1 : index
         grid.removeRow(`tbody tr:eq("${index}")`);
         console.log(`row removed at index: ${index}`);
         return index
     })
 
     const grid = CT.GridUtils.getGrid(gridId)
+    const rowCount = grid.dataSource.total()
     const execute = CT.Utils.compose(
         CT.GridUtils.selectRow(gridId),
-        (index) => index - 1,
-        remove(grid),
+        (index) => grid.dataSource.total() === index ? index - 1 : index,
+        remove(grid, rowCount),
         CT.GridUtils.getSelectedRowIndex
     )
 

@@ -52,9 +52,6 @@ class ModuleView
         <script src="./core/jslib/StringUtils.js"></script>
         <script src="./core/Templates/Templates.js"></script>
         <script src="./core/jslib/MessageQueue.js"></script>
-        <script src="./core/jslib/MessageBroker.js"></script>
-        <script src="./core/jslib/GlobalEventListener.js"></script>
-
 
         <div>
             <?php

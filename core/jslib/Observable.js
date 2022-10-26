@@ -1,54 +1,70 @@
 const Observable = function (observableFunc) {
 
-    const subscribe = function (observers) {
-        return observableFunc(observers)
+    const subscribe = function (next, error, complete) {
+        if (typeof next === "function") {
+            return observableFunc({
+                next,
+                error: error || function () { },
+                complete: complete || function () { }
+            })
+        } else {
+            return observableFunc(next)
+        }
     }
 
-    return { subscribe }
+    const map = function (projectedFunc) {
+        return new Observable(observer => {
+            return this.subscribe({
+                next (value) { observer.next(projectedFunc(value)) },
+                error (err) { observer.error(err) },
+                complete() { observer.complete() }
+            })
+        })
+    }
+
+    const filter = function(filterFunc) {
+        return new Observable(observer => {
+            return this.subscribe({
+                next (value) {
+                    if (filterFunc(value)){
+                        observer.next(value)
+                    }
+                },
+                error (err) { observer.error(err) },
+                complete() { observer.complete() }
+            })
+        })
+    }
+
+    return { subscribe, map, filter }
 }
 
 var CT = CT || {};
 CT.Observable = CT.Observable || {};
 
-CT.Observable.fromEvents = (events) => {
-    return new Observable( (observers) => {
-
-        // const namedObservers = new Map()
+CT.Observable.fromEvent = (element, event) => {
+    return new Observable( (observer) => {
 
         const publishMessage = (e) => {
-            observers.forEach(observer => {
-                e.stopImmediatePropagation()
-                const id = observer.targetId
-                if (observer.canExecute(id)) {
-                    observer.execute(id)
-                }
-                e.preventDefault()
-            })
+            e.stopImmediatePropagation()
+            observer.next(e)
+            e.preventDefault()
         }
 
-        const processEvents = CT.Utils.curry((event, e) => {
-            if (event.event === 'click') {
-                publishMessage(e)
-            }
-            else if (event.event == 'keyup') {
-                const shortcut = (e.ctrlKey ? 'ctrl ' : '') +
-                    (e.shiftKey ? 'shift ' : '') +
-                    (e.altKey ? 'alt ' : '') + e.key.toLowerCase()
-                if (shortcut === event.shortcut.toLowerCase())
-                    publishMessage(e)
-            }
+        element.addEventListener(event, publishMessage)
+
+        return () => element.removeEventListener(event, publishMessage)
+    })
+}
+
+CT.Observable.merge = function (...observables) {
+    return new Observable((observer) => {
+        const subscribers = observables.map(observable => {
+            observable.subscribe(observer)
         })
 
-        const addEventsListener = (event) => {
-            event.element.addEventListener(event.event, processEvents(event))
+        return () => {
+            subscribers.forEach(subscriber => subscriber.unsubscribe())
         }
-
-        CT.GridUtils.map(addEventsListener, events)
-
-        const unSubscribe = () => {
-            observers = []
-        }
-
-        return { unSubscribe }
     })
 }

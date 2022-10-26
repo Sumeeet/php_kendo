@@ -10,21 +10,21 @@ const ModuleInstance = function() {
         viewModel.init([limits_url])
         .then(result => {
 
-            // messageBroker.subscribe('onLoad',
+            // observable.subscribe('onLoad',
             //     [
             //         new CommandMessage('',
             //             new EditCommand(this,
             //                 () => DataProxy().getData(url).then(response => console.log(response))))
             //     ])
             //
-            // messageBroker.subscribe('onClear',
+            // observable.subscribe('onClear',
             //     [
             //         new CommandMessage('',
             //             new EditCommand(this,
             //                 () => caches.delete('ct_cache')))
             //     ])
             //
-            // messageBroker.subscribe('onApply',
+            // observable.subscribe('onApply',
             //     [
             //         new CommandMessage('applyId',
             //             new EditCommand(this,

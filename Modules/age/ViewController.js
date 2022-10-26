@@ -78,30 +78,56 @@ const ViewController = function (viewModel) {
                 element.setAttribute('disabled', '')
         })
 
+        const makeShortCutKey = (e) =>
+            (e.ctrlKey ? 'ctrl ' : '') +
+            (e.shiftKey ? 'shift ' : '') +
+            (e.altKey ? 'alt ' : '') +
+            e.key.toLowerCase()
 
-        CT.Observable.fromEvents([
-            { element : getElement('addRowId'), event: 'click' },
-            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.add },
-        ]).subscribe( [
-            new CommandMessage('ageGridId', new AddRowCommand()),
-            new CommandMessage('removeRowId',
-                new EditCommand(u, disableElement('ageGridId'))),
-            new CommandMessage('ageGridId',
-                new EditCommand(u, u.compose(
-                    pushAddRemoveCommand,
-                    g.getSelectedRowIndex
-                )))]
-        )
+        // add row observables
+        const addRow = KEYBOARD_SHORTCUTS.add.api()
+        const addRowLeftClick = CT.Observable.fromEvent(getElement('addRowId'), 'click')
+        .filter(e => e.button === MOUSE_BUTTON.left)
+        .subscribe({
+            next(e) {
+                const index = addRow('ageGridId')
+                pushAddRemoveCommand(index)
+            }
+        })
 
-        CT.Observable.fromEvents([
-            { element : getElement('removeRowId'), event: 'click' },
-            { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.remove },
-        ]).subscribe( [
-                new CommandMessage('ageGridId', new RemoveRowCommand()),
-                new CommandMessage('removeRowId',
-                    new EditCommand('u', disableElement('ageGridId')))
-            ]
-        )
+        // remove row observable
+        const removeRow = KEYBOARD_SHORTCUTS.remove.api()
+        const removeRowLeftClick = CT.Observable.fromEvent(getElement('removeRowId'), 'click')
+        .filter(e => e.button === MOUSE_BUTTON.left)
+        .subscribe({
+            next(e) {
+                removeRow('ageGridId')
+            }
+        })
+
+        // grid keyboard shortcuts
+        const gridKeyUp = CT.Observable.fromEvent(getElement('ageGridId'), 'keyup')
+        .map(e => makeShortCutKey(e))
+        .subscribe({
+            next(shortcutKey) {
+                if (KEYBOARD_SHORTCUTS.add.shortcut === shortcutKey) {
+                    addRow('ageGridId')
+                } else if (KEYBOARD_SHORTCUTS.remove.shortcut === shortcutKey) {
+                    removeRow('ageGridId')
+                }
+            }
+        })
+
+        //
+        // CT.Observable.fromEvents([
+        //     { element : getElement('removeRowId'), event: 'click' },
+        //     { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.remove },
+        // ]).subscribe( [
+        //         new CommandMessage('ageGridId', new RemoveRowCommand()),
+        //         new CommandMessage('removeRowId',
+        //             new EditCommand('u', disableElement('ageGridId')))
+        //     ]
+        // )
 
         // const undoTriggers = [
         //     { element : getElement('ageGridId'), event: 'keyup', shortcut: KEYBOARD_SHORTCUTS.undo },

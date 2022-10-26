@@ -34,15 +34,15 @@ const AddRowCommand = function (
     action = CT.GridUtils.addRow(CELL_INSERTION_POSITION.after),
     canAction = () => true) {
 
-    const execute = function () {
-        return action.apply(receiver, arguments)
-    }
-
     const canExecute = function () {
         return canAction.apply(receiver, arguments)
     }
 
-    return  { execute, canExecute }
+    return function () {
+        if (canExecute(...arguments)) {
+            return action.apply(receiver, arguments)
+        }
+    }
 }
 
 const RemoveRowCommand = function (
@@ -50,15 +50,15 @@ const RemoveRowCommand = function (
     action = CT.GridUtils.removeRow,
     canAction = CT.GridUtils.hasData) {
 
-    const execute = function () {
-        return action.apply(receiver, arguments)
-    }
-
     const canExecute = function () {
         return canAction.apply(receiver, arguments)
     }
 
-    return  { execute, canExecute }
+    return function () {
+        if (canExecute(...arguments)) {
+            return action.apply(receiver, arguments)
+        }
+    }
 }
 
 const CommandMessage = function (targetId, command) {
