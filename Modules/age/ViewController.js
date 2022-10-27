@@ -108,7 +108,7 @@ const ViewController = function (viewModel) {
         })
 
         // grid keyboard shortcuts
-        const gridKeyUp = CT.Observable.fromEvent(getElement('ageGridId'), 'keyup')
+        CT.Observable.fromEvent(getElement('ageGridId'), 'keyup')
         .map(e => makeShortCutKey(e))
         .subscribe({
             next(shortcutKey) {
