@@ -7,14 +7,18 @@ use CT\Core\Interface\IView;
 class ToolBarView extends BaseView implements IView
 {
     public function __construct(array $attributes) {
+        $this->myAttributes += ['toolbarView' => []];
+        $this->myAttributes['toolbarView'] += ['class' => "k-toolbar k-grid-toolbar"];
+        $this->myAttributes['toolbarView'] += ['role' => 'toolbar'];
+        $this->myAttributes['toolbarView'] += ['id' => $attributes['id']];
         $this->myAttributes += $this->makeAttributes($attributes['actions']);
 
-        unset($attributes['actions']);
-        $this->myAttributes += ['toolBarView' => $attributes];
+        //$this->merge($attributes, ['actions']);
     }
 
-    public function render($root) {
-        $group = new GroupView($this->myAttributes['toolBarView']);
+    public function render($root): bool|\DOMElement
+    {
+        $group = new GroupView($this->myAttributes['toolbarView']);
         $parent = $group->render($root);
         foreach ($this->myAttributes['buttonView'] as $attribute) {
             $button = new ButtonView($attribute);
@@ -36,7 +40,6 @@ class ToolBarView extends BaseView implements IView
                 'name' => $name,
                 'bind' => 'can'.$bind,
                 'action' => $bind,
-                'message' => $bind,
                 'class' => 'ct-toolbar'
             ];
         }
