@@ -11,7 +11,7 @@ const GridActionSubscription = (gid) => {
                 'click').filter(e => e.button === MOUSE_BUTTON.left)
 
             const shortcut = keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.add)
-            const merged = CT.Observable.merge(click, shortcut)
+            const merged = CT.Observable.merge(click, shortcut).share()
             merged.subscribe({
                 next (e) { addRow(gid) }
             })
@@ -26,7 +26,7 @@ const GridActionSubscription = (gid) => {
                 'click').filter(e => e.button === MOUSE_BUTTON.left)
 
             const shortcut = keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.remove)
-            const merged = CT.Observable.merge(click, shortcut)
+            const merged = CT.Observable.merge(click, shortcut).share()
             merged.subscribe({
                 next (e) { removeRow(gid) }
             })

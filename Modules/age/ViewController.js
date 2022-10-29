@@ -79,7 +79,11 @@ const ViewController = function (viewModel) {
 
         const subscription = GridActionSubscription('ageGridId')
         subscription.addRow('addRowId')
+        .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
+
         subscription.removeRow('removeRowId')
+        .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
+
     }
 
     (function() {
