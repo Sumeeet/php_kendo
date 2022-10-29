@@ -4,6 +4,7 @@
 namespace CT\Core\Controls;
 
 use CT\Core\Interface\IView;
+use DOMDocument;
 
 class GridView extends BaseView implements IView
 {
@@ -22,9 +23,14 @@ class GridView extends BaseView implements IView
     /**
      * @throws \DOMException
      */
-    public function render($root): bool|\DOMElement
-    {
-        return $this->renderVirtualDOM($root, 'div');
+    public function render($root): bool|\DOMElement {
+        $gridView = $this->renderVirtualDOM($root, 'div');
+        if (isset($this->myAttributes['actions'])) {
+            $toolbar = new ToolBarView(['id' => 'toolBarId',
+                'actions' => $this->myAttributes['actions']]);
+            $gridView->appendChild($toolbar->render($root));
+        }
+        return $gridView;
     }
 
     private function makeColumnAttributes($columns): bool|string {

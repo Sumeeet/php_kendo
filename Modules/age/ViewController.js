@@ -77,48 +77,9 @@ const ViewController = function (viewModel) {
                 element.setAttribute('disabled', '')
         })
 
-        const makeShortCutKey = (e) =>
-            (e.ctrlKey ? 'ctrl ' : '') +
-            (e.shiftKey ? 'shift ' : '') +
-            (e.altKey ? 'alt ' : '') +
-            e.key.toLowerCase()
-
-        // add row observables
-        const addRow = new AddRowCommand()
-        const removeRowElement = getElement('removeRowId')
-        CT.Observable.fromEvent(getElement('addRowId'), 'click')
-        .filter(e => e.button === MOUSE_BUTTON.left)
-        .subscribe({
-            next(e) {
-                const index = addRow('ageGridId')
-                pushAddRemoveCommand(index)
-                disableElement('ageGridId', removeRowElement)
-            }
-        })
-
-        // remove row observable
-        const removeRow = new RemoveRowCommand()
-        CT.Observable.fromEvent(removeRowElement, 'click')
-        .filter(e => e.button === MOUSE_BUTTON.left)
-        .subscribe({
-            next(e) {
-                removeRow('ageGridId')
-                disableElement('ageGridId', removeRowElement)
-            }
-        })
-
-        // grid keyboard shortcuts
-        CT.Observable.fromEvent(getElement('ageGridId'), 'keyup')
-        .map(e => makeShortCutKey(e))
-        .subscribe({
-            next(shortcutKey) {
-                if (KEYBOARD_SHORTCUTS.add === shortcutKey) {
-                    addRow('ageGridId')
-                } else if (KEYBOARD_SHORTCUTS.remove === shortcutKey) {
-                    removeRow('ageGridId')
-                }
-            }
-        })
+        const subscription = GridActionSubscription('ageGridId')
+        subscription.addRow('addRowId')
+        subscription.removeRow('removeRowId')
     }
 
     (function() {

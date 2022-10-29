@@ -36,7 +36,46 @@ const Observable = function (observableFunc) {
         })
     }
 
-    return { subscribe, map, filter }
+    const share = function() {
+        // subscribers count
+        let refCount = 0
+        // subject works as an observer and stores all the collection
+        // of observers to be notified
+        const subject = new Subject()
+        // main subject is an actual producer of events
+        const mainSubject = this.subscribe(subject)
+        return new Observable((observer) => {
+            refCount++
+            const sub = subject.subscribe(observer)
+            return () => {
+                refCount--
+                if (refCount === 0) mainSubject() // unsubscribe main observer
+                sub() // unsubscribe individual observer
+            }
+        })
+    }
+
+    return { subscribe, map, filter, share }
+}
+
+const Subject = function () {
+    const observers = []
+
+    const next = function(value) {
+        observers.forEach(obs => obs.next(value))
+    }
+
+    const subscribe = function (subscriber) {
+        observers.push(subscriber)
+        return () => {
+            if (observers.length > 0) {
+                const index = observers.indexOf(subscriber);
+                0 <= index && observers.splice(index, 1);
+            }
+        }
+    }
+
+    return { subscribe, next }
 }
 
 var CT = CT || {};

@@ -143,3 +143,9 @@ CT.Utils.LoadTemplates = (paths) => {
 }
 
 CT.Utils.isUndefined = (obj) => obj === null || obj === undefined || obj === ''
+
+CT.Utils.makeShortCutKey = (e) =>
+    (e.ctrlKey ? 'ctrl ' : '') +
+    (e.shiftKey ? 'shift ' : '') +
+    (e.altKey ? 'alt ' : '') +
+    e.key.toLowerCase()

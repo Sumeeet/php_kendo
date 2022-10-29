@@ -50,8 +50,9 @@ class ModuleView
         <script src="./core/jslib/Observable.js"></script>
         <script src="./core/jslib/ArrayUtils.js"></script>
         <script src="./core/jslib/StringUtils.js"></script>
+        <script src="./core/jslib/GridActionSubscription.js"></script>
         <script src="./core/Templates/Templates.js"></script>
-        <script src="./core/jslib/MessageQueue.js"></script>
+
 
         <div>
             <?php
