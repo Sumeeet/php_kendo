@@ -87,7 +87,10 @@ CT.GridUtils.isRowSelected = CT.Utils.curry((gridId) => CT.GridUtils.getSelected
 
 CT.GridUtils.selectRow = CT.Utils.curry((gridId, index) => {
     const execute = CT.Utils.compose(
-        CT.Utils.chain((grid) => grid.select(`tr:eq(${index})`)),
+        CT.Utils.chain((grid) => {
+            grid.select(`tr:eq(${index})`)
+            return index
+        }),
         Maybe.of,
         CT.GridUtils.getGrid
     )
@@ -230,12 +233,14 @@ CT.GridUtils.removeRow = CT.Utils.curry((gridId) => {
     const rowCount = grid.dataSource.total()
     const execute = CT.Utils.compose(
         CT.GridUtils.selectRow(gridId),
-        (index) => grid.dataSource.total() === index ? index - 1 : index,
+        (index) => rowCount === index ? index - 1 : index,
         remove(grid, rowCount),
         CT.GridUtils.getSelectedRowIndex
     )
 
-    return execute(gridId)
+    let selIndex = execute(gridId)
+    // we need removed index, restore index
+    return rowCount === selIndex ? selIndex + 1 : selIndex
 })
 
 CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
@@ -256,5 +261,9 @@ CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
         CT.GridUtils.getGrid
     )
 
-    return execute(gridId)
+    // we are selecting next logical row, returned index from selectRow is
+    // different from row removed, restore it
+    let selIndex = execute(gridId)
+    // we need removed index, restore index
+    return selIndex + 1
 })

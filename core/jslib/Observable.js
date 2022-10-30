@@ -1,3 +1,4 @@
+// TODO: replace this with RxJs, only using it for educational purpose
 const Observable = function (observableFunc) {
 
     const subscribe = function (next, error, complete) {

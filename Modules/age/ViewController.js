@@ -63,9 +63,7 @@ const ViewController = function (viewModel) {
     function bindCommands (viewModel) {
         const pushAddRemoveCommand = (index) => {
             const add = g.addRowAt(index)
-            // index + 1 - inserted row has higher index after addition
-            // so removal needs to be done at index 1 more than the inserted one.
-            const remove = g.removeRowAt(index + 1)
+            const remove = g.removeRowAt(index)
             undoRedo.push('ageGridId', new AddRemoveCommand(g,
                 () => add('ageGridId'),
                 () => remove('ageGridId'))
@@ -79,11 +77,15 @@ const ViewController = function (viewModel) {
 
         const subscription = GridActionSubscription('ageGridId')
         subscription.addRow('addRowId')
-        .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
+        .subscribe((index) => {
+            u.compose(
+                () => disableElement('ageGridId', getElement('removeRowId')),
+                pushAddRemoveCommand
+            )(index)
+        })
 
         subscription.removeRow('removeRowId')
         .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
-
     }
 
     (function() {

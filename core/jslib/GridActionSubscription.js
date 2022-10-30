@@ -10,11 +10,15 @@ const GridActionSubscription = (gid) => {
             const click = CT.Observable.fromEvent(getElement(eid),
                 'click').filter(e => e.button === MOUSE_BUTTON.left)
 
+            // TODO: How to pass values to different subscribers ? Use map for now
+            // TODO: one way is to compose dependent operations on client side
             const shortcut = keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.add)
-            const merged = CT.Observable.merge(click, shortcut).share()
-            merged.subscribe({
-                next (e) { addRow(gid) }
-            })
+            const merged = CT.Observable.merge(click, shortcut)
+            .map((e) => addRow(gid))
+            .share()  // let all the subscriber listen to same observable
+            // merged.subscribe({
+            //     next (e) { addRow(gid) }
+            // })
 
             // lets others listen to this change
             return merged
@@ -26,12 +30,12 @@ const GridActionSubscription = (gid) => {
                 'click').filter(e => e.button === MOUSE_BUTTON.left)
 
             const shortcut = keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.remove)
-            const merged = CT.Observable.merge(click, shortcut).share()
+            const merged = CT.Observable.merge(click, shortcut)
+            .share()  // let all the subscriber listen to same observable
             merged.subscribe({
                 next (e) { removeRow(gid) }
             })
 
-            // lets others listen to this change
             return merged
         }
     }
