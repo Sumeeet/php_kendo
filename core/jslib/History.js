@@ -46,7 +46,31 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         history.playForward()
     }
 
-    return { push, clear, undo, redo }
+    const canUndo = function (prop) {
+        if (isEmpty()) return null
+
+        if (!undoMap.has(prop)) {
+            console.log(`Property doesn't exist: ${prop}`)
+            return
+        }
+
+        const history = undoMap.get(prop)
+        history.canLookBack()
+    }
+
+    const canRedo = function (prop) {
+        if (isEmpty()) return null
+
+        if (!undoMap.has(prop)) {
+            console.log(`Property doesn't exist: ${prop}`)
+            return
+        }
+
+        const history = undoMap.get(prop)
+        history.canLookForward()
+    }
+
+    return { push, clear, undo, redo, canUndo, canRedo }
 }
 
 const History = function (itemType) {
@@ -76,11 +100,13 @@ const History = function (itemType) {
         addCommand(command)
     }
 
-    const canLookBack = function (index) {
+    const canLookBack = function () {
+        let index = marker - itemType
         return doesExist() && index >= 0
     }
 
-    const canLookForward = function (index) {
+    const canLookForward = function () {
+        let index = marker + 1
         const size = history.length
         return size > 0 && index < size
     }
@@ -90,12 +116,12 @@ const History = function (itemType) {
     }
 
     const playBack = function () {
+        if (!canLookBack()) return
+
         // if item type is values then wen need to apply previous value
         // on every undo operation. If it's a command, then it should be played
         // in order. itemType = 0 is for value and 1 for command
         let index = marker - itemType
-        if (!canLookBack(index)) return
-
         let readCache = false
         let cmd = peekInHistory(index)
         if (cmd === null) {
@@ -112,8 +138,9 @@ const History = function (itemType) {
     }
 
     const playForward = function () {
+        if (!canLookForward()) return
+
         let index = marker + 1
-        if (!canLookForward(index)) return
         let cmd = peekInHistory(index)
         cmd.execute(false)
         marker = index
@@ -124,5 +151,5 @@ const History = function (itemType) {
         marker = -1
     }
 
-    return { record, playBack, playForward, erase }
+    return { record, playBack, playForward, erase, canLookBack, canLookForward }
 }

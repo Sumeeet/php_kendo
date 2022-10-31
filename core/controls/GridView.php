@@ -16,7 +16,7 @@ class GridView extends BaseView implements IView
         $this->myAttributes += ['data-sortable' => true];
         $this->myAttributes += ['data-selectable' => "multiple row"];
         $this->myAttributes += ['data-bind' => "source: {$attributes['bind']}"];
-//        $this->myAttributes += ['data-editable' => "{$attributes['editable']}"];
+        $this->myAttributes += ['data-editable' => "{$attributes['editable']}"];
         $this->myAttributes +=  ['style' => "height: {$attributes['height']}; width: {$attributes['width']}"];
         $this->myAttributes +=  ['data-columns' => $this->makeColumnAttributes($node->columns)];
 //        $this->myAttributes +=  ['data-selectable' => true];

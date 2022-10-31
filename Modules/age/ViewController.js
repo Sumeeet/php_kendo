@@ -1,11 +1,11 @@
 'use strict'
-const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands)
-
 const ViewController = function (viewModel) {
     const v = CT.Validations
     const u = CT.Utils;
     const g = CT.GridUtils
     const a = CT.ArrayUtils
+
+    const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands)
 
     function registerValidations(viewModel) {
         viewModel.registerValidations('fage.value',
@@ -61,8 +61,40 @@ const ViewController = function (viewModel) {
     }
 
     function bindCommands (viewModel) {
-        GridActionSubscription('ageGridId')
-        GridActionSubscription('ageGridId1')
+        const pushAddRemoveCommand = (index) => {
+            const add = g.addRowAt(index)
+            const remove = g.removeRowAt(index)
+            const undoCommand = new EditCommand(undoRedo, () => add('ageGridId'), function() { return this.canUndo })
+            const redoCommand = new EditCommand(undoRedo, () => remove('ageGridId'), function() { return this.canRedo })
+            undoRedo.push('ageGridId', new AddRemoveCommand('ageGridId', undoCommand, redoCommand))
+        }
+
+        const disableElement = CT.Utils.curry((gridId, element) => {
+            g.hasData(gridId) ? element.removeAttribute('disabled') :
+                element.setAttribute('disabled', '')
+        })
+
+        const subscription = GridActionSubscription('ageGridId')
+        subscription.addRow('addRowId')
+        .subscribe((index) => {
+            u.compose(
+                () => disableElement('ageGridId', getElement('removeRowId')),
+                pushAddRemoveCommand
+            )(index)
+        })
+
+        subscription.removeRow('removeRowId')
+        .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
+
+        subscription.undoRow('undoId')
+        .subscribe({ next(key) { undoRedo.undo('ageGridId') }
+        })
+
+        subscription.redoRow('redoId')
+        .subscribe({ next(key) { undoRedo.redo('ageGridId') }
+        })
+
+        //GridActionSubscription('ageGridId1')
     }
 
     (function() {

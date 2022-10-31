@@ -1,32 +1,30 @@
 const EditCommand = function (receiver, action, canAction = () => true) {
-    const execute = function () {
-        return action.apply(receiver, arguments)
-    }
-
     const canExecute = function () {
         return canAction.apply(receiver, arguments)
     }
-    return  { execute, canExecute }
+
+    const execute = function () {
+        if (canExecute(...arguments)) {
+            return action.apply(receiver, arguments)
+        }
+    }
+
+    return  { execute }
 }
 
-const AddRemoveCommand = function (receiver, addAction, removeAction,
-    canAction = () => true) {
+const AddRemoveCommand = function (id, addCommand, removeCommand) {
     let undo = true
-    const execute = function () {
+    const execute = function() {
         if (undo) {
-            removeAction.apply(receiver)
+            removeCommand.execute(id)
             undo = false
         }
         else {
-            addAction.apply(receiver)
+            addCommand.execute(id)
             undo = true
         }
     }
-
-    const canExecute = function () {
-        return canAction.apply(receiver, arguments)
-    }
-    return  { execute, canExecute }
+    return  { execute }
 }
 
 const AddRowCommand = function (
