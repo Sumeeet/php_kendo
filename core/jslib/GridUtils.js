@@ -114,11 +114,12 @@ CT.GridUtils.each = CT.Utils.curry((func, data) => $.each(data, func))
 
 CT.GridUtils.readRows = CT.Utils.curry((rs, re, data) => {
     // -1 indicates all rows
-    const [s, e] = CT.GridUtils.checkRange(rs, re === -1 ? data.length : re)
+    const [s, e] = CT.GridUtils.checkRange(rs, re <= -1 ? data.length : re)
     const selector = CT.GridUtils.getRowSelector(s, e)
     const execute = CT.Utils.compose(
         CT.Utils.chain(CT.GridUtils.filter(selector)),
-        Maybe.of)
+        Maybe.of
+    )
     return execute(data)
 })
 
@@ -155,7 +156,9 @@ CT.GridUtils.readGridRow = CT.Utils.curry((rs, re, cs, ce, gridId) => {
     const read = CT.Utils.compose(
         CT.Utils.map(row => [...row]),
         CT.GridUtils.map(
-            CT.Utils.compose(CT.GridUtils.filter(selector), (item) => item.cells)
+            CT.Utils.compose(
+                CT.GridUtils.filter(selector),
+                (item) => item.cells)
         ),
         CT.GridUtils.readRows(rs, re)
     )

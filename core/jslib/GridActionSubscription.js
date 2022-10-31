@@ -37,6 +37,16 @@ const GridActionSubscription = (gid) => {
             })
 
             return merged
+        },
+
+        undoRow: () => {
+            return keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.undo)
+            .share()
+        },
+
+        redoRow: () => {
+            return keyup.filter((shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.redo)
+            .share()
         }
     }
 }
