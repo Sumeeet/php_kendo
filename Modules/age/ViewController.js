@@ -61,31 +61,8 @@ const ViewController = function (viewModel) {
     }
 
     function bindCommands (viewModel) {
-        const pushAddRemoveCommand = (index) => {
-            const add = g.addRowAt(index)
-            const remove = g.removeRowAt(index)
-            undoRedo.push('ageGridId', new AddRemoveCommand(g,
-                () => add('ageGridId'),
-                () => remove('ageGridId'))
-            )
-        }
-
-        const disableElement = CT.Utils.curry((gridId, element) => {
-            g.hasData(gridId) ? element.removeAttribute('disabled') :
-                element.setAttribute('disabled', '')
-        })
-
-        const subscription = GridActionSubscription('ageGridId')
-        subscription.addRow('addRowId')
-        .subscribe((index) => {
-            u.compose(
-                () => disableElement('ageGridId', getElement('removeRowId')),
-                pushAddRemoveCommand
-            )(index)
-        })
-
-        subscription.removeRow('removeRowId')
-        .subscribe((value) => disableElement('ageGridId', getElement('removeRowId')))
+        GridActionSubscription('ageGridId')
+        GridActionSubscription('ageGridId1')
     }
 
     (function() {
