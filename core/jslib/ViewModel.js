@@ -8,9 +8,6 @@ const ViewModel = function(url) {
     const controlIdValidatorMap = new Map()
     const u = CT.Utils
 
-    // Pick the last property changed
-    let lastPropChanged;
-
     // record property changes, that way only changed property are sent to the server
     let propChangedList = []
 
@@ -24,15 +21,13 @@ const ViewModel = function(url) {
 
     const recordPropertyChange = function(event) {
         // TODO: Dependent properties dont work well with path properties
-        //const path = event[0].sender.path;
-        const path = event[0].field
+        //const path = event.sender.path;
+        const path = event.field
 
         const value = observableObject.get(path)
         if (!propChangedList.find((prop) => prop === path) && typeof value !== 'function') {
             propChangedList.push(path)
         }
-
-        lastPropChanged = path
     }
 
     const getValueAtKey = function(model, key) {
@@ -57,14 +52,15 @@ const ViewModel = function(url) {
         return auxModel;
     }
 
-    const hasChanged = function(/*event*/) {
+    const hasChanged = (event) => {
         dataProxy.getData(url, {'method': 'GET'})
         .then(function(cachedModel) {
             const model = observableObject.toJSON();
             const getCachedValue = getPropValue(cachedModel);
             const getChangedValue = getPropValue(model);
 
-            for (const propPath of propChangedList) {
+            const propPath = event.field
+            if (propPath) {
                 const properties = propPath.split('.');
                 const cachedValue = getCachedValue(properties);
                 const value = getChangedValue(properties);
@@ -74,9 +70,6 @@ const ViewModel = function(url) {
                     .then(response => {
                         // values of calculated fields not part of cached/original model
                         if (cachedValue !== undefined) {
-                            // if (!Array.isArray(value)) {
-                            //     Log(`${propPath} changed: ${cachedValue} -> ${value}`)
-                            // }
                             changedObservableObject.set('changed', !(errorMap.size > 0))
                         }
                     })

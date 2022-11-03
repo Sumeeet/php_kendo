@@ -41,7 +41,7 @@ CT.Decorators.debounce = function(func, ms, recordFunc = null) {
         let timeout;
         return function(...args) {
             clearTimeout(timeout);
-            if (recordFunc) recordFunc(args);
+            if (recordFunc) recordFunc(...args);
             timeout = setTimeout(function() {
                 func.apply(this, args)
             }, ms);
