@@ -156,7 +156,7 @@ const ViewModel = function(url) {
 
     /**
      *
-     * @param msg
+     * @param response
      */
     const updateErrorStatus = function(response) {
         const recordErrors = (prop, msg) => {
@@ -171,13 +171,13 @@ const ViewModel = function(url) {
                     changedObservableObject.set('changed', errorMap.size === 0);
                 }
             }
-            Log(message)
         }
 
         const message = response.message
         const prop = response.prop
         const messages = !Array.isArray(message) ? [message] : message
         messages.forEach(msg => recordErrors(prop, msg))
+        return messages
     }
 
     /**
@@ -252,7 +252,13 @@ const ViewModel = function(url) {
 
         const awaitValidate = (funcToValidate) => {
             return Promise.all(funcToValidate)
-            .then((response) => u.forEach(updateErrorStatus)(response))
+            .then((response) => u.forEach(
+                u.compose(
+                    u.forEach(Log),
+                    u.map((msg) => msg.toString()),
+                    u.filter((msg) => msg.type() === MESSAGE_TYPE.error),
+                    updateErrorStatus
+                ))(response))
             .catch(e => Log(`There has been a problem with validate function(s) : ${e.message}`))
         }
 
