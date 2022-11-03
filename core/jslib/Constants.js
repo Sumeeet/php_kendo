@@ -18,3 +18,10 @@ const MOUSE_BUTTON = {
     right: 2
 }
 Object.freeze(MOUSE_BUTTON)
+
+const MESSAGE_TYPE = {
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Info',
+    debug: 'Debug'
+}

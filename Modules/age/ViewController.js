@@ -15,8 +15,7 @@ const ViewController = function (viewModel) {
                     (sage, fage) => fage < sage, // criterion to compare
                     () => viewModel.get('sage.value') // value to compare with
                 ),
-                v.isPositive('Age must be a positive number')],
-            u.logConsole
+                v.isPositive('Age must be a positive number')]
         );
 
         // TODO: validations compares with old value rather than changed
@@ -27,8 +26,7 @@ const ViewController = function (viewModel) {
                     (fage, sage) => sage > fage, // criterion to compare
                     () => viewModel.get('fage.value') // value to compare with
                 ),
-                v.isPositive('Age must be a positive number')],
-            u.logConsole
+                v.isPositive('Age must be a positive number')]
         );
 
         // map each element of a grid column and check for number validation
@@ -47,8 +45,7 @@ const ViewController = function (viewModel) {
                     )
                 ),
                 a.hasDuplicates('Duplicate values', 'fage')
-            ],
-            u.logConsole
+            ]
         );
 
         // TODO: won't register as 'ageGrid.value' is already a map key, fix it
@@ -93,8 +90,6 @@ const ViewController = function (viewModel) {
         subscription.redoRow('redoId')
         .subscribe({ next(key) { undoRedo.redo('ageGridId') }
         })
-
-        //GridActionSubscription('ageGridId1')
     }
 
     (function() {

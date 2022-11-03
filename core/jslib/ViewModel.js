@@ -74,17 +74,16 @@ const ViewModel = function(url) {
                     .then(response => {
                         // values of calculated fields not part of cached/original model
                         if (cachedValue !== undefined) {
-                            if (!Array.isArray(value)) {
-                                console.log(
-                                    `${propPath} changed: ${cachedValue} -> ${value}`)
-                            }
+                            // if (!Array.isArray(value)) {
+                            //     Log(`${propPath} changed: ${cachedValue} -> ${value}`)
+                            // }
                             changedObservableObject.set('changed', !(errorMap.size > 0))
                         }
                     })
-                    .catch(e => console.log(e))
+                    .catch(e => Log(e))
                 }
                 catch (e) {
-                    console.log(`Undefined Value ${e}`)
+                    Log(`Undefined Value ${e}`)
                 }
             }
         });
@@ -109,14 +108,9 @@ const ViewModel = function(url) {
 
     const doValidate = function(validateFunc) {
         return function(...value) {
-            this.error = validateFunc.call(this, ...value)
+            this.message = validateFunc.call(this, ...value)
             return this;
         }
-    }
-
-    const recordErrors = function(response) {
-        if (!Array.isArray(response)) return;
-        response.forEach(res => updateErrorStatus(res))
     }
 
     /**
@@ -169,23 +163,28 @@ const ViewModel = function(url) {
 
     /**
      *
-     * @param err
+     * @param msg
      */
-    const updateErrorStatus = function(err) {
-        const pass = err.error.pass;
-        if (!pass) {
-            errorMap.set(err.prop, err);
-            changedObservableObject.set('changed', false);
-        } else {
-            if (errorMap.has(err.prop)) {
-                errorMap.delete(err.prop);
-                changedObservableObject.set('changed', errorMap.size === 0);
+    const updateErrorStatus = function(response) {
+        const recordErrors = (prop, msg) => {
+            const message = msg.toString()
+            if (MESSAGE_TYPE.error === msg.type()) {
+                errorMap.set(prop, message);
+                changedObservableObject.set('changed', false);
             }
+            else {
+                if (errorMap.has(prop)) {
+                    errorMap.delete(prop);
+                    changedObservableObject.set('changed', errorMap.size === 0);
+                }
+            }
+            Log(message)
         }
-        if (err.errFn) {
-            err.errFn(err.error)
-        }
-        return pass
+
+        const message = response.message
+        const prop = response.prop
+        const messages = !Array.isArray(message) ? [message] : message
+        messages.forEach(msg => recordErrors(prop, msg))
     }
 
     /**
@@ -260,22 +259,21 @@ const ViewModel = function(url) {
 
         const awaitValidate = (funcToValidate) => {
             return Promise.all(funcToValidate)
-                .then((response) => recordErrors(response))
-                .catch(e => console.log(
-                    `There has been a problem with validate function(s) : ${e.message}`))
+            .then((response) => u.forEach(updateErrorStatus)(response))
+            .catch(e => Log(`There has been a problem with validate function(s) : ${e.message}`))
         }
 
-        const getValidateFunc = CT.Utils.compose(
-            CT.Utils.IfElse(
+        const getValidateFunc = u.compose(
+            u.IfElse(
                 canValidate,
                 getValidate,
                 funcNotDefined),
         )
 
-        const validateProp = CT.Utils.compose(
+        const validateProp = u.compose(
             awaitValidate,
-            CT.Utils.filter((f) => f !== undefined),
-            CT.Utils.chain(CT.Utils.map(getValidateFunc)),
+            u.filter((f) => f !== undefined),
+            u.chain(u.map(getValidateFunc)),
             Maybe.of
         )
 
@@ -287,11 +285,11 @@ const ViewModel = function(url) {
      * @param prop
      * @param fns
      */
-    const registerValidations = function(prop, fns, errFn = null) {
-        const composedFns = CT.Utils.chainAndCompose(fns)
+    const registerValidations = function(prop, fns) {
+        const composedFns = u.chainAndCompose(fns)
         const validateFunc = doValidate(composedFns)
         if (!controlIdValidatorMap.has(prop)) {
-            controlIdValidatorMap.set(prop, { validateFunc: validateFunc, error: { }, prop: prop, errFn: errFn });
+            controlIdValidatorMap.set(prop, { validateFunc: validateFunc, message: { }, prop: prop });
         }
     }
 
