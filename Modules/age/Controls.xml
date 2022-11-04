@@ -31,7 +31,8 @@
         </group>
 
         <!-- footer view -->
-        <toolbar id = 'footerId' actions = 'Load:load | Clear:cache | Apply:change'/>
+        <group style = "height: 15px; width: 650px"></group>
+        <toolbar id = 'footerId' style = "width: 650px" actions = 'Load:load | Clear:cache | Apply:change'/>
     </group>
 </control>
 

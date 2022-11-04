@@ -30,7 +30,7 @@ class GridView extends BaseView implements IView
     public function render($root): bool|\DOMElement {
         $gridView = $this->renderVirtualDOM($root, 'div');
         if (isset($this->myAttributes['actions'])) {
-            $toolbar = new ToolBarView(['id' => 'toolBarId',
+            $toolbar = new ToolBarView(['id' => 'toolBarId', 'style' => '',
                 'actions' => $this->myAttributes['actions']]);
             $gridView->appendChild($toolbar->render($root));
         }

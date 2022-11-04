@@ -11,9 +11,10 @@ class ToolBarView extends BaseView implements IView
         $this->myAttributes['toolbarView'] += ['class' => "k-toolbar k-grid-toolbar"];
         $this->myAttributes['toolbarView'] += ['role' => 'toolbar'];
         $this->myAttributes['toolbarView'] += ['id' => $attributes['id']];
-        $this->myAttributes += $this->makeAttributes($attributes['actions']);
+        $this->myAttributes['toolbarView'] += ['style' => $attributes['style']];
+        $this->myAttributes += $this->makeButtonAttributes($attributes['actions']);
 
-        //$this->merge($attributes, ['actions']);
+        $this->merge($attributes, ['actions']);
     }
 
     public function render($root): bool|\DOMElement
@@ -27,7 +28,7 @@ class ToolBarView extends BaseView implements IView
         return $parent;
     }
 
-    private function makeAttributes($actions): array {
+    private function makeButtonAttributes($actions): array {
         $operations = explode('|', $actions);
         $toolBarAttributes = ['buttonView' => []];
         foreach ($operations as $op) {
