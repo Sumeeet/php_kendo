@@ -255,8 +255,7 @@ const ViewModel = function(url) {
             return Promise.all(funcToValidate)
             .then((response) => u.forEach(
                 u.compose(
-                    u.forEach(Log),
-                    u.map((msg) => msg.toString()),
+                    u.forEach((msg) => Log(msg.toString())),
                     u.filter((msg) => msg.type() === MESSAGE_TYPE.error),
                     updateErrorStatus
                 ))(response))
