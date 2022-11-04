@@ -70,7 +70,7 @@ const ViewModel = function(url) {
                     .then(response => {
                         // values of calculated fields not part of cached/original model
                         if (cachedValue !== undefined) {
-                            changedObservableObject.set('changed', !(errorMap.size > 0))
+                            changedObservableObject.set('canchange', !(errorMap.size > 0))
                         }
                     })
                     .catch(e => Log(Message(MESSAGE_TYPE.error, 'client', e.message).toString()))
@@ -137,7 +137,7 @@ const ViewModel = function(url) {
         kendo.bind(mainView, observableObject)
 
         // change events are not handled, this is only used for binding
-        changedObservableObject = kendo.observable({ cache: true, load: true, changed: false });
+        changedObservableObject = kendo.observable({ cancache: true, canload: true, canchange: false });
         kendo.bind(footerView, changedObservableObject);
 
         // register for property change event
@@ -151,7 +151,7 @@ const ViewModel = function(url) {
     const reset = function() {
         errorMap.clear()
         propChangedList = []
-        changedObservableObject.set('changed', false)
+        changedObservableObject.set('canchange', false)
     }
 
     /**
@@ -163,12 +163,12 @@ const ViewModel = function(url) {
             const message = msg.toString()
             if (MESSAGE_TYPE.error === msg.type()) {
                 errorMap.set(prop, message);
-                changedObservableObject.set('changed', false);
+                changedObservableObject.set('canchange', false);
             }
             else {
                 if (errorMap.has(prop)) {
                     errorMap.delete(prop);
-                    changedObservableObject.set('changed', errorMap.size === 0);
+                    changedObservableObject.set('canchange', errorMap.size === 0);
                 }
             }
         }

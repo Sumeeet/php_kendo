@@ -1,7 +1,7 @@
 const getElement = id => document.getElementById(id)
 const ModuleInstance = function() {
     const mainView = getElement('mainViewId')
-    const footerView = getElement('applyId')
+    const footerView = getElement('footerId')
 
     function init(url) {
         //caches.delete('CT_cache');
@@ -27,7 +27,7 @@ const ModuleInstance = function() {
                 }
             })
 
-            CT.Observable.fromEvent(getElement('applyId'), 'click')
+            CT.Observable.fromEvent(getElement('changeId'), 'click')
             .filter(e => e.button === MOUSE_BUTTON.left)
             .subscribe({
                 next(e) {

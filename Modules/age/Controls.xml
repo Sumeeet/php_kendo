@@ -30,12 +30,8 @@
             </grid>
         </group>
 
-        <!-- collection of buttons for footer view -->
-        <group id = 'footerId' class = 'horizontal_layout'>
-            <button id = 'loadId' class = 'ct-toolbar' name = 'Load'/>
-            <button id = 'cacheId'  class = 'ct-toolbar' name = 'Clear Cache'/>
-            <button id = 'applyId' class = 'ct-toolbar' name = 'Apply'/>
-        </group>
+        <!-- footer view -->
+        <toolbar id = 'footerId' actions = 'Load:load | Clear:cache | Apply:change'/>
     </group>
 </control>
 
