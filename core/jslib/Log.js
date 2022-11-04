@@ -8,8 +8,8 @@ const EventLogs = function(command) {
 
 const Message = (type, source, message) => {
     const date = new Date()
-    const day = `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDay()}`
-    const time = `${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
+    const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
+    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 
     return {
         type: () => type,

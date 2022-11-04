@@ -34,7 +34,7 @@ const RegisterValidate = (vm) => {
         });
         return Promise.all(awaitFunc)
         .then((response) => recordErrors(response))
-        .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
+        .catch(e => Log(Message(MESSAGE_TYPE.error, 'client', `There has been a problem with validate function(s) : ${e.message}`).toString()))
     }
 
     const runValidation = (id, value) => {
@@ -44,7 +44,7 @@ const RegisterValidate = (vm) => {
         });
         return Promise.all(awaitFunc)
         .then((response) => recordErrors(response))
-        .catch(e => console.log(`There has been a problem with validate function(s) : ${e.message}`))
+        .catch(e => Log(Message(MESSAGE_TYPE.error, 'client', `There has been a problem with validate function(s) : ${e.message}`).toString()))
     }
 
     const registerValidator = (id, erId, fns) => {

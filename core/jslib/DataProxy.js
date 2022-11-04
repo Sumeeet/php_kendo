@@ -17,7 +17,7 @@ const DataProxy = function(cacheName = 'ct_cache') {
                     `HTTP error! status: ${response.status}`);
                 return response;
             })
-        .catch(e => console.log(`Problem with fetch operation for resource ${url} : ${e.message}`))
+        .catch(e => Log(Message(MESSAGE_TYPE.error, 'server', `${e.message}`).toString()))
     }
 
     /**
@@ -49,11 +49,11 @@ const DataProxy = function(cacheName = 'ct_cache') {
             cache.match(url)
             .then(cacheData => {
                 if (cacheData) {
-                    //console.log("fetched from cache");
+                    // Log(Message(MESSAGE_TYPE.info, 'server', 'fetched from cache').toString());
                     resolve(cacheData);
                 }
                 else {
-                    console.log("fetched from server");
+                    Log(Message(MESSAGE_TYPE.info, 'server', 'fetched').toString());
                     resolve(updateCache(cache, url, options));
                 }
             })

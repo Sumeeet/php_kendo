@@ -20,7 +20,7 @@ CT.Decorators.localCache = function(func) {
             cache.set(key, result);
             return result;
         })
-        .catch(e => console.log(`Unable to fetch data: ${e.message}`))
+        .catch(e => Log(Message(MESSAGE_TYPE.error, 'serer', `${e.message}`).toString()))
     }
 }
 

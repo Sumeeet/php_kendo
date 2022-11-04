@@ -190,7 +190,6 @@ CT.GridUtils.addRow = CT.Utils.curry((position, gridId) => {
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
         source.insert(index, { checked: false, fage: 10, sage: 10 })
-        console.log(`row added at index: ${index}`)
         return index
     })
 
@@ -210,7 +209,6 @@ CT.GridUtils.addRowAt = CT.Utils.curry((index, gridId) => {
         // const sourceData = source.data()
         // const rowCopy = Object.assign({}, rowCount > 0 ? sourceData[0] : {})
         source.insert(index, { checked: false, fage: 10, sage: 10 })
-        console.log(`row added at index: ${index}`)
         return index
     })
 
@@ -228,7 +226,6 @@ CT.GridUtils.removeRow = CT.Utils.curry((gridId) => {
         // remove from the end if nothing is selected
         index = index === -1 ? rowCount - 1 : index
         grid.removeRow(`tbody tr:eq("${index}")`);
-        console.log(`row removed at index: ${index}`);
         return index
     })
 
@@ -250,7 +247,6 @@ CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
     const remove = CT.Utils.curry(function (idx, grid) {
         if (idx > 0) {
             grid.removeRow(`tbody tr:eq("${idx}")`)
-            console.log(`row removed at index: ${idx}`);
         }
         return idx
     })

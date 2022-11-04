@@ -10,39 +10,42 @@ const ModuleInstance = function() {
         viewModel.init([limits_url])
         .then(result => {
 
-            // observable.subscribe('onLoad',
-            //     [
-            //         new CommandMessage('',
-            //             new EditCommand(this,
-            //                 () => DataProxy().getData(url).then(response => console.log(response))))
-            //     ])
-            //
-            // observable.subscribe('onClear',
-            //     [
-            //         new CommandMessage('',
-            //             new EditCommand(this,
-            //                 () => caches.delete('ct_cache')))
-            //     ])
-            //
-            // observable.subscribe('onApply',
-            //     [
-            //         new CommandMessage('applyId',
-            //             new EditCommand(this,
-            //                 () => {
-            //                     viewModel.getChangedModel()
-            //                     .then(response => DataProxy().postData(url, { method: 'POST', body: JSON.stringify(response) }))
-            //                     .then(result => {
-            //                         viewModel.reset();
-            //                     });
-            //                 }))
-            //     ])
+            CT.Observable.fromEvent(getElement('loadId'), 'click')
+            .filter(e => e.button === MOUSE_BUTTON.left)
+            .subscribe({
+                next(e) {
+                    DataProxy().getData(url)
+                    .then(response => Log(response))
+                }
+            })
+
+            CT.Observable.fromEvent(getElement('cacheId'), 'click')
+            .filter(e => e.button === MOUSE_BUTTON.left)
+            .subscribe({
+                next(e) {
+                    caches.delete('ct_cache')
+                }
+            })
+
+            CT.Observable.fromEvent(getElement('applyId'), 'click')
+            .filter(e => e.button === MOUSE_BUTTON.left)
+            .subscribe({
+                next(e) {
+                    viewModel.getChangedModel()
+                    .then(response => DataProxy().postData(url,
+                        { method: 'POST', body: JSON.stringify(response) }))
+                    .then(result => {
+                        viewModel.reset();
+                    })
+                }
+            })
 
             viewModel.bind(result, mainView, footerView);
 
             // initialize all the controllers here
             new ViewController(viewModel)
         })
-        .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+        .catch(e => Log(`There has been a problem with reading the source : ${e.message}`))
     }
     return { init }
 }

@@ -30,7 +30,7 @@ const ModuleInstance = function() {
 
             loadButton.addEventListener('click', (event) => {
                 event.stopPropagation();
-                DataProxy().getData(url).then(response => console.log(response));
+                DataProxy().getData(url).then(response => Log(response));
             }, false);
 
             cacheButton.addEventListener('click', (event) => {
@@ -41,7 +41,7 @@ const ModuleInstance = function() {
             // run validations first time
             //viewModel.runValidations()
         })
-        .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+        .catch(e => Log(`There has been a problem with reading the source : ${e.message}`))
     }
     return { init }
 }

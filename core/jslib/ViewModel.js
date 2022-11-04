@@ -73,10 +73,10 @@ const ViewModel = function(url) {
                             changedObservableObject.set('changed', !(errorMap.size > 0))
                         }
                     })
-                    .catch(e => Log(e))
+                    .catch(e => Log(Message(MESSAGE_TYPE.error, 'client', e.message).toString()))
                 }
                 catch (e) {
-                    Log(`Undefined Value ${e}`)
+                    Log(Message(MESSAGE_TYPE.error, 'client',`Undefined Value ${e}`).toString())
                 }
             }
         });
@@ -120,7 +120,7 @@ const ViewModel = function(url) {
             observableObject = kendo.observable(model);
             return observableObject
         })
-        .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+        .catch(e => Log(Message(MESSAGE_TYPE.error, 'client', `There has been a problem with reading the source : ${e.message}`.toString())))
     }
 
     /**
@@ -142,7 +142,7 @@ const ViewModel = function(url) {
 
         // register for property change event
         const debounce = CT.Decorators.debounce(hasChanged, TIME_MS, recordPropertyChange);
-        observableObject.bind("change", (event) => { debounce(event); });
+        observableObject.bind("change", function (event) { debounce(event); });
     }
 
     /**
@@ -200,7 +200,7 @@ const ViewModel = function(url) {
                 observableObject.set(prop, value)
             }
         } catch (e) {
-            console.log(`Unable to set value ${value} for property ${prop} : ${e.message}`)
+            Log(`Unable to set value ${value} for property ${prop} : ${e.message}`)
         }
     }
 
@@ -236,18 +236,19 @@ const ViewModel = function(url) {
             }
             return changedModel
         })
-        .catch(e => console.log(`There has been a problem with reading the source : ${e.message}`))
+        .catch(e => Log(`There has been a problem with reading the source : ${e.message}`))
     }
 
     /**
-     * run all validations or specific related to changed control id
+     * run all validations or specific to a change event
      * @param prop
      * @returns {Promise<void>}
      */
     const runValidations = function(prop = null) {
         const propPaths = prop === null ? Array.from(controlIdValidatorMap.keys()) : [prop];
         const canValidate = (propPath) => controlIdValidatorMap.get(propPath) !== undefined
-        const getValidate = (propPath) => controlIdValidatorMap.get(propPath).validateFunc(get(propPath))
+        // get all the validate functions related to grid i.e. more than one func and for other controls
+        const getValidate = (propPath) => controlIdValidatorMap.get(propPath).map(vo => vo.validateFunc(get(propPath)))
         const funcNotDefined = (propPath) => undefined
 
         const awaitValidate = (funcToValidate) => {
@@ -266,17 +267,19 @@ const ViewModel = function(url) {
             u.IfElse(
                 canValidate,
                 getValidate,
-                funcNotDefined),
+                funcNotDefined
+            )
         )
 
-        const validateProp = u.compose(
+        const validate = u.compose(
             awaitValidate,
             u.filter((f) => f !== undefined),
+            u.flatten, // flatten nested arrays
             u.chain(u.map(getValidateFunc)),
             Maybe.of
         )
 
-       return validateProp(propPaths)
+        return validate(propPaths)
     }
 
     /**
@@ -287,8 +290,15 @@ const ViewModel = function(url) {
     const registerValidations = function(prop, fns) {
         const composedFns = u.chainAndCompose(fns)
         const validateFunc = doValidate(composedFns)
+        const validateObject = { validateFunc: validateFunc, message: { }, prop: prop }
         if (!controlIdValidatorMap.has(prop)) {
-            controlIdValidatorMap.set(prop, { validateFunc: validateFunc, message: { }, prop: prop });
+            controlIdValidatorMap.set(prop, [validateObject]);
+        } else {
+            // grid case, validations for all the columns will run even if it's
+            // not really needed, currently there is no good way to find out a
+            // change in particular column or cell while listening to a value change
+            // This can be achieved using grid events.
+            controlIdValidatorMap.get(prop).push(validateObject)
         }
     }
 

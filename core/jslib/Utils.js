@@ -37,9 +37,9 @@ CT.Utils.identity = x => x;
 CT.Utils.either = CT.Utils.curry((f, g, e) => {
     switch (e.constructor) {
         case Left:
-            return Message(MESSAGE_TYPE.error, '', f(e.$val))
+            return Message(MESSAGE_TYPE.error, 'client', f(e.$val))
         case Right:
-            return Message(MESSAGE_TYPE.debug, '', `value ${g(e.$val)} applied successfully`)
+            return Message(MESSAGE_TYPE.debug, 'client', `value ${g(e.$val)} applied successfully`)
         case Array:
             // already evaluated
             return e
@@ -88,6 +88,8 @@ CT.Utils.IfElse = CT.Utils.curry((cond, func1, func2, v) => cond(v) ? func1(v) :
 
 CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func))
 
+CT.Utils.flatten = CT.Utils.curry((arr) => [].concat(...arr))
+
 CT.Utils.getData = CT.Utils.curry((prop, data) => {
     const getData = CT.Utils.compose(
         CT.Utils.chain((data) => Either.of(data[prop])),
@@ -116,7 +118,7 @@ CT.Utils.LoadTemplates = (paths) => {
     const awaitLoadTemplates = (loadTemplatesFunc) => {
         return Promise.all(loadTemplatesFunc)
         .then((response) => response[0].text())
-        .catch(e => console.log(
+        .catch(e => Log(
             `There has been a problem with loading templates : ${e.message}`))
     }
 

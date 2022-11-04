@@ -26,7 +26,7 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         if (isEmpty()) return null
 
         if (!undoMap.has(prop)) {
-            console.log(`Property doesn't exist: ${prop}`)
+            Log(Message(MESSAGE_TYPE.error, 'client', `Property doesn't exist: ${prop}`).toString())
             return
         }
 
@@ -38,7 +38,7 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         if (isEmpty()) return null
 
         if (!undoMap.has(prop)) {
-            console.log(`Property doesn't exist: ${prop}`)
+            Log(Message(MESSAGE_TYPE.error, 'client', `Property doesn't exist: ${prop}`).toString())
             return
         }
 
@@ -50,7 +50,7 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         if (isEmpty()) return null
 
         if (!undoMap.has(prop)) {
-            console.log(`Property doesn't exist: ${prop}`)
+            Log(Message(MESSAGE_TYPE.error, 'client', `Property doesn't exist: ${prop}`).toString())
             return
         }
 
@@ -62,7 +62,7 @@ const UndoRedo = function(itemType = UNDO_REDO_ITEMS.value) {
         if (isEmpty()) return null
 
         if (!undoMap.has(prop)) {
-            console.log(`Property doesn't exist: ${prop}`)
+            Log(Message(MESSAGE_TYPE.error, 'client', `Property doesn't exist: ${prop}`).toString())
             return
         }
 
@@ -84,8 +84,8 @@ const History = function (itemType) {
 
     const record = function(command) {
         if (history.length > HISTORY_SIZE) {
-            console.log(`History is full, last value shall be overwritten.
-            To avoid loss of data, please apply changes`)
+            Log(Message(MESSAGE_TYPE.info, 'client',`History is full, last value shall be overwritten.
+            To avoid loss of data, please apply changes`))
             marker = HISTORY_SIZE - 1
         }
 

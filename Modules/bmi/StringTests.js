@@ -52,7 +52,7 @@ const formatCycleInterval = (value) => {
 }
 
 function formatValue (str) {
-    console.log(`Non formatted string: ${str}`)
+    Log(`Non formatted string: ${str}`)
 
     const splitTrim = u.compose(
         u.map(splitTrimSetValue),
@@ -71,7 +71,7 @@ function formatValue (str) {
         u.map(evaluate),
         splitTrim))
 
-    console.log(`formatted string: ${execute(str)}`)
+    Log(`formatted string: ${execute(str)}`)
 }
 
 const validateCycleTime = u.compose(
@@ -110,7 +110,7 @@ const validateCycleInterval = u.compose(
 
 
 function validateValue (str) {
-    console.log(`Non formatted string: ${str}`)
+    Log(`Non formatted string: ${str}`)
 
     const splitTrim = u.compose(
         u.map(splitTrimSetValue),
@@ -128,5 +128,5 @@ function validateValue (str) {
         u.map(validate),
         splitTrim))
 
-    console.log(execute(str))
+    Log(execute(str))
 }
