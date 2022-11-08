@@ -6,23 +6,26 @@ CT.Decorators = CT.Decorators || {};
  * @param func
  * @returns {function(...[*]): (*)}
  */
-CT.Decorators.localCache = function(func) {
-    const cache = new Map();
+CT.Decorators.localCache = function (func) {
+  const cache = new Map();
 
-    return function (...args) {
-        const [key, options] = args;
-        if (cache.has(key)) {
-            return cache[key];
-        }
-
-        return func.apply(this, [options])
-        .then(result => {
-            cache.set(key, result);
-            return result;
-        })
-        .catch(e => Log(Message(MESSAGE_TYPE.error, 'serer', `${e.message}`).toString()))
+  return function (...args) {
+    const [key, options] = args;
+    if (cache.has(key)) {
+      return cache[key];
     }
-}
+
+    return func
+      .apply(this, [options])
+      .then((result) => {
+        cache.set(key, result);
+        return result;
+      })
+      .catch((e) =>
+        Log(Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString())
+      );
+  };
+};
 
 /**
  * Debounce function rejects all the intermediate calls happen before ms time
@@ -37,38 +40,38 @@ CT.Decorators.localCache = function(func) {
  *     intermediate calls or property change needs to be captured.
  * @returns {function(): void}
  */
-CT.Decorators.debounce = function(func, ms, recordFunc = null) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            if (recordFunc) recordFunc(...args);
-            timeout = setTimeout(function() {
-                func.apply(this, args)
-            }, ms);
-        };
-}
+CT.Decorators.debounce = function (func, ms, recordFunc = null) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    if (recordFunc) recordFunc(...args);
+    timeout = setTimeout(function () {
+      func.apply(this, args);
+    }, ms);
+  };
+};
 
 /**
  * Convert simple function to an asynchronous function
  * @param func
  * @returns {function(): Promise<unknown>}
  */
-CT.Decorators.makeAsync = function(func) {
-    return function() {
-        return new Promise((resolve, reject) => {
-            if (!func) reject('Undefined function');
-            else {
-                const result = func.apply(this, arguments);
-                resolve(result);
-            }
-        })
-    }
-}
+CT.Decorators.makeAsync = function (func) {
+  return function () {
+    return new Promise((resolve, reject) => {
+      if (!func) reject("Undefined function");
+      else {
+        const result = func.apply(this, arguments);
+        resolve(result);
+      }
+    });
+  };
+};
 
 CT.Decorators.delayBy = function (func, ms) {
-    return function (...args) {
-        setTimeout(function() {
-            func.apply(this, args)
-        }, ms);
-    }
-}
+  return function (...args) {
+    setTimeout(function () {
+      func.apply(this, args);
+    }, ms);
+  };
+};
