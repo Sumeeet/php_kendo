@@ -30,3 +30,4 @@ const MESSAGE_TYPE = {
   info: "Info",
   debug: "Debug",
 };
+Object.freeze(MESSAGE_TYPE);

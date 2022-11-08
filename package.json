@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "dependencies": {
+    "rxjs": "^7.5.7"
+  },
+  "devDependencies": {
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^4.3.8",
+    "install": "^0.13.0",
+    "prettier": "2.7.1"
+  },
+  "scripts": {
+    "lint": "eslint core/jslib",
+    "lint-fix": "eslint core/jslib --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  }
+}
