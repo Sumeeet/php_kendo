@@ -90,6 +90,7 @@ const ViewModel = function (url) {
   const mergeDependencies = function (source, depends) {
     return Promise.all(depends).then((models) => {
       // TODO: make merge generic
+      if (models.length === 0) return source;
       const model = Object.assign({}, source);
       const dependentModel = models.pop();
       const keys = Object.keys(model);

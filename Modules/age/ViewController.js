@@ -8,27 +8,27 @@ const ViewController = function (viewModel) {
   const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands);
 
   function registerValidations(viewModel) {
-    viewModel.registerValidations("fage.value", [
+    viewModel.registerValidations("fage", [
       v.fetchAndCompare(
         "Fathers age should be greater than sons age",
         (sage, fage) => fage < sage, // criterion to compare
-        () => viewModel.get("sage.value") // value to compare with
+        () => viewModel.get("sage") // value to compare with
       ),
       v.isPositive("Fathers age must be a positive number"),
     ]);
 
     // TODO: validations compares with old value rather than changed
-    viewModel.registerValidations("sage.value", [
+    viewModel.registerValidations("sage", [
       v.fetchAndCompare(
         "Sons age should be less than fathers age",
         (fage, sage) => sage > fage, // criterion to compare
-        () => viewModel.get("fage.value") // value to compare with
+        () => viewModel.get("fage") // value to compare with
       ),
       v.isPositive("Sons age must be a positive number"),
     ]);
 
     // map each element of a grid column and check for number validation
-    viewModel.registerValidations("ageGrid.value", [
+    viewModel.registerValidations("ageGrid", [
       g.map(
         u.chainAndCompose([
           v.isInRange(0, 100),
@@ -45,7 +45,7 @@ const ViewController = function (viewModel) {
       a.hasDuplicates("Duplicate values", "fage"),
     ]);
 
-    viewModel.registerValidations("ageGrid.value", [
+    viewModel.registerValidations("ageGrid", [
       g.map(
         u.chainAndCompose([
           v.isPositive("Sons age must be a positive number"),

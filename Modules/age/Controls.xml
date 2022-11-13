@@ -7,20 +7,20 @@
             <group>
             <!-- fathers age composite view-->
                 <label id = 'fageLabelId' name = 'Fathers Age' class = 'block'/>
-                <numeric_input id = 'fageInputId' bind = 'fage.value'/>
+                <numeric_input id = 'fageInputId' bind = 'fage'/>
             </group>
 
             <group>
                 <!-- sons age composite view-->
                 <label id = 'sageLabelId' name = 'Sons Age' class = 'block'/>
-                <numeric_input id = 'sageInputId' bind = 'sage.value'/>
+                <numeric_input id = 'sageInputId' bind = 'sage'/>
             </group>
         </group>
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
 <!--            <toolbar id = 'tooBarId' actions = '+:addRow | -:removeRow | ?:help' width = '650px' />-->
-            <grid id = 'ageGridId' bind = 'ageGrid.value' editable = 'true' width = '650px' height = '350px'
+            <grid id = 'ageGridId' bind = 'ageGrid' editable = 'true' width = '650px' height = '350px'
                   actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'>
                 <columns>
                     <column field = 'checked' title = 'Select' width = '200px' type = 'boolean'/>

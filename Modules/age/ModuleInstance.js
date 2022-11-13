@@ -5,10 +5,10 @@ const ModuleInstance = function () {
 
   function init(url) {
     //caches.delete('CT_cache');
-    const limits_url = "./Modules/Age/valueProperties.json";
+    //const limits_url = "./Modules/Age/valueProperties.json";
     const viewModel = new ViewModel(url);
     viewModel
-      .init([limits_url])
+      .init([])
       .then((result) => {
         CT.Observable.fromEvent(getElement("loadId"), "click")
           .filter((e) => e.button === MOUSE_BUTTON.left)

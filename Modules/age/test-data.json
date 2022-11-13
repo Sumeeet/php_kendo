@@ -1,32 +1,26 @@
 {
-  "fage": {
-    "value": 55
-  },
-  "sage": {
-    "value": 12
-  },
-  "ageGrid": {
-    "value": [
-      {
-        "checked": true,
-        "fage": 57,
-        "sage": 31
-      },
-      {
-        "checked": false,
-        "fage": 65,
-        "sage": 38
-      },
-      {
-        "checked": false,
-        "fage": 70,
-        "sage": 45
-      },
-      {
-        "checked": false,
-        "fage": 27,
-        "sage": 1
-      }
-    ]
-  }
+  "fage": 55,
+  "sage": 12,
+  "ageGrid": [
+    {
+      "checked": true,
+      "fage": 57,
+      "sage": 31
+    },
+    {
+      "checked": false,
+      "fage": 65,
+      "sage": 38
+    },
+    {
+      "checked": false,
+      "fage": 70,
+      "sage": 45
+    },
+    {
+      "checked": false,
+      "fage": 27,
+      "sage": 1
+    }
+  ]
 }
