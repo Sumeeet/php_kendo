@@ -29,11 +29,15 @@ const DataProxy = function (cacheName = "ct_cache") {
    * @returns {Promise<JSON>}
    */
   const updateCache = function (cache, url, options) {
-    return new Promise((resolve, reject) => {
-      fetchData(url, options).then((response) => {
-        cache.put(url, response.clone());
-        resolve(response);
-      });
+    return new Promise((resolve) => {
+      fetchData(url, options)
+        .then((response) => {
+          cache.put(url, response.clone());
+          resolve(response);
+        })
+        .catch(() =>
+          Log(Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString())
+        );
     });
   };
 
@@ -45,7 +49,7 @@ const DataProxy = function (cacheName = "ct_cache") {
    * @returns {Promise<JSON>}
    */
   const fetchCache = function (cache, url, options) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       cache.match(url).then((cacheData) => {
         if (cacheData) {
           // Log(Message(MESSAGE_TYPE.info, 'server', 'fetched from cache').toString());

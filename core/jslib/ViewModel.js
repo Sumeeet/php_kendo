@@ -57,15 +57,11 @@ const ViewModel = function (url) {
 
   const hasChanged = (event) => {
     dataProxy.getData(url, { method: "GET" }).then(function (cachedModel) {
-      const model = observableObject.toJSON();
       const getCachedValue = getPropValue(cachedModel);
-      const getChangedValue = getPropValue(model);
-
       const propPath = event.field;
       if (propPath) {
         const properties = propPath.split(".");
         const cachedValue = getCachedValue(properties);
-        const value = getChangedValue(properties);
         try {
           // TODO: need to have some state to remember value change when no errors
           runValidations(propPath)
@@ -98,7 +94,7 @@ const ViewModel = function (url) {
       const dependentModel = models.pop();
       const keys = Object.keys(model);
       keys.forEach((key) => {
-        if (dependentModel.hasOwnProperty(key)) {
+        if (Object.hasOwn(dependentModel, key)) {
           model[key].min = dependentModel[key].min;
           model[key].max = dependentModel[key].max;
         }
@@ -116,7 +112,6 @@ const ViewModel = function (url) {
 
   /**
    * Load data from other source and merge with main model
-   * @param dependencies
    * @returns {Promise<T | void>}
    */
   const init = function (dependencies) {
@@ -258,7 +253,7 @@ const ViewModel = function (url) {
           const properties = propPath.split(".");
           const value = getChangedValue(properties);
           // TODO: get properties dynamically
-          if (changedModel.hasOwnProperty(properties[0])) {
+          if (Object.hasOwn(changedModel, properties[0])) {
             changedModel[properties[0]]["value"] = value;
           }
         }

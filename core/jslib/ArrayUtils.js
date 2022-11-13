@@ -23,7 +23,7 @@ CT.ArrayUtils.hasDuplicates = CT.Utils.curry((msg, prop, arr) => {
         : CT.Utils.left(`${msg} ${dupValues}`),
     (d) => Object.keys(d).filter((k) => d[k] > 1),
     countDuplicates({}),
-    CT.Utils.map(CT.Utils.getData(prop))
+    CT.Utils.map(CT.Utils.getSafeData(prop))
   );
   return execute(arr);
 });

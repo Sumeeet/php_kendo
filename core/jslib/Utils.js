@@ -102,7 +102,7 @@ CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func));
 
 CT.Utils.flatten = CT.Utils.curry((arr) => [].concat(...arr));
 
-CT.Utils.getData = CT.Utils.curry((prop, data) => {
+CT.Utils.getSafeData = CT.Utils.curry((prop, data) => {
   const getData = CT.Utils.compose(
     CT.Utils.chain((data) => Either.of(data[prop])),
     CT.Utils.chain(CT.Utils.propExist("Property does not exist", prop)),
@@ -112,7 +112,7 @@ CT.Utils.getData = CT.Utils.curry((prop, data) => {
 });
 
 CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
-  data.hasOwnProperty(prop) ? Either.of(data) : CT.Utils.left(`${msg}: ${prop}`)
+  Object.hasOwn(data, prop) ? Either.of(data) : CT.Utils.left(`${msg}: ${prop}`)
 );
 
 CT.Utils.chainAndCompose = (fns) => {
@@ -156,3 +156,17 @@ CT.Utils.makeShortCutKey = (e) =>
   (e.shiftKey ? "shift " : "") +
   (e.altKey ? "alt " : "") +
   e.key.toLowerCase();
+
+CT.Utils.safeAssign = CT.Utils.curry((from, to, prop) => {
+  const toCopy = Object.assign({}, from);
+  const assign = CT.Utils.compose(
+    CT.Utils.forEach((key) => (toCopy[key] = from[key])),
+    Object.keys
+  );
+  const execute = CT.Utils.compose(
+    CT.Utils.chain(assign),
+    CT.Utils.propExist("Property does not exist", prop)
+  );
+  execute(from);
+  return toCopy;
+});

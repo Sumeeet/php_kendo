@@ -24,8 +24,8 @@
                   actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'>
                 <columns>
                     <column field = 'checked' title = 'Select' width = '200px' type = 'boolean'/>
-                    <column field = 'fage' title = 'Fathers Age' width = '200px'/>
-                    <column field = 'sage' title = 'Sons Age' width = '200px'/>
+                    <column field = 'fage' title = 'fage' width = '200px'/>
+                    <column field = 'sage' title = 'sage' width = '200px'/>
                 </columns>
             </grid>
         </group>
