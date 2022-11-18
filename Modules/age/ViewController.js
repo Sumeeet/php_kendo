@@ -110,6 +110,14 @@ const ViewController = function (viewModel) {
         undoRedo.redo("ageGridId");
       },
     });
+
+    let ageGridTransformed = [];
+    const gridTransform = CT.GridUtils.gridTransform(
+      viewModel.get("ageGridParam"),
+      viewModel.get("ageGrid")
+    );
+    ageGridTransformed = gridTransform.modelToGrid();
+    viewModel.set("ageGridTrans", ageGridTransformed);
   }
 
   (function () {

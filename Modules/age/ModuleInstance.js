@@ -46,10 +46,10 @@ const ModuleInstance = function () {
             },
           });
 
-        viewModel.bind(result, mainView, footerView);
-
         // initialize all the controllers here
         new ViewController(viewModel);
+
+        viewModel.bind(result, mainView, footerView);
       })
       .catch((e) =>
         Log(`There has been a problem with reading the source : ${e.message}`)
