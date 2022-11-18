@@ -28,30 +28,15 @@ const ViewController = function (viewModel) {
     ]);
 
     // map each element of a grid column and check for number validation
-    viewModel.registerValidations("ageGrid", [
+    viewModel.registerValidations("ageGridTrans", [
       g.map(
         u.chainAndCompose([
           v.isInRange(0, 100),
           v.isPositive("Fathers age must be a positive number"),
-          u.getSafeData("fage"),
-          v.compareProp(
-            "Fathers age should be greater than sons age",
-            (sage, fage) => sage > fage,
-            "sage",
-            "fage"
-          ),
+          u.getSafeData("col0"), // TODO: get safe data for a range of properties in an object
         ])
       ),
-      a.hasDuplicates("Duplicate values", "fage"),
-    ]);
-
-    viewModel.registerValidations("ageGrid", [
-      g.map(
-        u.chainAndCompose([
-          v.isPositive("Sons age must be a positive number"),
-          u.getSafeData("sage"),
-        ])
-      ),
+      a.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }
 

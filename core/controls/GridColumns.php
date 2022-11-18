@@ -25,10 +25,10 @@ trait GridColumns
     {
         $attributes = $this->makeAttributes($columns);
         // add dynamic columns
-        for ($count = 1; $count <= $columnCount; $count++) {
+        for ($count = 0; $count < $columnCount; $count++) {
             $attributes[] = [
-                'title' => $count,
                 'field' => 'col'.$count,
+                'title' => $count + 1,
                 'width' => '50px'
             ];
         }
