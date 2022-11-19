@@ -30,11 +30,16 @@ const ViewController = function (viewModel) {
     // map each element of a grid column and check for number validation
     viewModel.registerValidations("ageGridTrans", [
       g.map(
-        u.chainAndCompose([
-          v.isInRange(0, 100),
-          v.isPositive("Fathers age must be a positive number"),
-          u.getSafeData("col0"), // TODO: get safe data for a range of properties in an object
-        ])
+        u.compose(
+          g.map(
+            u.compose(
+              u.either(u.identity, u.identity),
+              u.chain(v.isInRange(0, 100)),
+              u.chain(v.isPositive("Fathers age must be a positive number"))
+            )
+          ),
+          u.getSafeData1(/^\w+\d+$/g)
+        )
       ),
       a.hasDuplicates("Duplicate values", "parameter"),
     ]);

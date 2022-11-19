@@ -104,11 +104,25 @@ CT.Utils.flatten = CT.Utils.curry((arr) => [].concat(...arr));
 
 CT.Utils.getSafeData = CT.Utils.curry((prop, data) => {
   const getData = CT.Utils.compose(
-    CT.Utils.chain((data) => Either.of(data[prop])),
+    CT.Utils.chain((data) => Maybe.of(data[prop])),
     CT.Utils.chain(CT.Utils.propExist("Property does not exist", prop)),
     Maybe.of
   );
   return getData(data);
+});
+
+CT.Utils.getSafeData1 = CT.Utils.curry((propLike, data) => {
+  // search for all the object prop which starts with prop
+  const getSafeData = CT.Utils.curry((data, prop) =>
+    CT.Utils.getSafeData(prop, data)
+  );
+
+  const execute = CT.Utils.compose(
+    CT.Utils.map(getSafeData(data)),
+    CT.Utils.filter(CT.StringUtils.match(propLike)),
+    Object.keys
+  );
+  return execute(data);
 });
 
 CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
@@ -116,17 +130,17 @@ CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
 );
 
 CT.Utils.chainAndCompose = (fns) => {
-  const first = fns.pop();
-  let composedFns = fns.map((fn) => CT.Utils.chain(fn));
-  if (first) {
-    composedFns.push(first);
+  const last = fns.pop();
+  let chainedFuncs = fns.map((fn) => CT.Utils.chain(fn));
+  if (last) {
+    chainedFuncs.push(last);
   }
-  composedFns.splice(
+  chainedFuncs.splice(
     0,
     0,
     CT.Utils.either(CT.Utils.identity, CT.Utils.identity)
   );
-  return CT.Utils.compose(...composedFns);
+  return CT.Utils.compose(...chainedFuncs);
 };
 
 CT.Utils.LoadTemplates = (paths) => {

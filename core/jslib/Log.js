@@ -1,5 +1,5 @@
 const Log = (message) => {
-  return console.log(message);
+  console.log(message);
 };
 
 const EventLogs = function (command) {};

@@ -17,3 +17,5 @@ CT.StringUtils.findSlice = CT.Utils.curry((c, v) => {
   const i = v.indexOf(c);
   return i !== -1 ? v.slice(i + 1) : v;
 });
+
+CT.StringUtils.match = CT.Utils.curry((r, s) => s.match(r) !== null);
