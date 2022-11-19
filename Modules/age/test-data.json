@@ -3,10 +3,14 @@
   "sage": 12,
   "ageGridParam": [
     {
-      "parameter": "Father"
+      "parameter": "Father",
+      "min": 18,
+      "max": 100
     },
     {
-      "parameter": "Son"
+      "parameter": "Son",
+      "min": 0,
+      "max": 100
     }
   ],
   "ageGrid": [
