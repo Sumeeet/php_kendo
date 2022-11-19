@@ -102,27 +102,27 @@ CT.Utils.filter = CT.Utils.curry((func, functor) => functor.filter(func));
 
 CT.Utils.flatten = CT.Utils.curry((arr) => [].concat(...arr));
 
-CT.Utils.getSafeData = CT.Utils.curry((prop, data) => {
+CT.Utils.getSafeData = CT.Utils.curry((prop, obj) => {
   const getData = CT.Utils.compose(
     CT.Utils.chain((data) => Maybe.of(data[prop])),
     CT.Utils.chain(CT.Utils.propExist("Property does not exist", prop)),
     Maybe.of
   );
-  return getData(data);
+  return getData(obj);
 });
 
-CT.Utils.getSafeData1 = CT.Utils.curry((propLike, data) => {
-  // search for all the object prop which starts with prop
+CT.Utils.getSafeDataArray = CT.Utils.curry((propLike, obj) => {
+  // search for all the object prop which matches propLike regular expression
   const getSafeData = CT.Utils.curry((data, prop) =>
     CT.Utils.getSafeData(prop, data)
   );
 
   const execute = CT.Utils.compose(
-    CT.Utils.map(getSafeData(data)),
+    CT.Utils.map(getSafeData(obj)),
     CT.Utils.filter(CT.StringUtils.match(propLike)),
     Object.keys
   );
-  return execute(data);
+  return execute(obj);
 });
 
 CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
