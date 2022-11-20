@@ -272,7 +272,7 @@ const ViewModel = function () {
    */
   const getChangedModel = function () {
     return dataProxy
-      .getData(url, { method: "GET" })
+      .getData(sourceUrl, { method: "GET" })
       .then((model) => {
         const changedModel = Object.assign({}, model);
         const observableModel = observableObject.toJSON();
@@ -284,7 +284,7 @@ const ViewModel = function () {
           const value = getChangedValue(properties);
           // TODO: get properties dynamically
           if (Object.hasOwn(changedModel, properties[0])) {
-            changedModel[properties[0]]["value"] = value;
+            changedModel[properties[0]] = value;
           }
         }
         return changedModel;
