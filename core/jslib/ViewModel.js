@@ -1,9 +1,10 @@
 "use strict";
 
-const ViewModel = function (url) {
+const ViewModel = function () {
   const dataProxy = DataProxy("ct_cache");
   let observableObject = null;
   let changedObservableObject = null;
+  let sourceUrl = "";
 
   const controlIdValidatorMap = new Map();
   const u = CT.Utils;
@@ -56,52 +57,40 @@ const ViewModel = function (url) {
   };
 
   const hasChanged = (event) => {
-    dataProxy.getData(url, { method: "GET" }).then(function (cachedModel) {
-      const getCachedValue = getPropValue(cachedModel);
-      const propPath = event.field;
-      if (propPath) {
-        const properties = propPath.split(".");
-        const cachedValue = getCachedValue(properties);
-        try {
-          // TODO: need to have some state to remember value change when no errors
-          runValidations(propPath)
-            .then((response) => {
-              // values of calculated fields not part of cached/original model
-              if (cachedValue !== undefined) {
-                changedObservableObject.set("canchange", !(errorMap.size > 0));
-              }
-            })
-            .catch((e) =>
-              Log(Message(MESSAGE_TYPE.error, "client", e.message).toString())
+    dataProxy
+      .getData(sourceUrl, { method: "GET" })
+      .then(function (cachedModel) {
+        const getCachedValue = getPropValue(cachedModel);
+        const propPath = event.field;
+        if (propPath) {
+          const properties = propPath.split(".");
+          const cachedValue = getCachedValue(properties);
+          try {
+            // TODO: need to have some state to remember value change when no errors
+            runValidations(propPath)
+              .then((response) => {
+                // values of calculated fields not part of cached/original model
+                if (cachedValue !== undefined) {
+                  changedObservableObject.set(
+                    "canchange",
+                    !(errorMap.size > 0)
+                  );
+                }
+              })
+              .catch((e) =>
+                Log(Message(MESSAGE_TYPE.error, "client", e.message).toString())
+              );
+          } catch (e) {
+            Log(
+              Message(
+                MESSAGE_TYPE.error,
+                "client",
+                `Undefined Value ${e}`
+              ).toString()
             );
-        } catch (e) {
-          Log(
-            Message(
-              MESSAGE_TYPE.error,
-              "client",
-              `Undefined Value ${e}`
-            ).toString()
-          );
-        }
-      }
-    });
-  };
-
-  const mergeDependencies = function (source, depends) {
-    return Promise.all(depends).then((models) => {
-      // TODO: make merge generic
-      if (models.length === 0) return source;
-      const model = Object.assign({}, source);
-      const dependentModel = models.pop();
-      const keys = Object.keys(model);
-      keys.forEach((key) => {
-        if (Object.hasOwn(dependentModel, key)) {
-          model[key].min = dependentModel[key].min;
-          model[key].max = dependentModel[key].max;
+          }
         }
       });
-      return model;
-    });
   };
 
   const doValidate = function (validateFunc) {
@@ -111,22 +100,10 @@ const ViewModel = function (url) {
     };
   };
 
-  /**
-   * Load data from other source and merge with main model
-   * @returns {Promise<T | void>}
-   */
-  const init = function (dependencies) {
-    const awaitFunc = dependencies.map((url) =>
-      dataProxy.getData(url, { method: "GET" })
-    );
-
+  const fetchFromCache = function (url) {
     return dataProxy
       .getData(url, { method: "GET" })
-      .then((model) => mergeDependencies(model, awaitFunc))
-      .then((model) => {
-        observableObject = kendo.observable(model);
-        return observableObject;
-      })
+      .then((model) => model)
       .catch((e) =>
         Log(
           Message(
@@ -138,17 +115,69 @@ const ViewModel = function (url) {
       );
   };
 
+  const transform = CT.Utils.curry((transformInfo, model) => {
+    // this is where aux data is filled in and non-bindable data
+    // is not part of observable. auxDataArray is of the form
+    // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
+    // key must have "Aux" as a suffix in order to fetch data
+
+    let index = 0;
+    const transform = u.curry((source, action) => {
+      model[`AuxObject${index++}`] = action(source).modelToGrid();
+      return model;
+    });
+
+    return u.compose(
+      u.map(u.chain(transform(model))),
+      u.getSafeDataArray(/^\w+\d*Aux$/g)
+    )(transformInfo)[0];
+  });
+
+  const merge = CT.Utils.curry((depends, model) => {
+    const awaitFunc = depends.map((d) =>
+      dataProxy.getData(d, { method: "GET" })
+    );
+
+    return Promise.all(awaitFunc).then((models) => {
+      // TODO: make merge generic
+      if (models.length === 0) return model;
+      const modelCopy = Object.assign({}, model);
+      const dependentModel = models.pop();
+      const keys = Object.keys(modelCopy);
+      keys.forEach((key) => {
+        if (Object.hasOwn(dependentModel, key)) {
+          modelCopy[key].min = dependentModel[key].min;
+          modelCopy[key].max = dependentModel[key].max;
+        }
+      });
+      return modelCopy;
+    });
+  });
+
+  /**
+   * Load data from other source and merge with main model
+   * @returns {Promise<T | void>}
+   */
+  const init = function (url) {
+    // member url is used in hasChanged function to get values from cache
+    // url is used as a key
+    sourceUrl = url;
+
+    return fetchFromCache(url);
+  };
+
   /**
    *
    * @param observableObject
    * @param mainView
    * @param footerView
    */
-  const bind = function (observableObject, mainView, footerView) {
-    if (!observableObject) {
+  const bind = u.curry((mainView, footerView, model) => {
+    if (!model) {
       throw "Data is not fetched yet. Initialize ViewModel first";
     }
 
+    observableObject = kendo.observable(model);
     kendo.bind(mainView, observableObject);
 
     // change events are not handled, this is only used for binding
@@ -168,7 +197,7 @@ const ViewModel = function (url) {
     observableObject.bind("change", function (event) {
       debounce(event);
     });
-  };
+  });
 
   /**
    *
@@ -348,5 +377,7 @@ const ViewModel = function (url) {
     getChangedModel,
     registerValidations,
     runValidations,
+    merge,
+    transform,
   };
 };

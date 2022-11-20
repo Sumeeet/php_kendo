@@ -45,7 +45,7 @@ const ViewController = function (viewModel) {
     };
 
     // map each element of a grid column and check for number validation
-    vm.registerValidations("ageGridTrans", [
+    vm.registerValidations("AuxObject0", [
       g.map(validateCells),
       a.hasDuplicates("Duplicate values", "parameter"),
     ]);
@@ -106,14 +106,6 @@ const ViewController = function (viewModel) {
         undoRedo.redo("ageGridId");
       },
     });
-
-    let ageGridTransformed = [];
-    const gridTransform = CT.GridUtils.gridTransform(
-      viewModel.get("ageGridParam"),
-      viewModel.get("ageGrid")
-    );
-    ageGridTransformed = gridTransform.modelToGrid();
-    viewModel.set("ageGridTrans", ageGridTransformed);
   }
 
   (function () {

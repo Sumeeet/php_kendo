@@ -6,6 +6,11 @@ CT.Utils.compose =
   (...args) =>
     fns.reduceRight((res, fn) => [fn.call(null, ...res)], args)[0];
 
+CT.Utils.asyncCompose =
+  (...fn) =>
+  (...args) =>
+    fn.reduceRight((chain, func) => chain.then(func), Promise.resolve(args));
+
 CT.Utils.curry = (fn) => {
   const arity = fn.length;
   return function $curry(...args) {

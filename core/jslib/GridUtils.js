@@ -277,7 +277,9 @@ CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
  * @param array2 An array of objects which holds parameter and attribute values
  * @returns {{modelToGrid: (function(): Object[]), gridToModel: (function(*=, *=, *=, *=): ((*[])[]))}} return gridToModel and modelToGrid api
  */
-CT.GridUtils.gridTransform = (array1, array2) => {
+CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
+  const array1 = model[prop1];
+  const array2 = model[prop2];
   /**
    * Convert Grid model object structure to actual array of json model
    * @param gridArray An array of objects of the form
@@ -435,4 +437,4 @@ CT.GridUtils.gridTransform = (array1, array2) => {
   };
 
   return { modelToGrid, gridToModel };
-};
+});
