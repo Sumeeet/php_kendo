@@ -51,7 +51,7 @@ const ViewController = function (viewModel) {
     ]);
   }
 
-  function bindCommands(viewModel) {
+  function bindCommands(vm) {
     const pushAddRemoveCommand = (index) => {
       const add = g.addRowAt(index);
       const remove = g.removeRowAt(index);
@@ -75,35 +75,40 @@ const ViewController = function (viewModel) {
       );
     };
 
-    const disableElement = CT.Utils.curry((gridId, element) => {
-      g.hasData(gridId)
-        ? element.removeAttribute("disabled")
-        : element.setAttribute("disabled", "");
-    });
+    vm.set("canremoveRow", g.hasData("ageGridId"));
+    vm.set("canaddRow", true);
+    vm.set("canundo", undoRedo.canUndo("ageGridId"));
+    vm.set("canredo", undoRedo.canRedo("ageGridId"));
+    vm.set("canhelp", true);
 
     const subscription = GridActionSubscription("ageGridId");
     subscription.addRow("addRowId").subscribe((index) => {
       u.compose(
-        () => disableElement("ageGridId", getElement("removeRowId")),
+        () => vm.set("canundo", undoRedo.canUndo("ageGridId")),
+        () => vm.set("canremoveRow", g.hasData("ageGridId")),
         pushAddRemoveCommand
       )(index);
     });
 
-    subscription
-      .removeRow("removeRowId")
-      .subscribe((value) =>
-        disableElement("ageGridId", getElement("removeRowId"))
-      );
+    subscription.removeRow("removeRowId").subscribe((index) => {
+      u.compose(
+        () => vm.set("canundo", undoRedo.canUndo("ageGridId")),
+        () => vm.set("canremoveRow", g.hasData("ageGridId")),
+        pushAddRemoveCommand
+      )(index);
+    });
 
     subscription.undoRow("undoId").subscribe({
       next(key) {
         undoRedo.undo("ageGridId");
+        vm.set("canredo", true);
       },
     });
 
     subscription.redoRow("redoId").subscribe({
       next(key) {
         undoRedo.redo("ageGridId");
+        vm.set("canundo", true);
       },
     });
   }

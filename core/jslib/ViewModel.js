@@ -120,8 +120,10 @@ const ViewModel = function () {
     const transformAux = u.curry((source, transformObj) => {
       const bind = transformObj["bind"];
       const action = transformObj["action"];
+      const attribute = transformObj["attribute"];
       const auxData = observableObject.toJSON()[bind];
-      return action(source, auxData);
+      // TODO: can we avoid sending attributes ?
+      action(source, auxData, attribute);
     });
 
     return u.compose(
@@ -139,7 +141,7 @@ const ViewModel = function () {
     const transformAux = u.curry((source, transformObj) => {
       const bind = transformObj["bind"];
       const action = transformObj["action"];
-      return action(source, bind);
+      action(source, bind);
     });
 
     return u.compose(
@@ -293,7 +295,7 @@ const ViewModel = function () {
         body: JSON.stringify(model),
       })
       .then((result) => {
-        Log(Message(MESSAGE_TYPE.info, "server", `Data saved ${result}`));
+        Log(Message(MESSAGE_TYPE.info, "server", "Data saved").toString());
         reset();
       })
       .catch((e) => Log(`Unable to save data : ${e.message}`));

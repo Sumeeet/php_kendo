@@ -31,12 +31,9 @@ const GridActionSubscription = (gid) => {
     const shortcut = keyup.filter(
       (shortCutKey) => shortCutKey === KEYBOARD_SHORTCUTS.remove
     );
-    const merged = CT.Observable.merge(click, shortcut).share(); // let all the subscriber listen to same observable
-    merged.subscribe({
-      next(e) {
-        removeRow(gid);
-      },
-    });
+    const merged = CT.Observable.merge(click, shortcut)
+      .map((e) => removeRow(gid))
+      .share(); // let all the subscriber listen to same observable
 
     return merged;
   };

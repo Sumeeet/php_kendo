@@ -59,7 +59,7 @@ const UndoRedo = function (itemType = UNDO_REDO_ITEMS.value) {
   };
 
   const canUndo = function (prop) {
-    if (isEmpty()) return null;
+    if (isEmpty()) return false;
 
     if (!undoMap.has(prop)) {
       Log(
@@ -73,11 +73,11 @@ const UndoRedo = function (itemType = UNDO_REDO_ITEMS.value) {
     }
 
     const history = undoMap.get(prop);
-    history.canLookBack();
+    return history.canLookBack();
   };
 
   const canRedo = function (prop) {
-    if (isEmpty()) return null;
+    if (isEmpty()) return false;
 
     if (!undoMap.has(prop)) {
       Log(
@@ -91,7 +91,7 @@ const UndoRedo = function (itemType = UNDO_REDO_ITEMS.value) {
     }
 
     const history = undoMap.get(prop);
-    history.canLookForward();
+    return history.canLookForward();
   };
 
   return { push, clear, undo, redo, canUndo, canRedo };

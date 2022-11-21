@@ -11,6 +11,7 @@ const ModuleInstance = function () {
       ageGridAux: {
         action: g.gridTransform("ageGridParam", "ageGrid"),
         bind: "ageGridAux",
+        attribute: "age",
       },
     };
 

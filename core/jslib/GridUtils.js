@@ -322,10 +322,9 @@ CT.GridUtils.gridTransform = function (prop1, prop2) {
 
     // TODO: remove mutation ?
     model[auxProp] = Array.from(paramToGridModelMap.values());
-    return model;
   };
 
-  const gridToModel = (model, auxModel, attribute = "age") => {
+  const gridToModel = (model, auxModel, attribute) => {
     const array1 = model[prop1];
     const array2 = model[prop2];
 
@@ -390,7 +389,6 @@ CT.GridUtils.gridTransform = function (prop1, prop2) {
     // TODO: remove mutation
     model[prop1] = newArray1;
     model[prop2] = newArray2;
-    return model;
   };
 
   let transformModel = true;

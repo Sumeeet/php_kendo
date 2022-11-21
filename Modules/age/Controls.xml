@@ -19,17 +19,16 @@
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
-            <dynamic_grid id = 'ageGridId' bind = 'ageGridAux' editable = 'true' width = '650px' height = '350px'
-                  actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'>
+            <toolbar id = 'toolBarId' style = "width: auto" actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'/>
+            <dynamic_grid id = 'ageGridId' bind = 'ageGridAux' editable = 'true' width = 'auto' height = '350px'>
                 <columns>
                     <column field = 'parameter' title = 'Parameter' width = '100px'/>
+                    <column field = 'unit' title = 'Unit' width = '100px'/>
                 </columns>
             </dynamic_grid>
+            <!-- footer view -->
+            <toolbar id = 'footerId' style = "width: auto" actions = 'Load:load | Clear:cache | Apply:change'/>
         </group>
-
-        <!-- footer view -->
-        <group style = "height: 15px; width: 650px"></group>
-        <toolbar id = 'footerId' style = "width: 650px" actions = 'Load:load | Clear:cache | Apply:change'/>
     </group>
 </control>
 
