@@ -19,7 +19,7 @@
 
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
-            <dynamic_grid id = 'ageGridId' bind = 'AuxObject0' editable = 'true' width = '650px' height = '350px'
+            <dynamic_grid id = 'ageGridId' bind = 'ageGridAux' editable = 'true' width = '650px' height = '350px'
                   actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'>
                 <columns>
                     <column field = 'parameter' title = 'Parameter' width = '100px'/>

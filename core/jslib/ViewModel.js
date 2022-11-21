@@ -70,12 +70,9 @@ const ViewModel = function () {
             runValidations(propPath)
               .then((response) => {
                 // values of calculated fields not part of cached/original model
-                if (cachedValue !== undefined) {
-                  changedObservableObject.set(
-                    "canchange",
-                    !(errorMap.size > 0)
-                  );
-                }
+                //if (cachedValue !== undefined) {
+                changedObservableObject.set("canchange", !(errorMap.size > 0));
+                //}
               })
               .catch((e) =>
                 Log(Message(MESSAGE_TYPE.error, "client", e.message).toString())
@@ -115,22 +112,41 @@ const ViewModel = function () {
       );
   };
 
+  const revTransform = CT.Utils.curry((transformInfo, model) => {
+    // this is where aux data is filled in and non-bindable data
+    // is not part of observable. auxDataArray is of the form
+    // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
+    // key must have "Aux" as a suffix in order to fetch data
+    const transformAux = u.curry((source, transformObj) => {
+      const bind = transformObj["bind"];
+      const action = transformObj["action"];
+      const auxData = observableObject.toJSON()[bind];
+      return action(source, auxData);
+    });
+
+    return u.compose(
+      () => model,
+      u.forEach(u.chain(transformAux(model))),
+      u.getSafeDataArray(/^\w+\d*Aux$/g)
+    )(transformInfo);
+  });
+
   const transform = CT.Utils.curry((transformInfo, model) => {
     // this is where aux data is filled in and non-bindable data
     // is not part of observable. auxDataArray is of the form
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
-
-    let index = 0;
-    const transform = u.curry((source, action) => {
-      model[`AuxObject${index++}`] = action(source).modelToGrid();
-      return model;
+    const transformAux = u.curry((source, transformObj) => {
+      const bind = transformObj["bind"];
+      const action = transformObj["action"];
+      return action(source, bind);
     });
 
     return u.compose(
-      u.map(u.chain(transform(model))),
+      () => model,
+      u.forEach(u.chain(transformAux(model))),
       u.getSafeDataArray(/^\w+\d*Aux$/g)
-    )(transformInfo)[0];
+    )(transformInfo);
   });
 
   const merge = CT.Utils.curry((depends, model) => {
@@ -270,29 +286,35 @@ const ViewModel = function () {
    *
    * @returns {Promise<T | void>}
    */
-  const getChangedModel = function () {
-    return dataProxy
-      .getData(sourceUrl, { method: "GET" })
-      .then((model) => {
-        const changedModel = Object.assign({}, model);
-        const observableModel = observableObject.toJSON();
-        const getChangedValue = getPropValue(observableModel);
-
-        // pick only what is changed
-        for (const propPath of propChangedList) {
-          const properties = propPath.split(".");
-          const value = getChangedValue(properties);
-          // TODO: get properties dynamically
-          if (Object.hasOwn(changedModel, properties[0])) {
-            changedModel[properties[0]] = value;
-          }
-        }
-        return changedModel;
+  const save = u.curry((url, model) => {
+    DataProxy()
+      .postData(url, {
+        method: "POST",
+        body: JSON.stringify(model),
       })
-      .catch((e) =>
-        Log(`There has been a problem with reading the source : ${e.message}`)
-      );
-  };
+      .then((result) => {
+        Log(Message(MESSAGE_TYPE.info, "server", `Data saved ${result}`));
+        reset();
+      })
+      .catch((e) => Log(`Unable to save data : ${e.message}`));
+  });
+
+  const update = CT.Utils.curry((model) => {
+    const changedModel = Object.assign({}, model);
+    const observableModel = observableObject.toJSON();
+    const getChangedValue = getPropValue(observableModel);
+
+    // pick only what is changed
+    for (const propPath of propChangedList) {
+      const properties = propPath.split(".");
+      const value = getChangedValue(properties);
+      // TODO: get properties dynamically
+      if (Object.hasOwn(changedModel, properties[0])) {
+        changedModel[properties[0]] = value;
+      }
+    }
+    return changedModel;
+  });
 
   /**
    * run all validations or specific to a change event
@@ -374,10 +396,13 @@ const ViewModel = function () {
     reset,
     set,
     get,
-    getChangedModel,
     registerValidations,
     runValidations,
     merge,
     transform,
+    fetchFromCache,
+    revTransform,
+    update,
+    save,
   };
 };

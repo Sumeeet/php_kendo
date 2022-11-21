@@ -8,7 +8,10 @@ const ModuleInstance = function () {
   function init(url) {
     //const paramLimits = "./Modules/Age/valueProperties.json";
     const transformInfo = {
-      ageGridAux: g.gridTransform("ageGridParam", "ageGrid"),
+      ageGridAux: {
+        action: g.gridTransform("ageGridParam", "ageGrid"),
+        bind: "ageGridAux",
+      },
     };
 
     const vm = new ViewModel();
@@ -43,16 +46,12 @@ const ModuleInstance = function () {
           .filter((e) => e.button === MOUSE_BUTTON.left)
           .subscribe({
             next(e) {
-              vm.getChangedModel()
-                .then((response) =>
-                  DataProxy().postData(url, {
-                    method: "POST",
-                    body: JSON.stringify(response),
-                  })
-                )
-                .then((result) => {
-                  vm.reset();
-                });
+              u.asyncCompose(
+                vm.save(url),
+                vm.update,
+                vm.revTransform(transformInfo),
+                vm.fetchFromCache
+              )(url);
             },
           });
         new ViewController(vm);

@@ -270,54 +270,10 @@ CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
   return selIndex + 1;
 });
 
-/**
- * A function wrapper which return gridToModel and modelToGrid api. It stores meta
- * information of original model and use that as a template to populate grid models
- * @param array1 An array of objects which holds parameter information and other values
- * @param array2 An array of objects which holds parameter and attribute values
- * @returns {{modelToGrid: (function(): Object[]), gridToModel: (function(*=, *=, *=, *=): ((*[])[]))}} return gridToModel and modelToGrid api
- */
-CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
-  const array1 = model[prop1];
-  const array2 = model[prop2];
-  /**
-   * Convert Grid model object structure to actual array of json model
-   * @param gridArray An array of objects of the form
-   * [ { Idx: xx, Namex: '', parameter: 'param1', vectorIndex: 0, col0: xx, col1: xx },
-   *   { Idx: xx, Namex: '', parameter: 'param2', vectorIndex: 0, col0: xx, col1: xx }
-   * ]
-   * @param attribute parameter attribute which stores value. For example 'setpoint': 0
-   * @param attribute parameter attribute which stores value. For example 'setpoint': 0
-   * @param dynamicColumnsCount number of visible columns in the grid.
-   * @param defaultNumericValue initialize cells with this value, by default cells are blank.
-   * A special called BLANK_NUMERIC_VALUE is also used in some cases.
-   * @returns {[[], []]|[[], []]|[[], []]|[[], []]} An array of items which contains props and valueKey
-   */
-  const gridToModel = (
-    gridArray,
-    attribute,
-    dynamicColumnsCount,
-    defaultNumericValue = null
-  ) => {
-    return gridToModelAux(
-      gridArray,
-      attribute,
-      dynamicColumnsCount,
-      defaultNumericValue
-    );
-  };
-
-  /**
-   * Convert model arrays to 2 dimensional kendo grid structure
-   * @returns {any[]|null} An array of objects of the form
-   * [ [ { Idx: xx, Namex: '', parameter: 'param1', vectorIndex: 0, col0: xx, col1: xx },
-   * { Idx: xx, Namex: '', parameter: 'param2', vectorIndex: 1, col0: xx, col1: xx }]
-   * [ { Idx: xx, Namex: '', parameter: 'param1', vectorIndex: 0, setpoint: 0, },
-   * { Idx: xx, Namex: '', parameter: 'param1', vectorIndex: 1, setpoint: 0 },
-   * { Idx: xx, Namex: '', parameter: 'param2', vectorIndex: 2, setpoint: 0, },
-   * { Idx: xx, Namex: '', parameter: 'param2', vectorIndex: 3, setpoint: 0 }] ]
-   */
-  const modelToGrid = () => {
+CT.GridUtils.gridTransform = function (prop1, prop2) {
+  const modelToGrid = (model, auxProp) => {
+    const array1 = model[prop1];
+    const array2 = model[prop2];
     // keep map of key value pair, where key is parameter and value is grid model object/row
     const paramToGridModelMap = new Map();
 
@@ -364,19 +320,19 @@ CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
       }
     });
 
-    return Array.from(paramToGridModelMap.values());
+    // TODO: remove mutation ?
+    model[auxProp] = Array.from(paramToGridModelMap.values());
+    return model;
   };
 
-  const gridToModelAux = (
-    gridArray,
-    attribute,
-    dynamicColumnsCount,
-    defaultNumericValue
-  ) => {
+  const gridToModel = (model, auxModel, attribute = "age") => {
+    const array1 = model[prop1];
+    const array2 = model[prop2];
+
     const newArray1 = [];
     const newArray2 = [];
 
-    if (CT.Utils.isUndefined(gridArray)) return [newArray1, newArray2];
+    if (CT.Utils.isUndefined(auxModel)) return [newArray1, newArray2];
 
     const notAnArray = (arr) =>
       CT.Utils.isUndefined(arr) || !Array.isArray(arr);
@@ -388,18 +344,15 @@ CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
 
     const getColValues = (row) => {
       const colsValue = [];
-      for (let i = 0; i < dynamicColumnsCount; i++) {
+      for (let i = 0; i < 4; i++) {
         if (Object.hasOwn(row, `col${i}`)) {
           const value = row[`col${i}`];
-          if (
-            !CT.Utils.isUndefined(defaultNumericValue) &&
-            CT.Utils.isUndefined(value)
-          ) {
-            colsValue.push(defaultNumericValue);
-            row[`col${i}`] = defaultNumericValue;
-          } else {
-            colsValue.push(value);
-          }
+          // if (!CT.Utils.isUndefined(defValue) && CT.Utils.isUndefined(value)) {
+          //   colsValue.push(defValue);
+          //   row[`col${i}`] = defValue;
+          // } else {
+          colsValue.push(value);
+          //}
         }
       }
       return colsValue;
@@ -414,7 +367,7 @@ CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
     };
 
     let vectorIndex = 0;
-    gridArray.forEach((row) => {
+    auxModel.forEach((row) => {
       // fill primary model array1 with defaults
       const pObj1 = Object.assign({}, metaObj1);
       merge(pObj1, row);
@@ -433,8 +386,20 @@ CT.GridUtils.gridTransform = CT.Utils.curry((prop1, prop2, model) => {
         vectorIndex = vectorIndex + 1;
       });
     });
-    return [newArray1, newArray2];
+
+    // TODO: remove mutation
+    model[prop1] = newArray1;
+    model[prop2] = newArray2;
+    return model;
   };
 
-  return { modelToGrid, gridToModel };
-});
+  let transformModel = true;
+  return function () {
+    if (transformModel) {
+      transformModel = false;
+      return modelToGrid.apply(null, arguments);
+    } else {
+      return gridToModel.apply(null, arguments);
+    }
+  };
+};
