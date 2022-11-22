@@ -20,7 +20,7 @@
         <!--  Grid and its operations -->
         <group class = 'vertical_layout'>
             <toolbar id = 'toolBarId' style = "width: auto" actions = '+:addRow | -:removeRow | undo:undo | redo:redo | ?:help'/>
-            <dynamic_grid id = 'ageGridId' bind = 'ageGridAux' editable = 'true' width = 'auto' height = '350px'>
+            <dynamic_grid id = 'ageGridId' bind = 'ageGridParam_ageGrid' editable = 'true' width = 'auto' height = '350px'>
                 <columns>
                     <column field = 'parameter' title = 'Parameter' width = '100px'/>
                     <column field = 'unit' title = 'Unit' width = '100px'/>
