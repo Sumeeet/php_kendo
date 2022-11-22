@@ -270,61 +270,62 @@ CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
   return selIndex + 1;
 });
 
-CT.GridUtils.gridTransform = function (prop1, prop2) {
-  const modelToGrid = (model, auxProp) => {
-    const array1 = model[prop1];
-    const array2 = model[prop2];
-    // keep map of key value pair, where key is parameter and value is grid model object/row
-    const paramToGridModelMap = new Map();
+CT.GridUtils.modelToGrid = CT.Utils.curry((prop1, prop2, model) => {
+  const array1 = model[prop1];
+  const array2 = model[prop2];
+  // keep map of key value pair, where key is parameter and value is grid model object/row
+  const paramToGridModelMap = new Map();
 
-    // fill everything except attribute value.
-    const filter = (srcObj, dstObj) => {
-      const keys = Object.keys(srcObj);
-      let keyValue = null;
-      keys.forEach((k) => {
-        if (!Object.hasOwn(dstObj, k)) {
-          keyValue = { key: k, value: srcObj[k] };
-        }
-      });
-      return keyValue;
-    };
-
-    // fill primary array1. Primary array1 is superset of array2, all the required
-    // properties shall be copied over in this step except the attribute value,
-    // which array2 has and shall be converted to col0:value form.
-    // add new grid object/row, copy constant properties only
-    array1.forEach((e) => {
-      if (!Object.hasOwn(e, "parameter")) return;
-      const key = e.parameter;
-      if (!paramToGridModelMap.has(key)) {
-        // merge array1 object with target object. Initialize target object
-        // with colCount, used to index columns later
-        paramToGridModelMap.set(key, Object.assign({ colCount: 0 }, e));
+  // fill everything except attribute value.
+  const filter = (srcObj, dstObj) => {
+    const keys = Object.keys(srcObj);
+    let keyValue = null;
+    keys.forEach((k) => {
+      if (!Object.hasOwn(dstObj, k)) {
+        keyValue = { key: k, value: srcObj[k] };
       }
     });
-
-    // fill array2, since all the information is already copied, just copy over
-    // attribute values, in the form col1:value and so on.
-    array2.forEach((e) => {
-      const key = e.parameter;
-      if (paramToGridModelMap.has(key)) {
-        const obj = paramToGridModelMap.get(key);
-        const keyValue = filter(e, obj);
-        if (!CT.Utils.isUndefined(keyValue)) {
-          // starts with 0 for each object
-          const colIndex = obj.colCount;
-          obj[`col${colIndex}`] = keyValue.value;
-          //keyValue.value === BLANK_NUMERIC_VALUE ? "" : keyValue.value;
-          obj.colCount = colIndex + 1;
-        }
-      }
-    });
-
-    // TODO: remove mutation ?
-    model[auxProp] = Array.from(paramToGridModelMap.values());
+    return keyValue;
   };
 
-  const gridToModel = (model, auxModel, attribute) => {
+  // fill primary array1. Primary array1 is superset of array2, all the required
+  // properties shall be copied over in this step except the attribute value,
+  // which array2 has and shall be converted to col0:value form.
+  // add new grid object/row, copy constant properties only
+  array1.forEach((e) => {
+    if (!Object.hasOwn(e, "parameter")) return;
+    const key = e.parameter;
+    if (!paramToGridModelMap.has(key)) {
+      // merge array1 object with target object. Initialize target object
+      // with colCount, used to index columns later
+      paramToGridModelMap.set(key, Object.assign({ colCount: 0 }, e));
+    }
+  });
+
+  // fill array2, since all the information is already copied, just copy over
+  // attribute values, in the form col1:value and so on.
+  array2.forEach((e) => {
+    const key = e.parameter;
+    if (paramToGridModelMap.has(key)) {
+      const obj = paramToGridModelMap.get(key);
+      const keyValue = filter(e, obj);
+      if (!CT.Utils.isUndefined(keyValue)) {
+        // starts with 0 for each object
+        const colIndex = obj.colCount;
+        obj[`col${colIndex}`] = keyValue.value;
+        //keyValue.value === BLANK_NUMERIC_VALUE ? "" : keyValue.value;
+        obj.colCount = colIndex + 1;
+      }
+    }
+  });
+
+  // TODO: remove mutation ?
+  const auxProp = `${prop1}_${prop2}`;
+  model[auxProp] = Array.from(paramToGridModelMap.values());
+});
+
+CT.GridUtils.gridToModel = CT.Utils.curry(
+  (prop1, prop2, auxModel, attribute, model) => {
     const array1 = model[prop1];
     const array2 = model[prop2];
 
@@ -346,12 +347,7 @@ CT.GridUtils.gridTransform = function (prop1, prop2) {
       for (let i = 0; i < 4; i++) {
         if (Object.hasOwn(row, `col${i}`)) {
           const value = row[`col${i}`];
-          // if (!CT.Utils.isUndefined(defValue) && CT.Utils.isUndefined(value)) {
-          //   colsValue.push(defValue);
-          //   row[`col${i}`] = defValue;
-          // } else {
           colsValue.push(value);
-          //}
         }
       }
       return colsValue;
@@ -389,15 +385,5 @@ CT.GridUtils.gridTransform = function (prop1, prop2) {
     // TODO: remove mutation
     model[prop1] = newArray1;
     model[prop2] = newArray2;
-  };
-
-  let transformModel = true;
-  return function () {
-    if (transformModel) {
-      transformModel = false;
-      return modelToGrid.apply(null, arguments);
-    } else {
-      return gridToModel.apply(null, arguments);
-    }
-  };
-};
+  }
+);

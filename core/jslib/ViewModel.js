@@ -119,11 +119,11 @@ const ViewModel = function () {
     // key must have "Aux" as a suffix in order to fetch data
     const transformAux = u.curry((source, transformObj) => {
       const bind = transformObj["bind"];
-      const action = transformObj["action"];
+      const action = transformObj["apply"];
       const attribute = transformObj["attribute"];
       const auxData = observableObject.toJSON()[bind];
       // TODO: can we avoid sending attributes ?
-      action(source, auxData, attribute);
+      action(auxData, attribute, source);
     });
 
     return u.compose(
@@ -139,9 +139,8 @@ const ViewModel = function () {
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
     const transformAux = u.curry((source, transformObj) => {
-      const bind = transformObj["bind"];
-      const action = transformObj["action"];
-      action(source, bind);
+      const action = transformObj["init"];
+      action(source);
     });
 
     return u.compose(
@@ -152,6 +151,7 @@ const ViewModel = function () {
   });
 
   const merge = CT.Utils.curry((depends, model) => {
+    u.asyncCompose();
     const awaitFunc = depends.map((d) =>
       dataProxy.getData(d, { method: "GET" })
     );

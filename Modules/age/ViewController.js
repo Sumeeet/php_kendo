@@ -45,7 +45,7 @@ const ViewController = function (viewModel) {
     };
 
     // map each element of a grid column and check for number validation
-    vm.registerValidations("ageGridAux", [
+    vm.registerValidations("ageGridParam_ageGrid", [
       g.map(validateCells),
       a.hasDuplicates("Duplicate values", "parameter"),
     ]);
@@ -75,11 +75,11 @@ const ViewController = function (viewModel) {
       );
     };
 
-    vm.set("canremoveRow", g.hasData("ageGridId"));
-    vm.set("canaddRow", true);
-    vm.set("canundo", undoRedo.canUndo("ageGridId"));
-    vm.set("canredo", undoRedo.canRedo("ageGridId"));
-    vm.set("canhelp", true);
+    // vm.set("canremoveRow", g.hasData("ageGridId"));
+    // vm.set("canaddRow", true);
+    // vm.set("canundo", undoRedo.canUndo("ageGridId"));
+    // vm.set("canredo", undoRedo.canRedo("ageGridId"));
+    // vm.set("canhelp", true);
 
     const subscription = GridActionSubscription("ageGridId");
     subscription.addRow("addRowId").subscribe((index) => {

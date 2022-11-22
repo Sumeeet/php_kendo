@@ -7,19 +7,11 @@ const ModuleInstance = function () {
 
   function init(url) {
     //const paramLimits = "./Modules/Age/valueProperties.json";
-    const transformInfo = {
-      ageGridAux: {
-        action: g.gridTransform("ageGridParam", "ageGrid"),
-        bind: "ageGridAux",
-        attribute: "age",
-      },
-    };
-
     const vm = new ViewModel();
     const execute = u.asyncCompose(
       vm.bind(mainView, footerView),
       //vm.merge(paramLimits),
-      vm.transform(transformInfo),
+      vm.transform(transformations),
       vm.init
     );
 
@@ -50,7 +42,7 @@ const ModuleInstance = function () {
               u.asyncCompose(
                 vm.save(url),
                 vm.update,
-                vm.revTransform(transformInfo),
+                vm.revTransform(transformations),
                 vm.fetchFromCache
               )(url);
             },

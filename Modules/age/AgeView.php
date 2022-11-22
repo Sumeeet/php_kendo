@@ -23,6 +23,7 @@ class AgeView implements IView
 
         <script src="./Modules/Age/ModuleInstance.js"></script>
         <script src="./Modules/Age/ViewController.js"></script>
+        <script src="./Modules/Age/transformations.js"></script>
 
         <?php
     }
