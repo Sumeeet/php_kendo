@@ -27,26 +27,39 @@ const ViewController = function (viewModel) {
       v.isPositive("Sons age must be a positive number"),
     ]);
 
-    const validateCells = (data) => {
-      const validate = u.compose(
-        g.map(
-          u.chainAndCompose([
-            v.isInRange(
-              u.getSafeData("min", data).join(),
-              u.getSafeData("max", data).join()
-            ),
-            u.chain(v.isPositive("Age must be a positive number")),
-          ])
-        ),
-        u.getSafeDataArray(/^\w+\d+$/g) // return values for all the matching properties
+    const inRange = (rowData) =>
+      v.isInRange(
+        u.getSafeData("min", rowData).join(),
+        u.getSafeData("max", rowData).join(),
+        "Value not in range."
       );
 
-      return validate(data);
+    const validateColumns = u.curry((rowData, ri, colData, ci) => {
+      const validateCells = u.chainAndCompose([
+        inRange(rowData),
+        u.chain(v.isPositive("Age should be a positive number")),
+      ]);
+
+      const message = validateCells(colData);
+      return new GridMessage(
+        message.type,
+        "ageGridId",
+        ri,
+        ci,
+        message.message
+      );
+    });
+
+    const validateRows = (rowData, ri) => {
+      return u.compose(
+        u.map(validateColumns(rowData, ri)),
+        u.getSafeDataArray(/^\w+\d+$/g) // return values for all the matching properties
+      )(rowData);
     };
 
     // map each element of a grid column and check for number validation
     vm.registerValidations("ageGridParam_ageGrid", [
-      g.map(validateCells),
+      u.map(validateRows),
       a.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }

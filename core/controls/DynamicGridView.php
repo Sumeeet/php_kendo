@@ -18,7 +18,7 @@ class DynamicGridView extends BaseView implements IView
         $this->myAttributes += ['data-navigatable' => true];
         $this->myAttributes += ['data-filterable' => false];
         $this->myAttributes += ['data-sortable' => false];
-        $this->myAttributes += ['data-selectable' => "multiple row"];
+        $this->myAttributes += ['data-selectable' => "multiple cell"];
         $this->myAttributes += ['data-bind' => "source: {$attributes['bind']}"];
         $this->myAttributes += ['data-editable' => "{$attributes['editable']}"];
         $this->myAttributes += ['style' => "height: {$attributes['height']}; width: {$attributes['width']}"];

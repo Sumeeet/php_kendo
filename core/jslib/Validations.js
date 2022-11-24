@@ -27,10 +27,10 @@ CT.Validations.isPositive = CT.Utils.curry((msg, val) =>
   Number(val) >= 0 ? Either.of(Number(val)) : CT.Utils.left(msg)
 );
 
-CT.Validations.isInRange = CT.Utils.curry((min, max, val) =>
+CT.Validations.isInRange = CT.Utils.curry((min, max, msg, val) =>
   val >= min && val <= max
     ? Either.of(val)
-    : CT.Utils.left(`Please enter a number in the range of ${min} to ${max}`)
+    : CT.Utils.left(`${msg} Valid range is [${min}, ${max}]`)
 );
 
 CT.Validations.isStringEqual = CT.Utils.curry((prop, orgVal, val) =>

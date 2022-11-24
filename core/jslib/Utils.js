@@ -48,13 +48,9 @@ CT.Utils.identity = (x) => x;
 CT.Utils.either = CT.Utils.curry((f, g, e) => {
   switch (e.constructor) {
     case Left:
-      return Message(MESSAGE_TYPE.error, "client", f(e.$val));
+      return new Message(MESSAGE_TYPE.error, "client", f(e.$val));
     case Right:
-      return Message(
-        MESSAGE_TYPE.debug,
-        "client",
-        `value ${g(e.$val)} applied successfully`
-      );
+      return new Message(MESSAGE_TYPE.debug, "client", `value ${g(e.$val)}`);
     case Array:
       // already evaluated
       return e;

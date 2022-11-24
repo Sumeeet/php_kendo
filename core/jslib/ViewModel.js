@@ -75,11 +75,17 @@ const ViewModel = function () {
                 //}
               })
               .catch((e) =>
-                Log(Message(MESSAGE_TYPE.error, "client", e.message).toString())
+                Log(
+                  new Message(
+                    MESSAGE_TYPE.error,
+                    "client",
+                    e.message
+                  ).toString()
+                )
               );
           } catch (e) {
             Log(
-              Message(
+              new Message(
                 MESSAGE_TYPE.error,
                 "client",
                 `Undefined Value ${e}`
@@ -103,7 +109,7 @@ const ViewModel = function () {
       .then((model) => model)
       .catch((e) =>
         Log(
-          Message(
+          new Message(
             MESSAGE_TYPE.error,
             "client",
             `There has been a problem with reading the source : ${e.message}`.toString()
@@ -233,12 +239,13 @@ const ViewModel = function () {
   const updateErrorStatus = function (response) {
     const recordErrors = (prop, msg) => {
       const message = msg.toString();
-      if (MESSAGE_TYPE.error === msg.type()) {
-        errorMap.set(prop, message);
+      const key = msg.toKey(prop);
+      if (MESSAGE_TYPE.error === msg.type) {
+        errorMap.set(key, message);
         changedObservableObject.set("canchange", false);
       } else {
-        if (errorMap.has(prop)) {
-          errorMap.delete(prop);
+        if (errorMap.has(key)) {
+          errorMap.delete(key);
           changedObservableObject.set("canchange", errorMap.size === 0);
         }
       }
@@ -246,7 +253,9 @@ const ViewModel = function () {
 
     const message = response.message;
     const prop = response.prop;
-    const messages = !Array.isArray(message) ? [message] : message;
+    const messages = !Array.isArray(message)
+      ? [message]
+      : CT.Utils.flatten(message);
     messages.forEach((msg) => recordErrors(prop, msg));
     return messages;
   };
@@ -295,7 +304,7 @@ const ViewModel = function () {
         body: JSON.stringify(model),
       })
       .then((result) => {
-        Log(Message(MESSAGE_TYPE.info, "server", "Data saved").toString());
+        Log(new Message(MESSAGE_TYPE.info, "server", "Data saved").toString());
         reset();
       })
       .catch((e) => Log(`Unable to save data : ${e.message}`));
@@ -341,7 +350,7 @@ const ViewModel = function () {
           u.forEach(
             u.compose(
               u.forEach((msg) => Log(msg.toString())),
-              u.filter((msg) => msg.type() === MESSAGE_TYPE.error),
+              u.filter((msg) => msg.type === MESSAGE_TYPE.error),
               updateErrorStatus
             )
           )(response)

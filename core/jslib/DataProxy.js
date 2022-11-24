@@ -17,7 +17,9 @@ const DataProxy = function (cacheName = "ct_cache") {
         return response;
       })
       .catch((e) =>
-        Log(Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString())
+        Log(
+          new Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString()
+        )
       );
   };
 
@@ -36,7 +38,9 @@ const DataProxy = function (cacheName = "ct_cache") {
           resolve(response);
         })
         .catch(() =>
-          Log(Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString())
+          Log(
+            new Message(MESSAGE_TYPE.error, "server", `${e.message}`).toString()
+          )
         );
     });
   };
@@ -55,7 +59,7 @@ const DataProxy = function (cacheName = "ct_cache") {
           // Log(Message(MESSAGE_TYPE.info, 'server', 'fetched from cache').toString());
           resolve(cacheData);
         } else {
-          Log(Message(MESSAGE_TYPE.info, "server", "fetched").toString());
+          Log(new Message(MESSAGE_TYPE.info, "server", "fetched").toString());
           resolve(updateCache(cache, url, options));
         }
       });
