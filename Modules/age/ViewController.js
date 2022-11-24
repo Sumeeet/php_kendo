@@ -8,7 +8,7 @@ const ViewController = function (viewModel) {
   const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands);
 
   function registerValidations(vm) {
-    vm.registerValidations("fage", [
+    vm.registerValidations("fage", "fageInputId", [
       v.fetchAndCompare(
         "Fathers age should be greater than sons age",
         (sage, fage) => fage < sage, // criterion to compare
@@ -18,7 +18,7 @@ const ViewController = function (viewModel) {
     ]);
 
     // TODO: validations compares with old value rather than changed
-    vm.registerValidations("sage", [
+    vm.registerValidations("sage", "sageInputId", [
       v.fetchAndCompare(
         "Sons age should be less than fathers age",
         (fage, sage) => sage > fage, // criterion to compare
@@ -41,13 +41,7 @@ const ViewController = function (viewModel) {
       ]);
 
       const message = validateCells(colData);
-      return new GridMessage(
-        message.type,
-        "ageGridId",
-        ri,
-        ci,
-        message.message
-      );
+      return new GridMessage(message.type, "", ri, ci, message.message);
     });
 
     const validateRows = (rowData, ri) => {
@@ -58,7 +52,7 @@ const ViewController = function (viewModel) {
     };
 
     // map each element of a grid column and check for number validation
-    vm.registerValidations("ageGridParam_ageGrid", [
+    vm.registerValidations("ageGridParam_ageGrid", "ageGridId", [
       u.map(validateRows),
       a.hasDuplicates("Duplicate values", "parameter"),
     ]);

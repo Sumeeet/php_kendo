@@ -237,7 +237,10 @@ const ViewModel = function () {
    * @param response
    */
   const updateErrorStatus = function (response) {
-    const recordErrors = (prop, msg) => {
+    const recordErrors = (prop, id, msg) => {
+      // TODO: Good to remove elements "id" from here, cant think of any better solution
+      // need id so that elements can show appropriate error
+      msg.source = id;
       const message = msg.toString();
       const key = msg.toKey(prop);
       if (MESSAGE_TYPE.error === msg.type) {
@@ -252,11 +255,10 @@ const ViewModel = function () {
     };
 
     const message = response.message;
-    const prop = response.prop;
     const messages = !Array.isArray(message)
       ? [message]
       : CT.Utils.flatten(message);
-    messages.forEach((msg) => recordErrors(prop, msg));
+    messages.forEach((msg) => recordErrors(response.prop, response.id, msg));
     return messages;
   };
 
@@ -382,13 +384,14 @@ const ViewModel = function () {
    * @param prop
    * @param fns
    */
-  const registerValidations = function (prop, fns) {
+  const registerValidations = function (prop, id, fns) {
     const composedFns = u.chainAndCompose(fns);
     const validateFunc = doValidate(composedFns);
     const validateObject = {
       validateFunc: validateFunc,
       message: {},
       prop: prop,
+      id: id,
     };
     if (!controlIdValidatorMap.has(prop)) {
       controlIdValidatorMap.set(prop, [validateObject]);
