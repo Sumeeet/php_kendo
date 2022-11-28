@@ -118,7 +118,7 @@ const ViewModel = function () {
       );
   };
 
-  const revTransform = CT.Utils.curry((transformInfo, model) => {
+  const revTransform = u.curry((transformInfo, model) => {
     // this is where aux data is filled in and non-bindable data
     // is not part of observable. auxDataArray is of the form
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
@@ -135,11 +135,11 @@ const ViewModel = function () {
     return u.compose(
       () => model,
       u.forEach(u.chain(transformAux(model))),
-      u.getSafeDataArray(/^\w+\d*Aux$/g)
+      u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });
 
-  const transform = CT.Utils.curry((transformInfo, model) => {
+  const transform = u.curry((transformInfo, model) => {
     // this is where aux data is filled in and non-bindable data
     // is not part of observable. auxDataArray is of the form
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
@@ -152,11 +152,11 @@ const ViewModel = function () {
     return u.compose(
       () => model,
       u.forEach(u.chain(transformAux(model))),
-      u.getSafeDataArray(/^\w+\d*Aux$/g)
+      u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });
 
-  const merge = CT.Utils.curry((depends, model) => {
+  const merge = u.curry((depends, model) => {
     u.asyncCompose();
     const awaitFunc = depends.map((d) =>
       dataProxy.getData(d, { method: "GET" })
@@ -255,9 +255,7 @@ const ViewModel = function () {
     };
 
     const message = response.message;
-    const messages = !Array.isArray(message)
-      ? [message]
-      : CT.Utils.flatten(message);
+    const messages = !Array.isArray(message) ? [message] : u.flatten(message);
     messages.forEach((msg) => recordErrors(response.prop, response.id, msg));
     return messages;
   };
@@ -312,7 +310,7 @@ const ViewModel = function () {
       .catch((e) => Log(`Unable to save data : ${e.message}`));
   });
 
-  const update = CT.Utils.curry((model) => {
+  const update = u.curry((model) => {
     const changedModel = Object.assign({}, model);
     const observableModel = observableObject.toJSON();
     const getChangedValue = getPropValue(observableModel);

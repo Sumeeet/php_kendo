@@ -47,7 +47,7 @@ const ViewController = function (viewModel) {
     const validateRows = (rowData, ri) => {
       return u.compose(
         u.map(validateColumns(rowData, ri)),
-        u.getSafeDataArray(/^\w+\d+$/g) // return values for all the matching properties
+        u.getSafeDataA(/^\w+\d+$/g) // return values for all the matching properties
       )(rowData);
     };
 

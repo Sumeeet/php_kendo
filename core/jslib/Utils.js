@@ -112,7 +112,7 @@ CT.Utils.getSafeData = CT.Utils.curry((prop, obj) => {
   return getData(obj);
 });
 
-CT.Utils.getSafeDataArray = CT.Utils.curry((propLike, obj) => {
+CT.Utils.getSafeDataA = CT.Utils.curry((propLike, obj) => {
   // search for all the object prop which matches propLike regular expression
   const getSafeData = CT.Utils.curry((data, prop) =>
     CT.Utils.getSafeData(prop, data)
