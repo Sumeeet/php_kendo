@@ -387,3 +387,19 @@ CT.GridUtils.gridToModel = CT.Utils.curry(
     model[prop2] = newArray2;
   }
 );
+
+CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate) => {
+  const validateColumns = CT.Utils.curry((rowData, ri, colData, ci) => {
+    const message = validate(rowData, colData);
+    return new GridMessage(message.type, "", ri, ci, message.message);
+  });
+
+  const validateRows = (rowData, ri) => {
+    return CT.Utils.compose(
+      CT.Utils.map(validateColumns(rowData, ri)),
+      CT.Utils.getSafeDataA(cellPropLike) // return values for all the matching properties
+    )(rowData);
+  };
+
+  return CT.Utils.map(validateRows);
+});

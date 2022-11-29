@@ -26,26 +26,16 @@ const ViewController = function (viewModel) {
       v.isPositive("Sons age must be a positive number"),
     ]);
 
-    const validateColumns = u.curry((rowData, ri, colData, ci) => {
-      const validateCells = u.chainAndCompose([
+    const validateCells = u.curry((rowData, colData) =>
+      u.chainAndCompose([
         v.inRange(rowData),
         u.chain(v.isPositive("Age should be a positive number")),
-      ]);
-
-      const message = validateCells(colData);
-      return new GridMessage(message.type, "", ri, ci, message.message);
-    });
-
-    const validateRows = (rowData, ri) => {
-      return u.compose(
-        u.map(validateColumns(rowData, ri)),
-        u.getSafeDataA(/^\w+\d+$/g) // return values for all the matching properties
-      )(rowData);
-    };
+      ])(colData)
+    );
 
     // map each element of a grid column and check for number validation
     vm.registerValidations("ageGridParam_ageGrid", "ageGridId", [
-      u.map(validateRows),
+      g.validateCells(/^\w+\d+$/g, validateCells),
       v.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }
