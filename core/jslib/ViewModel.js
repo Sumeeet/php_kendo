@@ -134,7 +134,7 @@ const ViewModel = function () {
 
     return u.compose(
       () => model,
-      u.forEach(u.chain(transformAux(model))),
+      u.forEach(transformAux(model)),
       u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });
@@ -151,7 +151,7 @@ const ViewModel = function () {
 
     return u.compose(
       () => model,
-      u.forEach(u.chain(transformAux(model))),
+      u.forEach(transformAux(model)),
       u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });

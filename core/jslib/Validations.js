@@ -85,7 +85,7 @@ CT.Validations.hasDuplicates = CT.Utils.curry((msg, prop, arr) => {
   const countDuplicates = CT.Utils.curry((duplicates, data) => {
     const count = CT.Utils.compose(
       () => duplicates,
-      CT.Utils.chain(CT.Utils.forEach(CT.Utils.chain(find(duplicates)))),
+      CT.Utils.chain(CT.Utils.forEach(find(duplicates))),
       Maybe.of
     );
 
@@ -106,7 +106,7 @@ CT.Validations.hasDuplicates = CT.Utils.curry((msg, prop, arr) => {
 
 CT.Validations.inRange = (rowData) =>
   CT.Validations.isInRange(
-    CT.Utils.getSafeData("min", rowData).join(),
-    CT.Utils.getSafeData("max", rowData).join(),
+    CT.Utils.getSafeData("min", rowData),
+    CT.Utils.getSafeData("max", rowData),
     "Value not in range."
   );

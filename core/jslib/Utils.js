@@ -105,7 +105,7 @@ CT.Utils.flatten = CT.Utils.curry((arr) => [].concat(...arr));
 
 CT.Utils.getSafeData = CT.Utils.curry((prop, obj) => {
   const getData = CT.Utils.compose(
-    CT.Utils.chain((data) => Maybe.of(data[prop])),
+    CT.Utils.chain((data) => data[prop]),
     CT.Utils.chain(CT.Utils.propExist("Property does not exist", prop)),
     Maybe.of
   );

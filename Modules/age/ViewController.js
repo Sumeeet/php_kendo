@@ -29,7 +29,8 @@ const ViewController = function (viewModel) {
     const validateCells = u.curry((rowData, colData) =>
       u.chainAndCompose([
         v.inRange(rowData),
-        u.chain(v.isPositive("Age should be a positive number")),
+        v.isPositive("Age should be a positive number"),
+        v.isNull("Cell cannot be empty"),
       ])(colData)
     );
 
