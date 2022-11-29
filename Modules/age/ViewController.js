@@ -3,7 +3,6 @@ const ViewController = function (viewModel) {
   const v = CT.Validations;
   const u = CT.Utils;
   const g = CT.GridUtils;
-  const a = CT.ArrayUtils;
 
   const undoRedo = new UndoRedo(UNDO_REDO_ITEMS.commands);
 
@@ -27,16 +26,9 @@ const ViewController = function (viewModel) {
       v.isPositive("Sons age must be a positive number"),
     ]);
 
-    const inRange = (rowData) =>
-      v.isInRange(
-        u.getSafeData("min", rowData).join(),
-        u.getSafeData("max", rowData).join(),
-        "Value not in range."
-      );
-
     const validateColumns = u.curry((rowData, ri, colData, ci) => {
       const validateCells = u.chainAndCompose([
-        inRange(rowData),
+        v.inRange(rowData),
         u.chain(v.isPositive("Age should be a positive number")),
       ]);
 
@@ -54,7 +46,7 @@ const ViewController = function (viewModel) {
     // map each element of a grid column and check for number validation
     vm.registerValidations("ageGridParam_ageGrid", "ageGridId", [
       u.map(validateRows),
-      a.hasDuplicates("Duplicate values", "parameter"),
+      v.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }
 
