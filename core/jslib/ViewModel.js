@@ -56,15 +56,15 @@ const ViewModel = function () {
     return auxModel;
   };
 
-  const hasChanged = (event) => {
+  const hasChanged = (/*event*/) => {
     dataProxy
       .getData(sourceUrl, { method: "GET" })
-      .then(function (cachedModel) {
-        const getCachedValue = getPropValue(cachedModel);
-        const propPath = event.field;
-        if (propPath) {
-          const properties = propPath.split(".");
-          const cachedValue = getCachedValue(properties);
+      .then(function (/*cachedModel*/) {
+        // const getCachedValue = getPropValue(cachedModel);
+        //const propPath = event.field;
+        for (const propPath of propChangedList) {
+          // const properties = propPath.split(".");
+          // const cachedValue = getCachedValue(properties);
           try {
             // TODO: need to have some state to remember value change when no errors
             runValidations(propPath)
@@ -123,7 +123,7 @@ const ViewModel = function () {
     // is not part of observable. auxDataArray is of the form
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
-    const transformAux = u.curry((source, transformObj) => {
+    const revTransformAux = u.curry((source, transformObj) => {
       const bind = transformObj["bind"];
       const action = transformObj["apply"];
       const attribute = transformObj["attribute"];
@@ -134,7 +134,7 @@ const ViewModel = function () {
 
     return u.compose(
       () => model,
-      u.forEach(transformAux(model)),
+      u.forEach(revTransformAux(model)),
       u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });
