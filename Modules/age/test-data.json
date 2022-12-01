@@ -20,15 +20,15 @@
     },
     {
       "parameter": "Father",
-      "age": 65
+      "age": ""
     },
     {
       "parameter": "Father",
-      "age": 70
+      "age": ""
     },
     {
       "parameter": "Father",
-      "age": 27
+      "age": ""
     },
     {
       "parameter": "Son",
@@ -40,11 +40,11 @@
     },
     {
       "parameter": "Son",
-      "age": 45
+      "age": ""
     },
     {
       "parameter": "Son",
-      "age": 1
+      "age": ""
     }
   ]
 }

@@ -322,6 +322,7 @@ CT.GridUtils.modelToGrid = CT.Utils.curry((prop1, prop2, model) => {
   // TODO: remove mutation ?
   const auxProp = `${prop1}_${prop2}`;
   model[auxProp] = Array.from(paramToGridModelMap.values());
+  return model;
 });
 
 CT.GridUtils.gridToModel = CT.Utils.curry(
@@ -344,6 +345,7 @@ CT.GridUtils.gridToModel = CT.Utils.curry(
 
     const getColValues = (row) => {
       const colsValue = [];
+      // TODO: remove hard code column count
       for (let i = 0; i < 4; i++) {
         if (Object.hasOwn(row, `col${i}`)) {
           const value = row[`col${i}`];
@@ -385,10 +387,11 @@ CT.GridUtils.gridToModel = CT.Utils.curry(
     // TODO: remove mutation
     model[prop1] = newArray1;
     model[prop2] = newArray2;
+    return model;
   }
 );
 
-CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate) => {
+CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate, data) => {
   const validateColumns = CT.Utils.curry((rowData, ri, colData, ci) => {
     const message = validate(rowData, colData);
     return new GridMessage(message.type, "", ri, ci, message.message);
@@ -401,5 +404,32 @@ CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate) => {
     )(rowData);
   };
 
-  return CT.Utils.map(validateRows);
+  return CT.Utils.map(validateRows, data);
+});
+
+CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, data) => {
+  const scanColumns = CT.Utils.curry((colData, ci) =>
+    CT.Utils.isDefined(colData) ? ci : undefined
+  );
+
+  const max = (arr) => Math.max(...arr);
+  const scanRows = (rowData) => {
+    return CT.Utils.compose(
+      max,
+      CT.Utils.filter(CT.Utils.isDefined),
+      CT.Utils.map(scanColumns),
+      CT.Utils.getSafeDataA(COLUMN_REGEX) // return values for all the matching properties
+    )(rowData);
+  };
+
+  //const dropColumns = CT.Utils.curry((index, data) => {});
+
+  const findMaxIndex = (auxData) => {
+    return CT.Utils.compose(max, CT.Utils.map(scanRows))(auxData);
+  };
+
+  const auxData = CT.Utils.getSafeData(gridProp, data);
+  const maxIndex = findMaxIndex(auxData);
+  const reg = new RegExp(`^\\w+[${maxIndex + 1}]+$`, "g");
+  CT.Utils.map(CT.Utils.safeDeleteA(reg))(auxData);
 });

@@ -30,13 +30,12 @@ const ViewController = function (viewModel) {
       u.chainAndCompose([
         v.inRange(rowData),
         v.isPositive("Age should be a positive number"),
-        v.isNull("Cell cannot be empty"),
       ])(colData)
     );
 
     // map each element of a grid column and check for number validation
     vm.registerValidations("ageGridParam_ageGrid", "ageGridId", [
-      g.validateCells(/^\w+\d+$/g, validateCells),
+      g.validateCells(COLUMN_REGEX, validateCells),
       v.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }

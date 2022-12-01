@@ -126,6 +126,30 @@ CT.Utils.getSafeDataA = CT.Utils.curry((propLike, obj) => {
   return execute(obj);
 });
 
+CT.Utils.safeDelete = CT.Utils.curry((prop, obj) => {
+  const deletProp = CT.Utils.compose(
+    CT.Utils.chain((data) => delete data[`${prop}`]),
+    CT.Utils.chain(CT.Utils.propExist("Property does not exist", prop)),
+    Maybe.of
+  );
+
+  deletProp(obj);
+});
+
+CT.Utils.safeDeleteA = CT.Utils.curry((propLike, obj) => {
+  // search for all the object prop which matches propLike regular expression
+  const deleteSafeProp = CT.Utils.curry((data, prop) =>
+    CT.Utils.safeDelete(prop, data)
+  );
+
+  const deletProp = CT.Utils.compose(
+    CT.Utils.map(deleteSafeProp(obj)),
+    CT.Utils.filter(CT.StringUtils.match(propLike)),
+    Object.keys
+  );
+  deletProp(obj);
+});
+
 CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
   Object.hasOwn(data, prop) ? Either.of(data) : CT.Utils.left(`${msg}: ${prop}`)
 );
@@ -165,6 +189,8 @@ CT.Utils.LoadTemplates = (paths) => {
 };
 
 CT.Utils.isUndefined = (obj) => obj === null || obj === undefined || obj === "";
+
+CT.Utils.isDefined = (obj) => !CT.Utils.isUndefined(obj);
 
 CT.Utils.makeShortCutKey = (e) =>
   (e.ctrlKey ? "ctrl " : "") +

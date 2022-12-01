@@ -31,3 +31,6 @@ const MESSAGE_TYPE = {
   debug: "Debug",
 };
 Object.freeze(MESSAGE_TYPE);
+
+// col0, col1, col2....
+const COLUMN_REGEX = /^\w+\d+$/g;
