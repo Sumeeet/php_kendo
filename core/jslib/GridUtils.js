@@ -407,24 +407,13 @@ CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate, data) => {
   return CT.Utils.map(validateRows, data);
 });
 
-CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, data) => {
-  const scanColumns = CT.Utils.curry((colData, ci) =>
-    CT.Utils.isDefined(colData) ? ci : undefined
-  );
-
+CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, pred, data) => {
   const max = (arr) => Math.max(...arr);
-  const scanRows = (rowData) => {
-    return CT.Utils.compose(
-      max,
-      CT.Utils.filter(CT.Utils.isDefined),
-      CT.Utils.map(scanColumns),
-      CT.Utils.getSafeDataA(COLUMN_REGEX) // return values for all the matching properties
-    )(rowData);
-  };
-
-  const findMaxIndex = (auxData) => {
-    return CT.Utils.compose(max, CT.Utils.map(scanRows))(auxData);
-  };
+  const findMaxIndex = CT.Utils.compose(
+    max,
+    CT.Utils.map(max),
+    CT.Utils.getSafeIndexA(pred)
+  );
 
   const auxData = CT.Utils.getSafeData(gridProp, data);
   const idx = findMaxIndex(auxData) + 1;

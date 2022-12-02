@@ -150,6 +150,36 @@ CT.Utils.safeDeleteA = CT.Utils.curry((propLike, obj) => {
   deletProp(obj);
 });
 
+CT.Utils.getSafeIndexA = CT.Utils.curry((pred, obj) => {
+  const scanColumns = CT.Utils.curry((colData, ci) =>
+    pred(colData) ? ci : undefined
+  );
+
+  const scanRows = (rowData) => {
+    return CT.Utils.compose(
+      CT.Utils.filter(pred),
+      CT.Utils.map(scanColumns),
+      CT.Utils.getSafeDataA(COLUMN_REGEX) // return values for all the matching properties
+    )(rowData);
+  };
+
+  return CT.Utils.map(scanRows, obj);
+});
+
+CT.Utils.safeAssign = CT.Utils.curry((from, to, prop) => {
+  const toCopy = Object.assign({}, from);
+  const assign = CT.Utils.compose(
+    CT.Utils.forEach((key) => (toCopy[key] = from[key])),
+    Object.keys
+  );
+  const execute = CT.Utils.compose(
+    CT.Utils.chain(assign),
+    CT.Utils.propExist("Property does not exist", prop)
+  );
+  execute(from);
+  return toCopy;
+});
+
 CT.Utils.propExist = CT.Utils.curry((msg, prop, data) =>
   Object.hasOwn(data, prop) ? Either.of(data) : CT.Utils.left(`${msg}: ${prop}`)
 );
@@ -197,17 +227,3 @@ CT.Utils.makeShortCutKey = (e) =>
   (e.shiftKey ? "shift " : "") +
   (e.altKey ? "alt " : "") +
   e.key.toLowerCase();
-
-CT.Utils.safeAssign = CT.Utils.curry((from, to, prop) => {
-  const toCopy = Object.assign({}, from);
-  const assign = CT.Utils.compose(
-    CT.Utils.forEach((key) => (toCopy[key] = from[key])),
-    Object.keys
-  );
-  const execute = CT.Utils.compose(
-    CT.Utils.chain(assign),
-    CT.Utils.propExist("Property does not exist", prop)
-  );
-  execute(from);
-  return toCopy;
-});
