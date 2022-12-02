@@ -9,7 +9,7 @@ class DynamicGridView extends BaseView implements IView
 {
     use GridColumns;
 
-    private int $columnCount = 10;
+    private int $columnCount = 11;
 
     public function __construct(array $attributes, $node)
     {

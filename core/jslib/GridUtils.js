@@ -422,14 +422,15 @@ CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, data) => {
     )(rowData);
   };
 
-  //const dropColumns = CT.Utils.curry((index, data) => {});
-
   const findMaxIndex = (auxData) => {
     return CT.Utils.compose(max, CT.Utils.map(scanRows))(auxData);
   };
 
   const auxData = CT.Utils.getSafeData(gridProp, data);
-  const maxIndex = findMaxIndex(auxData);
-  const reg = new RegExp(`^\\w+[${maxIndex + 1}-9]+$`, "g");
-  CT.Utils.map(CT.Utils.safeDeleteA(reg))(auxData);
+  const idx = findMaxIndex(auxData) + 1;
+  const idxDiv = Math.floor(idx / 10);
+  const idxMod = idx % 10;
+  const reg10 = new RegExp(`^col([${idx}-9]|[1-9][0-9]|100)$`, "g");
+  const reg100 = new RegExp(`^col([${idxDiv}-9][${idxMod}-9]|100)$`, "g");
+  CT.Utils.map(CT.Utils.safeDeleteA(idx < 10 ? reg10 : reg100))(auxData);
 });
