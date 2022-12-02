@@ -430,6 +430,6 @@ CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, data) => {
 
   const auxData = CT.Utils.getSafeData(gridProp, data);
   const maxIndex = findMaxIndex(auxData);
-  const reg = new RegExp(`^\\w+[${maxIndex + 1}]+$`, "g");
+  const reg = new RegExp(`^\\w+[${maxIndex + 1}-9]+$`, "g");
   CT.Utils.map(CT.Utils.safeDeleteA(reg))(auxData);
 });
