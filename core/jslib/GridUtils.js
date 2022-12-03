@@ -326,7 +326,7 @@ CT.GridUtils.modelToGrid = CT.Utils.curry((prop1, prop2, model) => {
 });
 
 CT.GridUtils.gridToModel = CT.Utils.curry(
-  (prop1, prop2, auxModel, attribute, model) => {
+  (prop1, prop2, attribute, model, auxModel) => {
     const array1 = model[prop1];
     const array2 = model[prop2];
 
@@ -345,8 +345,7 @@ CT.GridUtils.gridToModel = CT.Utils.curry(
 
     const getColValues = (row) => {
       const colsValue = [];
-      // TODO: remove hard code column count
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < row.colCount; i++) {
         if (Object.hasOwn(row, `col${i}`)) {
           const value = row[`col${i}`];
           colsValue.push(value);
@@ -391,23 +390,39 @@ CT.GridUtils.gridToModel = CT.Utils.curry(
   }
 );
 
-CT.GridUtils.validateCells = CT.Utils.curry((cellPropLike, validate, data) => {
-  const validateColumns = CT.Utils.curry((rowData, ri, colData, ci) => {
-    const message = validate(rowData, colData);
-    return new GridMessage(message.type, "", ri, ci, message.message);
-  });
+CT.GridUtils.validateCells = CT.Utils.curry(
+  (cellPropLike, validate, allowEmpty, data) => {
+    const validateColumns = CT.Utils.curry((rowData, ri, colData, ci) => {
+      const isEmpty = CT.Utils.curry(
+        (data) => allowEmpty && CT.Utils.isUndefined(data)
+      );
 
-  const validateRows = (rowData, ri) => {
-    return CT.Utils.compose(
-      CT.Utils.map(validateColumns(rowData, ri)),
-      CT.Utils.getSafeDataA(cellPropLike) // return values for all the matching properties
-    )(rowData);
-  };
+      const toGridMessage = CT.Utils.curry(
+        (msg) => new GridMessage(msg.type, "", ri, ci, msg.message)
+      );
 
-  return CT.Utils.map(validateRows, data);
-});
+      return CT.Utils.ifElse(
+        isEmpty,
+        (value) =>
+          toGridMessage(
+            new Message(MESSAGE_TYPE.info, "", `allow null values ${value}`)
+          ),
+        CT.Utils.compose(toGridMessage, validate(rowData))
+      )(colData);
+    });
 
-CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, pred, data) => {
+    const validateRows = (rowData, ri) => {
+      return CT.Utils.compose(
+        CT.Utils.map(validateColumns(rowData, ri)),
+        CT.Utils.getSafeDataA(cellPropLike) // return values for all the matching properties
+      )(rowData);
+    };
+
+    return CT.Utils.map(validateRows, data);
+  }
+);
+
+CT.GridUtils.dropTrailingColumns = CT.Utils.curry((pred, data) => {
   const max = (arr) => Math.max(...arr);
   const findMaxIndex = CT.Utils.compose(
     max,
@@ -415,11 +430,11 @@ CT.GridUtils.dropTrailingColumns = CT.Utils.curry((gridProp, pred, data) => {
     CT.Utils.getSafeIndexA(pred)
   );
 
-  const auxData = CT.Utils.getSafeData(gridProp, data);
-  const idx = findMaxIndex(auxData) + 1;
+  const idx = findMaxIndex(data) + 1;
   const idxDiv = Math.floor(idx / 10);
   const idxMod = idx % 10;
   const reg10 = new RegExp(`^col([${idx}-9]|[1-9][0-9]|100)$`, "g");
   const reg100 = new RegExp(`^col([${idxDiv}-9][${idxMod}-9]|100)$`, "g");
-  CT.Utils.map(CT.Utils.safeDeleteA(idx < 10 ? reg10 : reg100))(auxData);
+  CT.Utils.map(CT.Utils.safeDeleteA(idx < 10 ? reg10 : reg100))(data);
+  return data;
 });

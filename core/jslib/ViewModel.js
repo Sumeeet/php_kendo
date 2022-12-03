@@ -123,18 +123,18 @@ const ViewModel = function () {
     // is not part of observable. auxDataArray is of the form
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
-    const revTransformAux = u.curry((source, transformObj) => {
-      const bind = transformObj["bind"];
+    const revTransformAux = u.curry((transformObj) => {
       const action = transformObj["apply"];
-      const attribute = transformObj["attribute"];
-      const auxData = observableObject.toJSON()[bind];
-      // TODO: can we avoid sending attributes ?
-      action(auxData, attribute, source);
+      const gridToModel = action[0];
+      const bind = transformObj["bind"];
+      const auxModel = observableObject.toJSON()[bind];
+      // pass the cache model
+      u.compose(gridToModel(model), ...action.splice(1))(auxModel);
     });
 
     return u.compose(
       () => model,
-      u.forEach(revTransformAux(model)),
+      u.forEach(revTransformAux),
       u.getSafeDataA(/^\w+\d*Aux$/g)
     )(transformInfo);
   });
@@ -145,7 +145,7 @@ const ViewModel = function () {
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
     const transformAux = u.curry((source, transformObj) => {
-      const action = transformObj["init"];
+      const action = u.compose(...transformObj["init"]);
       action(source);
     });
 
@@ -363,7 +363,7 @@ const ViewModel = function () {
     };
 
     const getValidateFunc = u.compose(
-      u.IfElse(canValidate, getValidate, funcNotDefined)
+      u.ifElse(canValidate, getValidate, funcNotDefined)
     );
 
     const validate = u.compose(

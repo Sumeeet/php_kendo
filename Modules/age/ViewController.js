@@ -35,7 +35,7 @@ const ViewController = function (viewModel) {
 
     // map each element of a grid column and check for number validation
     vm.registerValidations("ageGridParam_ageGrid", "ageGridId", [
-      g.validateCells(COLUMN_REGEX, validateCells),
+      g.validateCells(COLUMN_REGEX, validateCells, true),
       v.hasDuplicates("Duplicate values", "parameter"),
     ]);
   }
