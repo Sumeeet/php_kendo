@@ -125,11 +125,12 @@ const ViewModel = function () {
     // key must have "Aux" as a suffix in order to fetch data
     const revTransformAux = u.curry((transformObj) => {
       const action = transformObj["apply"];
-      const gridToModel = action[0];
+      const gridToModel = action["transform"];
+      const beforeTransform = action["beforeTransform"];
       const bind = transformObj["bind"];
       const auxModel = observableObject.toJSON()[bind];
       // pass the cache model
-      u.compose(gridToModel(model), ...action.splice(1))(auxModel);
+      u.compose(gridToModel(model), ...beforeTransform)(auxModel);
     });
 
     return u.compose(
@@ -145,7 +146,7 @@ const ViewModel = function () {
     // {grid0Aux: [source, source2], grid1Aux: [source, source2] }
     // key must have "Aux" as a suffix in order to fetch data
     const transformAux = u.curry((source, transformObj) => {
-      const action = u.compose(...transformObj["init"]);
+      const action = u.compose(...transformObj["init"]["transform"]);
       action(source);
     });
 
