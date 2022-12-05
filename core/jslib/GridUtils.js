@@ -248,7 +248,7 @@ CT.GridUtils.removeRow = CT.Utils.curry((gridId) => {
 
 CT.GridUtils.removeRowAt = CT.Utils.curry((index, gridId) => {
   const remove = CT.Utils.curry(function (idx, grid) {
-    if (idx > 0) {
+    if (idx >= 0) {
       grid.removeRow(`tbody tr:eq("${idx}")`);
     }
     return idx;
