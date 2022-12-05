@@ -41,7 +41,7 @@ const ViewController = function (viewModel) {
   }
 
   function bindCommands(vm) {
-    const pushAddRemoveCommand = (index) => {
+    const pushAddRemoveCommand = CT.Utils.curry((undo, index) => {
       const add = g.addRowAt(index);
       const remove = g.removeRowAt(index);
       const undoCommand = new EditCommand(
@@ -58,12 +58,17 @@ const ViewController = function (viewModel) {
           return this.canRedo;
         }
       );
-      undoRedo.push(
-        "ageGridId",
-        new AddRemoveCommand("ageGridId", undoCommand, redoCommand)
-      );
-    };
 
+      const addRemoveCmd = new AddRemoveCommand(
+        "ageGridId",
+        undo,
+        undoCommand,
+        redoCommand
+      );
+      undoRedo.push("ageGridId", addRemoveCmd);
+    });
+
+    // TODO: this is triggering onchange
     // vm.set("canremoveRow", g.hasData("ageGridId"));
     // vm.set("canaddRow", true);
     // vm.set("canundo", undoRedo.canUndo("ageGridId"));
@@ -75,7 +80,7 @@ const ViewController = function (viewModel) {
       u.compose(
         () => vm.set("canundo", undoRedo.canUndo("ageGridId")),
         () => vm.set("canremoveRow", g.hasData("ageGridId")),
-        pushAddRemoveCommand
+        pushAddRemoveCommand(true)
       )(index);
     });
 
@@ -83,7 +88,7 @@ const ViewController = function (viewModel) {
       u.compose(
         () => vm.set("canundo", undoRedo.canUndo("ageGridId")),
         () => vm.set("canremoveRow", g.hasData("ageGridId")),
-        pushAddRemoveCommand
+        pushAddRemoveCommand(false)
       )(index);
     });
 

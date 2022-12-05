@@ -1,36 +1,33 @@
 {
     "fage": {
         "is": {
-            "inRange": {
+            "InRange": {
                 "min": 1,
                 "max": 100,
                 "message": "age should be greater than or equal to ${age.min} and less than or equal to ${age.max}"
             },
-            "positive": { "message": "Age should be a positive number" },
-            "number": { "message": "age should be a number" },
-            "greater": {
+            "Positive": { "message": "Age should be a positive number" },
+            "Number": { "message": "age should be a number" },
+            "Greater": {
                 "than": "sage",
                 "message": "Father's age should be greater than Sons's age"
             }
         }
     },
-    "ageArray": {
-        "fageCol": {
+    "ageGridAux": {
+        "Parameter": {
             "has": {
                 "duplicates": { "message":  "Duplicates not allowed" },
                 "invalidCombinations": { "message": "Contains invalid combinations"}
-            },
-            "is": {
-                "Empty": { "message": "Column cells cannot be left empty" }
             }
         },
-        "fageCol|sageCol": {
-            "has": {
-                "duplicates": { "message":  "Duplicates not allowed" }
+        "is": {
+            "Empty": { "message": "Please enter a value" },
+            "InRange": {
+                "message": "should be greater than or equal to ${min} and less than or equal to ${max}"
             },
-            "greater": {
-                "than": "sage",
-                "message": "Father's age should be greater than Sons's age"
+            "Positive": {
+                "message": "Please enter a positive value"
             }
         }
     }

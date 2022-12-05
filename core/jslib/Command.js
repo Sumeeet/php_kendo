@@ -12,8 +12,8 @@ const EditCommand = function (receiver, action, canAction = () => true) {
   return { execute };
 };
 
-const AddRemoveCommand = function (id, addCommand, removeCommand) {
-  let undo = true;
+const AddRemoveCommand = function (id, add, addCommand, removeCommand) {
+  let undo = add;
   const execute = function () {
     if (undo) {
       removeCommand.execute(id);
